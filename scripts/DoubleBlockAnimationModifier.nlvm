@@ -1,0 +1,377 @@
+package scripts;
+
+import scripts.modifiers.*;
+import scripts.utilities.*;
+import scripts.core.*;
+import scripts.utilities.parser.*;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.*;
+
+public final class DoubleBlockAnimationModifier extends Behaviour implements ICarModifier, IBogieModifier
+{
+    private SceneObject m_AnimatedObject = null;
+    private SceneObjectElement m_AnimatedRoot = null;
+
+    private Animation m_Animation = null;
+    private int m_AnimationStart = -1;
+    private int m_AnimationEnd = -1;
+    private int m_ReturnAnimationStart = -1;
+    private int m_ReturnAnimationEnd = -1;
+
+    private Block m_NextBlock = null;
+
+    private Block m_EnterBlock = null;
+    private Section m_EnterSection = null;
+    private Block m_ExitBlock = null;
+    private Section m_ExitSection = null;
+
+    private static final int STATE_EMPTY = 0;
+    private static final int STATE_APPROACHING = 1;
+    private static final int STATE_PROCESSING = 2;
+    private static final int STATE_LEAVING = 3;
+
+
+    private static final int ANIMATION_STATE_IDLE = 0;
+    private static final int ANIMATION_STATE_START = 1;
+    private static final int ANIMATION_STATE_RUNNING_FWD = 2;
+    private static final int ANIMATION_STATE_END = 3;
+    private static final int ANIMATION_STATE_RUNNING_BWD = 4;
+    private int m_AnimationState = ANIMATION_STATE_IDLE;
+
+    private static final int ANIMATION_SINGLE = 0;
+    private static final int ANIMATION_DOUBLE = 1;
+    private int m_AnimationMode = ANIMATION_SINGLE;
+
+    private TrainWrapper m_TrainWrapper = new TrainWrapper();
+    private TrainHandler m_ActiveHandler = null;
+    private BlockUtil m_BlockHandler = null;
+
+    private ICarModifier m_PreviousCarModifier = null;
+    private IBogieModifier m_PreviousBogieModifier = null;
+
+    public bool onInit()
+    {
+        bool success = super.onInit();
+        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
+
+        String animatedObjectName = m_SceneObject.getStringParameter("sceneobjectname");
+        if(animatedObjectName == null || animatedObjectName.length() == 0) System.throwRuntimeException("Could not find parameter of type 'String' with name 'sceneobjectname' on SceneObject");
+
+        m_AnimatedObject = sim.getSceneObject(animatedObjectName);
+        if(m_AnimatedObject == null) System.throwRuntimeException("Could not find SceneObject with name" + animatedObjectName);
+        if(m_AnimatedObject.getMaxKeyFrameAnimationTime() <= 0) System.throwRuntimeException("Could not find animation on SceneObject " + animatedObjectName);
+
+        m_AnimatedRoot = m_AnimatedObject.getElementForName("root");
+        if(m_AnimatedRoot == null) System.throwRuntimeException("Could not find child element of " + animatedObjectName + " with name 'root'");
+
+        m_EnterBlock = m_SceneObject.getBlockParameter("enterblock");
+        m_EnterSection = m_EnterBlock.getSection();
+        m_ExitBlock = m_SceneObject.getBlockParameter("exitblock");
+        m_ExitSection = m_ExitBlock.getSection();
+
+        m_NextBlock = m_SceneObject.getBlockParameter("nextblock");
+
+            // Create animation handler
+        m_Animation = new Animation(m_AnimatedObject);
+
+        ResourcePath animationFilePath = m_SceneObject.getResourcePathParameter("animationfile");
+        String fileString = Tools.loadTextFileFromResource(animationFilePath);
+        if(fileString == null || fileString.length() == 0) System.throwRuntimeException("Animation file could not be found");
+
+            // Small baby parser for small needs
+        Pair[] pairs = Parser.MiniParse(fileString);
+        MutableInteger mutInteger = new MutableInteger();
+        if(pairs.length == 2)
+        {
+            // Single animation clip system
+            System.out.println("Single clip system");
+
+            m_AnimationMode = ANIMATION_SINGLE;
+
+            success = pairs[0].TryGetInteger(mutInteger);
+            if(!success) System.throwRuntimeException("Failed to get Integer value from pair");
+            m_AnimationStart = mutInteger.GetValue();
+
+            success = pairs[1].TryGetInteger(mutInteger);
+            if(!success) System.throwRuntimeException("Failed to get Integer value from pair");
+            m_AnimationEnd = mutInteger.GetValue();
+        }
+        else if(pairs.length == 4)
+        {
+            // Double animation clip system
+            System.out.println("Double clip system");
+
+            m_AnimationMode = ANIMATION_DOUBLE;
+
+            success = pairs[0].TryGetInteger(mutInteger);
+            if(!success) System.throwRuntimeException("Failed to get Integer value from pair");
+            m_AnimationStart = mutInteger.GetValue();
+
+            success = pairs[1].TryGetInteger(mutInteger);
+            if(!success) System.throwRuntimeException("Failed to get Integer value from pair");
+            m_AnimationEnd = mutInteger.GetValue();
+
+            success = pairs[2].TryGetInteger(mutInteger);
+            if(!success) System.throwRuntimeException("Failed to get Integer value from pair");
+            m_ReturnAnimationStart = mutInteger.GetValue();
+
+            success = pairs[3].TryGetInteger(mutInteger);
+            if(!success) System.throwRuntimeException("Failed to get Integer value from pair");
+            m_ReturnAnimationEnd = mutInteger.GetValue();
+        }
+        else
+        {
+            // Somethings gone wrong
+            System.throwRuntimeException("Animation Clip provided has an invalid format");
+        }
+
+        return true;
+    }
+
+    public void onNextFrame(float tick)
+    {
+        switch(m_AnimationState)
+        {
+            case ANIMATION_STATE_IDLE:
+            {
+                if(m_EnterBlock.getState() == STATE_APPROACHING)
+                {
+                    m_BlockHandler = BlockUtil.WaitForTrainAndPark(m_EnterBlock);
+                    m_AnimationState = ANIMATION_STATE_START;
+                }
+                break;
+            }
+
+            case ANIMATION_STATE_START:
+            {
+                if(m_EnterSection.isTrainOnSection()) m_EnterBlock.setState(STATE_PROCESSING);
+                if(!m_BlockHandler.IsCommandComplete()) break;
+
+                Train train = m_EnterSection.getTrainOnSection();
+                m_ActiveHandler = TrainHandlerManager.GetInstance().GetHandler(train);
+                if(m_ActiveHandler == null) System.throwRuntimeException("Could not find TrainHandle for the given train, please make sure it is registered with a handler");
+
+                m_PreviousCarModifier = m_ActiveHandler.GetCarModifier();
+                m_PreviousBogieModifier = m_ActiveHandler.GetBogieModifier();
+
+                ISetableCar[] cars = m_ActiveHandler.GetCars();
+                ISetableBogie[] bogies = m_ActiveHandler.GetBogies();
+                Matrix4x4f[] carOffsetMatrices = new Matrix4x4f[cars.length];
+                Matrix4x4f[] bogieOffsetMatrices = new Matrix4x4f[bogies.length];
+
+                    // Loop over car matrix and store them
+                for(int i = 0; i < carOffsetMatrices.length; i++)
+                {
+                    SceneObject sceneObject = (SceneObject)cars[i].GetData();
+                    carOffsetMatrices[i] = sceneObject.getMatrix();
+                }
+                    // Compute car matrix offsets
+                MatrixUtil.GetOffsetMatrixAndStore(carOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+
+                    // Loop over bogie matrix and store them
+                for(int j = 0; j < bogieOffsetMatrices.length; j++)
+                {
+                    SceneObject sceneObject = (SceneObject)bogies[j].GetData();
+                    bogieOffsetMatrices[j] = sceneObject.getMatrix();
+                }
+                    // Compute bogie matrix offsets
+                MatrixUtil.GetOffsetMatrixAndStore(bogieOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+
+                m_TrainWrapper.SetTrain(train);
+                m_TrainWrapper.SetCarOffsetMatrixArray(carOffsetMatrices);
+                m_TrainWrapper.SetBogieOffsetMatrixArray(bogieOffsetMatrices);
+                m_TrainWrapper.SetCarAndBogieInterfaces(cars, bogies);
+                m_TrainWrapper.SetAnimationAndRoot(m_Animation, m_AnimatedRoot);
+
+                m_ActiveHandler.SetCarModifier(this);
+                m_ActiveHandler.SetBogieModifier(this);
+
+                m_AnimationState = ANIMATION_STATE_RUNNING_FWD;
+                break;
+            }
+
+            case ANIMATION_STATE_RUNNING_FWD:
+            {
+                    // Try play fwd animation and wait for it to complete
+                if(!IsPlayingFwdAnimation())
+                {
+                    TryPlayFwdAnimation();
+                    BlockUtil.MoveTrainOffBlockFwd(m_EnterBlock);
+                    BlockUtil.WaitForTrainAndPark(m_ExitBlock);
+                }
+                if(!IsFwdAnimationComplete()) break;
+                m_AnimationState = ANIMATION_STATE_END;
+                Print("Animation ended");
+
+
+                break;
+            }
+            
+            case ANIMATION_STATE_END:
+            {
+                Train train = m_TrainWrapper.GetTrain();
+                if(m_NextBlock.getState() == STATE_EMPTY)
+                {
+                    if(train.getSpeed() != 0 || !m_ExitSection.isTrainOnSection()) break;
+                    m_ActiveHandler.SetCarModifier(m_PreviousCarModifier);
+                    m_ActiveHandler.SetBogieModifier(m_PreviousBogieModifier);
+                    m_ExitSection.setBrakesOff();
+                    m_ExitSection.setTransportsStandardFwdOn();
+                    m_NextBlock.setState(STATE_APPROACHING);
+                    m_ExitBlock.setState(STATE_LEAVING);
+                }
+                else if(m_ExitBlock.getState() == STATE_LEAVING)
+                {
+                    if(!m_ExitSection.isTrainOnSection())
+                    {
+                        m_ExitBlock.setState(STATE_EMPTY);
+                        m_ExitSection.setBrakesOn();
+                        m_ExitSection.setTransportsOff();
+
+                        m_AnimationState = ANIMATION_STATE_RUNNING_BWD;
+                    }
+                }
+                break;
+            }
+
+            case ANIMATION_STATE_RUNNING_BWD:
+            {
+                if(!IsPlayingBwdAnimation())
+                {
+                    TryPlayBwdAnimation();
+                }
+                if(!IsBwdAnimationComplete()) break;
+
+                m_EnterBlock.setState(STATE_EMPTY);
+                m_AnimationState = ANIMATION_STATE_IDLE;
+                m_Animation.SetFrame(0);
+                break;
+            }
+        }
+    }
+
+
+    public bool IsPlayingFwdAnimation()
+    {
+        if(!m_Animation.IsPlaying()) return false;
+
+        float currentFrame = m_Animation.GetCurrentFrame();
+        bool playForward = m_Animation.IsPlayingForward();
+        return currentFrame > m_AnimationStart && currentFrame < m_AnimationEnd && playForward;
+    }
+    public bool CanPlayFwdAnimation()
+    {
+        float frame = m_Animation.GetCurrentFrame();
+        return !m_Animation.IsPlaying() && (int)frame == m_AnimationStart;
+    }
+    public bool TryPlayFwdAnimation()
+    {
+        if(!CanPlayFwdAnimation()) return false;
+        if(IsPlayingFwdAnimation()) return true;
+        m_Animation.Play(m_AnimationStart, m_AnimationEnd);
+        return true;
+    }
+    public bool IsFwdAnimationComplete()
+    {
+        if(m_Animation.IsPlaying()) return false;
+
+        float currentFrame = m_Animation.GetCurrentFrame();
+        return (int)currentFrame == m_AnimationEnd;
+    }
+
+    public bool IsPlayingBwdAnimation()
+    {
+        switch(m_AnimationMode)
+        {
+            case ANIMATION_SINGLE:
+            {
+                if(!m_Animation.IsPlayingBackward()) return false;
+
+                float currentFrame = m_Animation.GetCurrentFrame();
+                bool playBackward = !m_Animation.IsPlayingForward();
+                return currentFrame < m_AnimationEnd && currentFrame > m_AnimationStart && playBackward;
+            }
+            case ANIMATION_DOUBLE:
+            {
+                if(!m_Animation.IsPlaying()) return false;
+
+                float currentFrame = m_Animation.GetCurrentFrame();
+                bool playForward = m_Animation.IsPlayingForward();
+                return currentFrame > m_ReturnAnimationStart && currentFrame < m_ReturnAnimationEnd && playForward;
+            }
+        }
+        return false;
+    }
+    public bool CanPlayBwdAnimation()
+    {
+        switch(m_AnimationMode)
+        {
+            case ANIMATION_SINGLE:
+            {
+                if(m_Animation.IsPlaying() || m_Animation.IsPlayingBackward()) return false;
+
+                float frame = m_Animation.GetCurrentFrame();
+                return (int)frame == m_AnimationEnd;
+            }
+
+            case ANIMATION_DOUBLE:
+            {
+                if(m_Animation.IsPlaying()) return false;
+                float frame = m_Animation.GetCurrentFrame();
+                return (int)frame == m_ReturnAnimationStart;
+            }
+        }
+        return false;
+    }
+    public bool TryPlayBwdAnimation()
+    {
+        if(!CanPlayBwdAnimation()) return false;
+        if(IsPlayingBwdAnimation()) return true;
+
+        switch(m_AnimationMode)
+        {
+            case ANIMATION_SINGLE:
+            {
+                m_Animation.PlayBackward(m_AnimationEnd);
+                break;
+            }
+            case ANIMATION_DOUBLE:
+            {
+                m_Animation.Play(m_ReturnAnimationStart, m_ReturnAnimationEnd);
+                break;
+            }
+        }
+        return true;
+    }
+    public bool IsBwdAnimationComplete()
+    {
+        if(m_Animation.IsPlaying() || m_Animation.IsPlayingBackward()) return false;
+
+        float currentFrame = m_Animation.GetCurrentFrame();
+        return (int)currentFrame == m_AnimationStart || (int)currentFrame == m_ReturnAnimationEnd;
+    }
+
+
+    public void Run(Matrix4x4f carMatrix, ISetableCar setableCar)
+    {
+        Train train = setableCar.GetTrain();
+        int index = m_TrainWrapper.GetCarIndex(setableCar);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableCar index");
+
+        Matrix4x4f matrix = m_TrainWrapper.GetAttachmentMatrix();
+        matrix.multRight(m_TrainWrapper.GetCarOffset(index));
+        setableCar.SetMatrix(matrix);
+    }
+    public void Run(Matrix4x4f carMatrix, Matrix4x4f bogieMatrix, ISetableBogie setableBogie, float rotationFactor)
+    {
+        Train train = setableBogie.GetTrain();
+        int index = m_TrainWrapper.GetBogieIndex(setableBogie);
+        if(index == -1) System.throwRuntimeException("Fatal erroe fetching ISetableBogie index");
+
+        Matrix4x4f matrix = m_TrainWrapper.GetAttachmentMatrix();
+        matrix.multRight(m_TrainWrapper.GetBogieOffset(index));
+        setableBogie.SetMatrix(matrix);
+    }
+}

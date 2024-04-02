@@ -1,0 +1,13 @@
+package scripts.modifiers;
+import nlvm.math3d.Matrix4x4f;
+import scripts.ISetableCar;
+
+public final class GenericCarModifier implements ICarModifier
+{
+    public GenericCarModifier() {}
+
+    public void Run(Matrix4x4f carMatrix, ISetableCar setableCar)
+    {
+        setableCar.SetMatrix(carMatrix);
+    }
+}

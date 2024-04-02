@@ -1,0 +1,10 @@
+package scripts;
+
+import nlvm.math3d.Matrix4x4f;
+import nlvm.lang.Object;
+
+public interface ISetable
+{
+    public void SetMatrix(Matrix4x4f matrix);
+    public void SetData(Object object);
+}

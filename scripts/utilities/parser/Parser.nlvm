@@ -1,0 +1,95 @@
+package scripts.utilities.parser;
+
+import nlvm.util.*;
+import scripts.utilities.*;
+
+public final class Parser
+{
+    public static Pair[] MiniParse(String text)
+    {
+        char[] chars = text.toCharArray();
+        Vector items = new Vector();
+
+        int startIndex = 0;
+        int endIndex = -1;
+
+        for(int i = 0; i < chars.length; i++)
+        {
+            char c = chars[i];
+            if(c == '\n')
+            {
+                endIndex = i;
+                String str = text.substring(startIndex, endIndex);
+                startIndex = endIndex + 1;
+
+                Pair pair = CreatePairFromString(str);
+                items.addElement(pair);
+            }
+        }
+
+        Pair[] pairs = new Pair[items.size()];
+        for(int j = 0; j < pairs.length; j++)
+        {
+            pairs[j] = (Pair)items.elementAt(j);
+        }
+        return pairs;
+    }
+
+
+    public static Pair CreatePairFromString(String string)
+    {
+        int splitPoint = -1;
+        for(int i = 0; i < string.length(); i++)
+        {
+            if(string.charAt(i) == ':')
+            {
+                splitPoint = i;
+                break;
+            }
+        }
+
+        String id = string.substring(0, splitPoint);
+        String content = string.substring(splitPoint + 1);
+
+        System.out.println("Pair id " + id);
+        System.out.println("Pair value " + content);
+
+        Pair pair = new Pair();
+        pair.Id = id;
+
+        if(StringUtil.IsStringNumber(content))
+        {
+            if(StringUtil.Contains(content, '.'))
+            {
+                    // Double
+                //System.out.println("Contains decimal so its double");
+                Double d = new Double(Double.parseDouble(content));
+                pair.Value = d;
+                
+            }else
+            {
+                    // Int
+                //System.out.println("Does not contain decimal so its integer");
+                Integer i = new Integer(Integer.parseInt(content));
+                pair.Value = i;
+            }
+        }else
+        {
+            String lower = StringUtil.ToLower(content);
+            if(lower == "true" || lower == "false")
+            {
+                    // Bool
+                //System.out.println("Contains bool keyword so boolean");
+                Boolean b = new Boolean(lower == "true");
+                pair.Value = b;
+            }else
+            {
+                    // String
+                //System.out.println("All else failed its a string");
+                pair.Value = content;
+            }
+        }
+        
+        return pair;
+    }
+}

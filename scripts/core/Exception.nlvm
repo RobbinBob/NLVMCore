@@ -1,0 +1,8 @@
+package scripts.core;
+public abstract class Exception extends Object
+{
+    public static void Throw(String message)
+    {
+        System.throwRuntimeException("Exception | Message: " + message);
+    }
+}

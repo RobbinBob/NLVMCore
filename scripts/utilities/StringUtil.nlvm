@@ -1,0 +1,118 @@
+package scripts.utilities;
+
+import nlvm.lang.String;
+import nlvm.util.Vector;
+
+public class StringUtil
+{
+    public static String[] SplitString(String string, char _char)
+    {
+        Vector vector = new Vector();
+        SplitString(string, _char, vector);
+        String[] strings = new String[vector.size()];
+        for(int i = 0; i < vector.size(); i++)
+        {
+            strings[i] = (String)vector.elementAt(i);
+        }
+        return strings;
+    }
+
+    private static void SplitString(String string, char _char, Vector strings)
+    {
+        int index = 0;
+        while(index < string.length() && string.charAt(index) != _char)
+        {
+            index++;
+            if(index > string.length())
+            {
+                strings.addElement(string);
+                return;
+            }
+        }
+
+        String substring = string.substring(0, index);
+        strings.addElement(substring);
+        
+        if(index + 1 > string.length()) return;
+
+        substring = string.substring(index + 1);
+        if(substring.length() > 1)
+        {
+            SplitString(substring, _char, strings);
+        }else
+        {
+            if(substring.length() == 0) return;
+            strings.addElement(substring);
+        }
+    }
+
+    public static bool IsStringNumber(String string)
+    {
+        bool isFullNumber = true;
+        char[] chars = string.toCharArray();
+
+        int decimals = 0;
+
+        for(int i = 0; i < chars.length; i++)
+        {
+            bool isNumber = IsCharNumber(chars[i]);
+            if(chars[i] == '.') decimals++;
+            if(!isNumber) return false;
+        }
+
+        if(decimals > 1) return false;
+        return true;
+    }
+
+    public static bool IsCharNumber(char c)
+    {
+        int dec = (int)c;
+        return dec > 47 && dec < 58;
+    }
+    public static bool IsCharLetter(char c)
+    {
+        int dec = (int)c;
+        return (dec > 64 && dec < 91) || (dec > 96 && dec < 123);
+    }
+
+    public static bool IsCharLower(char c)
+    {
+        int dec = (int)c;
+        return dec > 64 && dec < 91;
+    }
+    public static bool IsCharUpper(char c)
+    {
+        int dec = (int)c;
+        return dec > 96 && dec < 123;
+    }
+
+    public static bool Contains(String string, char c)
+    {
+        char[] chars = string.toCharArray();
+        for(int i = 0; i < chars.length; i++)
+        {
+            if(chars[i] == c) return true;
+        }
+        return false;
+    }
+
+    public static String ToLower(String string)
+    {
+        StringBuilder builder = new StringBuilder();
+        char[] chars = string.toCharArray();
+        for(int i = 0; i < chars.length; i++)
+        {
+            builder.append(ToLower(chars[i]));
+        }
+        return builder.toString();
+    }
+    public static char ToLower(char c)
+    {
+        int dec = (int)c;
+        if(IsCharUpper(c))
+        {
+            return (char)(dec - 32);
+        }
+        return c;
+    }
+}

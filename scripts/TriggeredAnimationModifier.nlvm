@@ -1,0 +1,193 @@
+package scripts;
+
+import nlvm.math3d.*;
+import com.nolimitscoaster.*;
+
+import scripts.utilities.*;
+import scripts.modifiers.*;
+
+public final class TriggeredAnimationModifier extends Behaviour implements ICarModifier, IBogieModifier, TrackTriggerListener
+{
+    private SceneObject m_AnimatedObject = null;
+    private SceneObjectElement m_AnimatedRoot = null;
+    private float m_AnimationLength = 0.0f;
+    private float m_AnimationCurrentTime = 0.0f;
+
+    private TrackTrigger m_StartAnimationTrigger = null;
+
+    private bool m_AttachWait = true;
+    private bool m_DetachWait = true;
+
+    private static final int ANIMATION_STATE_IDLE = 0;
+    private static final int ANIMATION_STATE_START = 1;
+    private static final int ANIMATION_STATE_RUNNING = 2;
+    private static final int ANIMATION_STATE_END = 3;
+    private int m_AnimationState = ANIMATION_STATE_IDLE;
+
+    private ICarModifier m_PreviousCarModifier = null;
+    private ISetableCar[] m_ActiveCars = null;
+    private IBogieModifier m_PreviousBogieModifier = null;
+    private ISetableBogie[] m_ActiveBogies = null;
+
+    private TrainHandler m_ActiveHandler = null;
+
+    private Train m_Train = null;
+    private Matrix4x4f[] m_OffsetCarMatrices = null;
+    private Matrix4x4f[] m_OffsetBogieMatrices = null;
+
+    public bool onInit()
+    {
+        bool success = super.onInit();
+        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
+
+            // Attempt to get SceneObject
+        String animatedObjectName = m_SceneObject.getStringParameter("sceneobjectname");
+        if(animatedObjectName == null || animatedObjectName.length() == 0) System.throwRuntimeException("SceneObject Name parameter cannot be empty");
+        m_AnimatedObject = sim.getSceneObject(animatedObjectName);
+        if(m_AnimatedObject == null) System.throwRuntimeException("Could not find SceneObject in scene with name " + animatedObjectName);
+        m_AnimationLength = (float)m_AnimatedObject.getMaxKeyFrameAnimationTime();
+        if(m_AnimationLength <= 0) System.throwRuntimeException("Could not find any animation on SceneObject " + animatedObjectName);
+
+            // Get the root element for the animation matrix
+        m_AnimatedRoot = m_AnimatedObject.getElementForName("root");
+        if(m_AnimatedRoot == null) System.throwRuntimeException("Could not find child element of " + animatedObjectName + " with name 'root'");
+
+            // Get attachment settings
+        m_AttachWait = m_SceneObject.getBooleanParameter("attachwaitforstop").boolValue();
+        m_DetachWait = m_SceneObject.getBooleanParameter("detachwaitforstop").boolValue();
+
+            // Get and setup trigger
+        m_StartAnimationTrigger = m_SceneObject.getTrackTriggerParameter("initialtrigger");
+        if(m_StartAnimationTrigger == null) System.throwRuntimeException("No TrackTrigger specified on this SceneObject");
+        m_StartAnimationTrigger.addTrackTriggerListener(this);
+        return true;
+    }
+
+    public void onNextFrame(float delta)
+    {
+        switch(m_AnimationState)
+        {
+                // Do nothing
+            case ANIMATION_STATE_IDLE: return;
+                // Wait for train to stop/take over the control from old modifier
+            case ANIMATION_STATE_START:
+                if(m_DetachWait)
+                {
+                    if(m_Train.getSpeed() != 0) break;
+                    CreateMatrixOffsets();
+                    m_ActiveHandler.SetCarModifier(this);
+                    m_ActiveHandler.SetBogieModifier(this);
+                    m_AnimationState = ANIMATION_STATE_RUNNING;
+
+                }else
+                {
+                    CreateMatrixOffsets();
+                    m_ActiveHandler.SetCarModifier(this);
+                    m_ActiveHandler.SetBogieModifier(this);
+                    m_AnimationState = ANIMATION_STATE_RUNNING;
+                }
+                break;
+                // Run animation
+            case ANIMATION_STATE_RUNNING:
+                if(m_AnimationCurrentTime < m_AnimationLength)
+                {
+                    m_AnimationCurrentTime += delta;
+                    m_AnimatedObject.setKeyFrameAnimationTime(m_AnimationCurrentTime);
+                }else
+                {
+                    m_AnimationCurrentTime = 0;
+                    m_AnimatedObject.setKeyFrameAnimationTime(0);
+                    m_AnimationState = ANIMATION_STATE_END;
+                }
+                break;
+                // Wait for the train to stop/give over the control to old modifier
+            case ANIMATION_STATE_END:
+                if(m_AttachWait)
+                {
+                    if(m_Train.getSpeed() != 0) break;
+                    m_ActiveHandler.SetCarModifier(m_PreviousCarModifier);
+                    m_ActiveHandler.SetBogieModifier(m_PreviousBogieModifier);
+                    m_AnimationState = ANIMATION_STATE_IDLE;
+                }else
+                {
+                    m_ActiveHandler.SetCarModifier(m_PreviousCarModifier);
+                    m_ActiveHandler.SetBogieModifier(m_PreviousBogieModifier);
+                    m_AnimationState = ANIMATION_STATE_IDLE;
+                }
+                break;
+        }
+    }
+
+
+        // TrackTriggerListener
+    public void onTrainEntering(TrackTrigger trigger, Train train)
+    {
+        if(trigger != m_StartAnimationTrigger) return;
+            // Get the handler that is managing this train
+        m_ActiveHandler = TrainHandlerManager.GetInstance().GetHandler(train);
+        if(m_ActiveHandler == null) System.throwRuntimeException("Could not find any handler for this train, make sure the trigger is on the correct circuit");
+            // Get the ICarModifier that is currently bound so it can be reassigned after animation
+        m_PreviousCarModifier = m_ActiveHandler.GetCarModifier();
+        m_PreviousBogieModifier = m_ActiveHandler.GetBogieModifier();
+        if(m_PreviousCarModifier == null) System.throwRuntimeException("Could not get a reference to ICarModifier on TrainHandler instnace");
+        if(m_PreviousBogieModifier == null) System.throwRuntimeException("Could not get a reference to IBogieModifier on TrainHandler instnace");
+
+            // Get cars and bogie interfaces for callbacks
+        m_ActiveCars = m_ActiveHandler.GetCars();
+        m_ActiveBogies = m_ActiveHandler.GetBogies();
+        m_Train = m_ActiveHandler.GetTrain();
+
+            // If success then set the animation state to start
+        m_AnimationState = ANIMATION_STATE_START;
+    }
+    public void onTrainLeaving(TrackTrigger trigger, Train train) {}
+
+
+        // ICarModifier
+    public void Run(Matrix4x4f carMatrix, ISetableCar setableCar)
+    {
+            // Find the index that the car is at for the matrix offset
+        int index = 0;
+        for(index = 0; index < m_ActiveCars.length; index++)
+        {
+            if(m_ActiveCars[index] == setableCar) break;
+        }
+
+        Matrix4x4f matrix = m_AnimatedRoot.getAbsoluteMatrix();
+        matrix.multRight(m_OffsetCarMatrices[index]);
+        setableCar.SetMatrix(matrix);
+    }
+        // IBogieModifier
+    public void Run(Matrix4x4f carMatrix, Matrix4x4f bogieMatrix, ISetableBogie setableBogie, float rotationFactor)
+    {
+        int index = 0;
+        for(index = 0; index < m_ActiveBogies.length; index++)
+        {
+            if(m_ActiveBogies[index] == setableBogie) break;
+        }
+        
+        Matrix4x4f matrix = m_AnimatedRoot.getAbsoluteMatrix();
+        matrix.multRight(m_OffsetBogieMatrices[index]);
+        setableBogie.SetMatrix(matrix);
+    }
+
+
+    private void CreateMatrixOffsets()
+    {
+        m_OffsetCarMatrices = new Matrix4x4f[m_ActiveCars.length];
+        for(int i = 0; i < m_ActiveCars.length; i++)
+        {
+            SceneObject sceneObject = (SceneObject)m_ActiveCars[i].GetData();
+            m_OffsetCarMatrices[i] = sceneObject.getMatrix();
+        }
+        MatrixUtil.GetOffsetMatrixAndStore(m_OffsetCarMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+
+        m_OffsetBogieMatrices = new Matrix4x4f[m_ActiveBogies.length];
+        for(int j = 0; j < m_ActiveBogies.length; j++)
+        {
+            SceneObject sceneObject = (SceneObject)m_ActiveBogies[j].GetData();
+            m_OffsetBogieMatrices[j] = sceneObject.getMatrix();
+        }
+        MatrixUtil.GetOffsetMatrixAndStore(m_OffsetBogieMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+    }
+}

@@ -1,0 +1,910 @@
+package scripts;
+
+import nlvm.math3d.*;
+import com.nolimitscoaster.*;
+
+import scripts.utilities.*;
+import scripts.core.*;
+import scripts.modifiers.*;
+import scripts.utilities.parser.*;
+
+public final class TriggeredStationAnimation extends Behaviour implements ICarModifier, IBogieModifier, TrackTriggerListener
+{
+    private SceneObject m_TransferObject = null;
+    private SceneObjectElement[] m_TransferRoots = new SceneObjectElement[2];
+    private Animation m_TransferAnimation = null;
+
+    private Coaster m_Coaster = null;
+
+    // LIFT VARIABLES
+    private SceneObject m_LiftObject = null;
+    private SceneObjectElement m_LiftRoot = null;
+
+    private Animation m_VerticalAnimation = null;
+    private int m_VerticalAnimationLiftStart = -1;
+    private int m_VerticalAnimationLiftEnd = -1;
+    private int m_VerticalAnimationDropStart = -1;
+    private int m_VerticalAnimationDropEnd = -1;
+    
+    private SpecialTrack m_Transfer = null;
+
+    private Block m_TransferBlock = null;
+    private Section m_TransferSection = null;
+    private Block m_StationLeftBlock = null;
+    private Section m_StationLeftSection = null;
+    private Block m_StationRightBlock = null;
+    private Section m_StationRightSection = null;
+
+    private Block m_NextBlock = null;
+
+    private static final int STATE_EMPTY = 0;
+    private static final int STATE_APPROACHING = 1;
+    private static final int STATE_PROCESSING = 2;
+    private static final int STATE_LEAVING = 3;
+    private static final int STATE_PREPARING = 4;
+
+    private static final int STATE_STATION_IDLE = -1;
+    private static final int STATE_STATION_LEAVING = 0;
+    private static final int STATE_STATION_LEFT_LEAVING = 1;
+    private static final int STATE_STATION_RIGHT_LEAVING = 2;
+    private static final int STATE_STATION_ENTERING = 3;
+    private static final int STATE_STATION_LEFT_ENTERING = 4;
+    private static final int STATE_STATION_RIGHT_ENTERING = 5;
+
+    private static final int STATE_LIFT_LOWERING = 6;
+    private static final int STATE_LIFT_RAISING = 7;
+    private static final int STATE_LIFT_DROPPING = 8;
+
+    private static final int STATION_LEFT = 0;
+    private static final int STATION_RIGHT = 1;
+
+
+    private SceneObject m_StationLeftSceneObject = null;
+    private SceneObject m_StationRightSceneObject = null;
+    private SceneObject m_StationSupportSceneObject = null;
+    private TrackTo m_StationLeftTracker = null;
+    private TrackTo m_StationRightTracker = null;
+    private TrackTo m_StationSupportTracker = null;
+
+
+    private bool m_IsProcessing = false;
+    private int m_Process = STATE_STATION_IDLE;
+
+    private TrainWrapper m_TrainLeft = new TrainWrapper();
+    private TrainWrapper m_TrainRight = new TrainWrapper();
+
+    private BlockUtil m_TransferBlockHandler = null;
+
+    public bool onInit()
+    {        
+        bool success = super.onInit();
+        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
+
+
+            // Try get transfer animated object
+        String transferObjectName = m_SceneObject.getStringParameter("sceneobjecttransfer");
+        if(transferObjectName == null || transferObjectName.length() == 0) NullReferenceException.Throw("Transfer SceneObject name is empty");
+            // Try get SceneObject using transferObjectName
+        m_TransferObject = sim.getSceneObject(transferObjectName);
+        if(m_TransferObject == null) NullReferenceException.Throw("Could not find SceneObject with name " + transferObjectName);
+        m_TransferAnimation = new Animation(m_TransferObject);
+
+        m_TransferRoots[STATION_LEFT] = m_TransferObject.getElementForName("Left");
+        m_TransferRoots[STATION_RIGHT] = m_TransferObject.getElementForName("Right");
+
+
+            // Try get vertical animated object
+        String verticalObjectName = m_SceneObject.getStringParameter("sceneobjectlift");
+        if(verticalObjectName == null || verticalObjectName.length() == 0) NullReferenceException.Throw("Vertical SceneObject name is empty");
+            // Try get SceneObject using verticalObjectName
+        m_LiftObject = sim.getSceneObject(verticalObjectName);
+        if(m_LiftObject == null) NullReferenceException.Throw("Could not find SceneObject with name " + verticalObjectName);
+        m_VerticalAnimation = new Animation(m_LiftObject);
+        m_LiftRoot = m_LiftObject.getElementForName("Root");
+
+
+            // Get blocks
+        m_TransferBlock = m_SceneObject.getBlockParameter("transferblock");
+        if(m_TransferBlock == null) NullReferenceException.Throw("No Block specified for parameter 'Transfer Block'");
+        m_TransferSection = m_TransferBlock.getSection();
+        m_TransferBlock.registerState(STATE_EMPTY, "IDLE", Block.LAMP_OFF);
+
+        m_StationLeftBlock = m_SceneObject.getBlockParameter("stationleft");
+        if(m_StationLeftBlock == null) NullReferenceException.Throw("No Block specified for parameter 'Station Left Block'");
+        m_StationLeftSection = m_StationLeftBlock.getSection();
+
+        m_StationRightBlock = m_SceneObject.getBlockParameter("stationright");
+        if(m_StationRightBlock == null) NullReferenceException.Throw("No Block specified for parameter 'Station Right Block'");
+        m_StationRightSection = m_StationRightBlock.getSection();
+
+        m_NextBlock = m_SceneObject.getBlockParameter("nextblock");
+        if(m_NextBlock == null) NullReferenceException.Throw("No Block specified for parameter 'Next Block'");
+
+            // Get transfer
+        m_Transfer = m_SceneObject.getSpecialTrackParameter("transfer");
+        if(m_Transfer == null) NullReferenceException.Throw("No SpecialTrack specified for parameter 'Transfer'");
+
+
+            // Get Decoration SceneObjects and create matrix trackers that update their positions
+        m_StationLeftSceneObject = sim.getSceneObject("STATION_LEFT");
+        if(m_StationLeftSceneObject == null) NullReferenceException.Throw("Could not find SceneObject with name 'STATION_LEFT'");
+        m_StationRightSceneObject = sim.getSceneObject("STATION_RIGHT");
+        if(m_StationRightSceneObject == null) NullReferenceException.Throw("Could not find SceneObject with name 'STATION_RIGHT'");
+        m_StationSupportSceneObject = sim.getSceneObject("STATION_SUPPORT");
+        if(m_StationSupportSceneObject == null) NullReferenceException.Throw("Could not find SceneObject with name 'STATION_SUPPORT'");
+
+        m_StationLeftTracker = new TrackTo(m_TransferRoots[STATION_LEFT], m_StationLeftSceneObject);
+        m_StationRightTracker = new TrackTo(m_LiftRoot, m_StationRightSceneObject);
+        m_StationSupportTracker = new TrackTo(m_LiftRoot, m_StationSupportSceneObject);
+
+
+            // Get animation clip file
+        ResourcePath animationFilePath = m_SceneObject.getResourcePathParameter("animationfile");
+        String fileString = Tools.loadTextFileFromResource(animationFilePath);
+        if(fileString == null || fileString.length() == 0) System.throwRuntimeException("Animation clip is invalid or could not be found");
+
+        Pair[] pairs = Parser.MiniParse(fileString);
+        if(pairs.length != 4) System.throwRuntimeException("Invalid Animation clip");
+
+        MutableInteger mutInteger = new MutableInteger();
+        int[] values = new int[pairs.length];
+        for(int i = 0; i < values.length; i++)
+        {
+            if(!pairs[i].TryGetInteger(mutInteger)) continue;
+            values[i] = mutInteger.GetValue();
+        }
+        m_VerticalAnimationLiftStart = values[0];
+        m_VerticalAnimationLiftEnd = values[1];
+        m_VerticalAnimationDropStart = values[2];
+        m_VerticalAnimationDropEnd = values[3];
+
+        return true;
+    }
+
+    public void onNextFrame(float delta)
+    {
+            /*
+                * When any actions happen nothing else is processed, until its is completed (Blocking process)
+                * Take trains and put them on different stations using a transfer
+                * 
+                * ------ To take a train and put it on the station ---------
+                * - Check if any spaces are available
+                * - If there isnt any then keep waiting
+                * - Make transfer on middle and check the lift is lowered before train enters
+                * 
+                * - Move train onto the transfer
+                * - Slide over station transfer so the free slot aligns with the lift
+                * 
+                * - Train parks on transfer and is moved to a free slot (Left/Right)
+                * - Detach the model and attach it to the lift model
+                * - Raise lift
+                * 
+                * - Train is moved off transfer and onto station
+                * - Train model is then detached from lift and attached to transfer
+                * 
+                * - Train parks when the transfer slides over that way the station timer is correct and not running whilst its waiting 
+                * 
+                * ------ To take a train and make it leave -------
+                * - Check the transfer is free and not moving
+                * - Check the lift is raised and not moving
+                * 
+                * - Slide the transfer over to align with the lift
+                * - Slide over wireframe transfer to station side
+                * - Send train off station and onto transfer
+                * 
+                * - Lower lift down to exit level
+                * - Move transfer over to middle
+                * 
+                * - Attach train model
+                * - Move train off block
+                * 
+                * Throughout the process there will be up to 2 trains occupying the system at a time
+                * This means that well need a way to keep track of which train need to attach to what
+                * When a train first enters the system and stops on the transfer it will be assigned a id(train instance) so it can be tracked
+                * Create matrix offsets for the bogies and car models and store those along with the id in some wrapper class
+                * The wrapper class will hold a reference to a SceneObjectElement which will be used to determine the matrix it attaches to
+                * 
+                * Rules
+                *  - Top transfer cannot slide across unless the lift arm is raised and stopped
+                *  - Top transfer cannot slide across if the station side is being used actively and not waiting for dispatch/advance
+                *  - Lift arm will not raise unless the top transfer slot above is an open space
+                *  - Will not accept train if there is already 2 in the system anywhere (otherwise its deadlocking)
+                *  - Train will not enter if the arm is raised or in motion
+            */
+        
+            // Not processing anything so we can check states on all other aspects
+        if(m_Process == STATE_STATION_IDLE)
+        {   
+            //Print("Idle");
+            // Checks for departing trains
+            if(IsStationWaitingToDepart())
+            {   
+                //Print("Station wants to leave");
+                // Check if any station is trying to depart
+                int station = GetStationWaitingToDepart();
+                if(station == -1) System.throwRuntimeException("Returned station value is not legal");
+
+                if(!IsLiftRaised())
+                {
+                    bool success = TryRaisingLift();
+                    if(success) m_TransferBlock.setState(STATE_PROCESSING);
+                    return;
+                }
+
+                // Set the process to allow the station to be handled and dispatched
+                switch(station)
+                {
+                    case STATION_LEFT:
+                        Print("Station Left requests to leave");
+                        m_Process = STATE_STATION_LEFT_LEAVING;
+                        break;
+                    case STATION_RIGHT:
+                        Print("Station Right requests to leave");
+                        m_Process = STATE_STATION_RIGHT_LEAVING;
+                        break;
+                }
+                return;
+            }
+
+            // Checks if the system has a free slot
+            if((!m_StationLeftSection.isTrainOnSection() || !m_StationRightSection.isTrainOnSection()) && !m_TransferSection.isTrainOnSection())
+            {
+                // Theres a station free, no process active and theres no train on the transfer check elevator states
+                if(!IsLiftLowered())
+                {
+                    int stationOverDrop = GetOppositeStation(GetServicingStation());
+                    if(stationOverDrop == STATION_LEFT)
+                    {
+                        m_StationLeftTracker.SetTrackingObject(m_LiftRoot);
+                    }
+                    if(stationOverDrop == STATION_RIGHT)
+                    {
+                        m_StationRightTracker.SetTrackingObject(m_LiftRoot);
+                    }
+
+                    // Lower lift back down as there is no train up above
+                    TryLowerLift();
+                    return;
+                }
+                //Print("Station slot free and unprocessed, setting station to allow entry");
+                m_TransferBlock.setState(STATE_EMPTY);
+            }
+
+            // Checks if theres a train attempting to enter
+            if(m_TransferBlock.getState() == STATE_APPROACHING)
+            {
+                // Train is attempting to enter
+                Print("Train attempting to enter");
+                m_Process = STATE_STATION_ENTERING;
+                m_TransferBlockHandler = BlockUtil.WaitForTrainAndPark(m_TransferBlock);
+                m_TransferBlock.setState(STATE_PROCESSING);
+            }
+        }else
+        {
+            m_TransferBlock.setState(STATE_PROCESSING);
+        }
+
+        switch(m_Process)
+        {
+            // Handles moving the train onto the transfer
+            case STATE_STATION_ENTERING:
+            {
+                    // Wait for the train to park first
+                if(!m_TransferBlockHandler.IsCommandComplete()) break;
+
+                    // -- Overview --
+                    // Get the train models, get the matrix offsets, change the modifier over to this, set the train to follow the lift object
+                    // The wrapper object stores info so we can pull from it when the train is animated
+                    // The local train is stored alongside the precomputed matrix offsets for the cars and bogies
+                    // There is also a stored reference to a SceneObjectElement and Animation which will be used to fetch the current matrix to follow
+
+                    // Get the station that it can enter, set it to begine entering that station
+                int station = GetServicingStation();
+                Print("Servicing station " + GetStationNameFromEnum(station));
+                if(station == -1) System.throwRuntimeException("GetServicingStation returned illegal station");
+                    // Get the free station which should be the opposite station as the servicing is currently slid across
+                int freeStation = GetOppositeStation(station);
+                if(IsStationOccupied(freeStation)) System.throwRuntimeException("Free station was actually occupied, fatal error");
+                Print("Free station is " + GetStationNameFromEnum(freeStation));
+
+                    // Get the handler on this train used for modifying train cars and bogies
+                Train enteringTrain = m_TransferSection.getTrainOnSection();
+                TrainHandler currentHandler = TrainHandlerManager.GetInstance().GetHandler(enteringTrain);
+                if(currentHandler == null) System.throwRuntimeException("Fatal error, train attempting to enter is not registered with a handler");
+
+                    // Get the wrapper for this station and begin setup
+                TrainWrapper wrapper = GetWrapperForStation(freeStation);
+                    // Get the setable car/bogie references so we can create matrix offsets
+                ISetableCar[] cars = currentHandler.GetCars();
+                ISetableBogie[] bogies = currentHandler.GetBogies();
+                Matrix4x4f[] carOffsetMatrices = new Matrix4x4f[cars.length];
+                Matrix4x4f[] bogieOffsetMatrices = new Matrix4x4f[bogies.length];
+
+                    // Loop over car matrix and store them
+                for(int i = 0; i < carOffsetMatrices.length; i++)
+                {
+                    SceneObject sceneObject = (SceneObject)cars[i].GetData();
+                    carOffsetMatrices[i] = sceneObject.getMatrix();
+                }
+                    // Compute car matrix offsets
+                MatrixUtil.GetOffsetMatrixAndStore(carOffsetMatrices, m_LiftRoot.getAbsoluteMatrix());
+
+                    // Loop over bogie matrix and store them
+                for(int j = 0; j < bogieOffsetMatrices.length; j++)
+                {
+                    SceneObject sceneObject = (SceneObject)bogies[j].GetData();
+                    bogieOffsetMatrices[j] = sceneObject.getMatrix();
+                }
+                    // Compute bogie matrix offsets
+                MatrixUtil.GetOffsetMatrixAndStore(bogieOffsetMatrices, m_LiftRoot.getAbsoluteMatrix());
+
+                    // Store matrix offsets in the wrapper instance
+                wrapper.SetTrain(enteringTrain);
+                wrapper.SetCarOffsetMatrixArray(carOffsetMatrices);
+                wrapper.SetBogieOffsetMatrixArray(bogieOffsetMatrices);
+                wrapper.SetCarAndBogieInterfaces(cars, bogies);
+                    // Store the animation and root object for calculating the matrix to follow
+                    // Store the vertical animation and lift root as the next step will be raising the train
+                wrapper.SetAnimationAndRoot(m_VerticalAnimation, m_LiftRoot);
+                
+                    // Override the modifier used by the current train handler to be this instance
+                currentHandler.SetCarModifier(this);
+                currentHandler.SetBogieModifier(this);
+
+                Print("Completed initial calculations for this train, it can now be raised");
+                if(freeStation == STATION_LEFT)
+                {
+                    m_Process = STATE_STATION_LEFT_ENTERING;
+                }else
+                {
+                    m_Process = STATE_STATION_RIGHT_ENTERING;
+                }
+                break;
+            }
+            case STATE_STATION_LEFT_ENTERING:
+            {
+                //Print("Left enter");
+                if(IsLiftLowered())
+                {
+                        // Make sure switch is stopped and in correct position before raising arm
+                    if(IsSwitching()) break;
+                    int station = GetFreeStation();
+                    if(station != STATION_LEFT) System.throwRuntimeException("Fatal error switch is not correctly positioned");
+
+                        // Attempt to raise lift
+                    bool success = TryRaisingLift();
+                    if(!success) System.throwRuntimeException("Unable to raise lift currently");
+                    success = m_Transfer.setSwitchDirection(0);
+                    if(!success) System.throwRuntimeException("Unable to switch transfer currently");
+
+                    BlockUtil.MoveTrainOffBlockFwd(m_TransferBlock);
+                    BlockUtil.WaitForTrainAndPark(m_StationLeftBlock);
+                }
+                if(IsLiftRaised())
+                {
+                    // Move transfer back to centre position
+                    bool success = m_Transfer.setSwitchDirection(1);
+                    if(!success) System.throwRuntimeException("Unable to move transfer back to centre currently");
+
+                    // Check if servicing station has a train or is waiting to dispatch before sliding the transfer over
+                    // If its free then move it over, however if there is a train then make sure its ready to dispatch else just hold the train over the drop
+                    if(!IsSwitching())
+                    {
+                        int station = GetServicingStation();
+                        if(station == STATION_LEFT)
+                        {
+                            // Move completed
+                            BlockUtil.ReparkAtStation(m_StationLeftBlock);
+                            m_Process = STATE_STATION_IDLE;
+                            break;
+                        }
+
+                        bool isSectionOccupied = m_StationRightSection.isTrainOnSection();
+                        bool isWaitingToDispatch = m_StationRightSection.isStationWaitingForClearBlock();
+
+                        if(isSectionOccupied && isWaitingToDispatch)
+                        {
+                            // its open to switch as the train is ready
+                            m_Process = STATE_STATION_RIGHT_LEAVING;
+                            break;
+                        }else if(isSectionOccupied && !isWaitingToDispatch)
+                        {
+                            // If there is a train but its not ready
+                            m_Process = STATE_STATION_IDLE;
+                            break;
+                        }else if(!isSectionOccupied)
+                        {
+                            // No train on block so can freely switch
+                            m_TrainLeft.SetAnimationAndRoot(m_TransferAnimation, m_TransferRoots[STATION_LEFT]);
+                            m_StationLeftTracker.SetTrackingObject(m_TransferRoots[STATION_LEFT]);
+                            TryMoveTransferToServiceStation(STATION_LEFT);
+                        }
+                    }
+                }
+
+                break;
+            }
+            case STATE_STATION_RIGHT_ENTERING:
+            {
+                //Print("Right enter");
+                if(IsLiftLowered())
+                {
+                        // Makre sure switch is stopped and in correct position before raising arm
+                    if(IsSwitching()) break;
+                    int station = GetFreeStation();
+                    if(station != STATION_RIGHT) System.throwRuntimeException("Fatal error switch is not correctly positioned");
+
+                        // Attempt to raise lift and move transfer over to right
+                    bool success = TryRaisingLift();
+                    if(!success) System.throwRuntimeException("Unable to raise lift currently");
+                    success = m_Transfer.setSwitchDirection(2);
+                    if(!success) System.throwRuntimeException("Unable to switch transfer currently");
+
+                    BlockUtil.MoveTrainOffBlockFwd(m_TransferBlock);
+                    BlockUtil.WaitForTrainAndPark(m_StationRightBlock);
+                }
+                if(IsLiftRaised())
+                {
+                    // Move transfer back to centre position
+                    bool success = m_Transfer.setSwitchDirection(1);
+                    if(!success) System.throwRuntimeException("Unable to move transfer back to centre currently");
+
+                    // Check if servicing station has a train or is waiting to dispatch before sliding the transfer over
+                    // If its free then move it over, however if there is a train then make sure its ready to dispatch else just hold the train over the drop
+                    if(!IsSwitching())
+                    {
+                        //Print("Switching over");
+                        int station = GetServicingStation();
+                        if(station == STATION_RIGHT)
+                        {
+                            // Move complete
+                            //Print("Moved train over to right station");
+                            BlockUtil.ReparkAtStation(m_StationRightBlock);
+                            m_Process = STATE_STATION_IDLE;
+                            break;
+                        }
+
+                        bool isSectionOccupied = m_StationLeftSection.isTrainOnSection();
+                        bool isWaitingToDispatch = m_StationLeftSection.isStationWaitingForClearBlock();
+
+                        if(isSectionOccupied && isWaitingToDispatch)
+                        {
+                            // Its open to switch
+                            // Set it to be station right leaving as that will handle the train moving
+                            //Print("Station left is leaving");
+                            m_Process = STATE_STATION_LEFT_LEAVING;
+                            break;
+                        }else if(isSectionOccupied && !isWaitingToDispatch)
+                        {
+                            // If there is a train but its not ready
+                            m_Process = STATE_STATION_IDLE;
+                            break;
+                        }else if(!isSectionOccupied)
+                        {
+                            // No train on servicing side so we can move this over
+                            //Print("Moving switch to service right station");
+                            m_TrainRight.SetAnimationAndRoot(m_TransferAnimation, m_TransferRoots[STATION_RIGHT]);
+                            m_StationRightTracker.SetTrackingObject(m_TransferRoots[STATION_RIGHT]);
+                            TryMoveTransferToServiceStation(STATION_RIGHT);
+                        }
+                    }
+                }
+                break;
+            }
+            case STATE_STATION_LEFT_LEAVING:
+            {
+                if(IsLiftRaised())
+                {
+                    // Lift is up top ready to slide over
+                    if(!IsSwitching())
+                    {
+                        m_StationRightTracker.SetTrackingObject(m_TransferRoots[STATION_RIGHT]);
+
+
+                        int station = GetServicingStation();
+                        if(station == STATION_LEFT)
+                        {
+                            // Can switch over
+                            m_TrainRight.SetAnimationAndRoot(m_TransferAnimation, m_TransferRoots[STATION_RIGHT]);
+                            bool success = TryMoveTransferToServiceStation(STATION_RIGHT);
+                            if(!success) System.throwRuntimeException("Cannot switch station currently");
+                            success = m_Transfer.setSwitchDirection(0);
+                            if(!success) System.throwRuntimeException("Cannot switch transfer currently");
+                            
+                            // Move train off section and onto transfer
+                            BlockUtil.MoveTrainOffBlockFwd(m_StationLeftBlock);
+                            BlockUtil.WaitForTrainAndPark(m_TransferBlock);
+                        }else if(station == STATION_RIGHT)
+                        {
+                            // Check if train is in this station and park it
+                            if(m_StationRightSection.isTrainOnSection())
+                            {
+                                BlockUtil.ReparkAtStation(m_StationRightBlock);
+                                m_Transfer.setSwitchDirection(1);
+                            }else
+                            {
+                                m_Transfer.setSwitchDirection(1);
+                            }
+
+                            if(!IsLiftDropping())
+                            {
+                                // Perform drop animation
+                                m_TrainLeft.SetAnimationAndRoot(m_VerticalAnimation, m_LiftRoot);
+                                m_StationLeftTracker.SetTrackingObject(m_LiftRoot);
+                                bool success = TryDropLift();
+                                if(!success) System.throwRuntimeException("Unable to drop lift currently");
+                            }
+                        }
+                    }
+                }
+                if(IsLiftLowered())
+                {
+                    // Might need to implement a check here to make sure the train has left the station before further codes ran
+                    // As it could be possible the lift was never raised in some rare circumstances and that it will skip the main code
+
+                    // Train is ready to leave
+                    Train train = m_TrainLeft.GetTrain();
+                    TrainHandler handler = TrainHandlerManager.GetInstance().GetHandler(train);
+                    if(handler == null) NullReferenceException.Throw("Could not find a TrainHandler for this train instance");
+
+                    handler.SetCarModifier(TrainHandlerManager.GetInstance().GetDefaultCarModifier());
+                    handler.SetBogieModifier(TrainHandlerManager.GetInstance().GetDefaultBogieModifier());
+
+                    m_Process = STATE_STATION_LEAVING;
+                }
+                break;
+            }
+            case STATE_STATION_RIGHT_LEAVING:
+            {
+                if(IsLiftRaised())
+                {
+                    // Lift is up top ready to slide over
+                    if(!IsSwitching())
+                    {
+                        m_StationLeftTracker.SetTrackingObject(m_TransferRoots[STATION_LEFT]);
+
+                        int station = GetServicingStation();
+                        if(station == STATION_RIGHT)
+                        {
+                            // Can switch over
+                            m_TrainLeft.SetAnimationAndRoot(m_TransferAnimation, m_TransferRoots[STATION_LEFT]);
+                            bool success = TryMoveTransferToServiceStation(STATION_LEFT);
+                            if(!success) System.throwRuntimeException("Cannot switch station currently");
+                            success = m_Transfer.setSwitchDirection(2);
+                            if(!success) System.throwRuntimeException("Cannot switch transfer currently");
+
+                            // Move train off section and onto transfer
+                            BlockUtil.MoveTrainOffBlockFwd(m_StationRightBlock);
+                            BlockUtil.WaitForTrainAndPark(m_TransferBlock);
+
+                        }else if(station == STATION_LEFT)
+                        {
+                            // Check if train in this station and park it
+                            if(m_StationLeftSection.isTrainOnSection())
+                            {
+                                BlockUtil.ReparkAtStation(m_StationLeftBlock);
+                                m_Transfer.setSwitchDirection(1);
+                            }else
+                            {
+                                m_Transfer.setSwitchDirection(1);
+                            }
+
+                            if(!IsLiftDropping())
+                            {
+                                // Perform drop animation
+                                m_TrainRight.SetAnimationAndRoot(m_VerticalAnimation, m_LiftRoot);
+                                m_StationRightTracker.SetTrackingObject(m_LiftRoot);
+                                bool success = TryDropLift();
+                                if(!success) System.throwRuntimeException("Unable to drop lift currently");
+                            }
+                        }
+                    }
+                }
+                if(IsLiftLowered())
+                {
+                    // Might need to implement a check here to make sure the train has left the station before further codes ran
+                    // As it could be possible the lift was never raised in some rare circumstances and that it will skip the main code
+
+                    // Train is ready to leave
+                    Train train = m_TrainRight.GetTrain();
+                    TrainHandler handler = TrainHandlerManager.GetInstance().GetHandler(train);
+                    if(handler == null) NullReferenceException.Throw("Could not find a TrainHandler for this train instance");
+
+                    handler.SetCarModifier(TrainHandlerManager.GetInstance().GetDefaultCarModifier());
+                    handler.SetBogieModifier(TrainHandlerManager.GetInstance().GetDefaultBogieModifier());
+
+                    m_Process = STATE_STATION_LEAVING;
+                }
+                break;
+            }
+            case STATE_STATION_LEAVING:
+            {
+                if(m_TransferSection.isTrainOnSection())
+                {
+                    // Trains still on transfer
+                    if(m_NextBlock.getState() == STATE_EMPTY)
+                    {
+                        // Can leave
+                        m_NextBlock.setState(STATE_APPROACHING);
+                        BlockUtil.MoveTrainOffBlockFwd(m_TransferBlock);
+                    }
+                }else
+                {
+                    // Transfer is now empty
+                    Print("Transfer is empty");
+                    BlockUtil.SetBlockToDefaultState(m_TransferBlock);
+                    m_Process = STATE_STATION_IDLE;
+                }
+                break;
+            }
+        }
+    }
+
+
+    public bool IsStationOccupied(int station)
+    {
+        switch(station)
+        {
+            case STATION_LEFT:
+                if(m_StationLeftSection.isTrainOnSection()) return true;
+                break;
+            case STATION_RIGHT:
+                if(m_StationRightSection.isTrainOnSection()) return true;
+                break;
+        }
+        return false;
+    }
+    public bool IsStationWaitingToDepart()
+    {
+        return m_StationLeftSection.isStationWaitingForClearBlock() || m_StationRightSection.isStationWaitingForClearBlock();
+    }
+    public int GetStationWaitingToDepart()
+    {
+        if(m_StationLeftSection.isStationWaitingForClearBlock()) return STATION_LEFT;
+        if(m_StationRightSection.isStationWaitingForClearBlock()) return STATION_RIGHT;
+        return -1;
+    }
+    public int GetOppositeStation(int station)
+    {
+        switch(station)
+        {
+            case STATION_LEFT: return STATION_RIGHT;
+            case STATION_RIGHT: return STATION_LEFT;
+        }
+        return -1;
+    }
+    public int GetServicingStation()
+    {
+        if(m_TransferAnimation.IsPlaying()) return -1;
+        float currentFrame = m_TransferAnimation.GetCurrentFrame();
+        if(currentFrame == 0.f) return STATION_LEFT;
+        if(currentFrame == 200.f) return STATION_RIGHT;
+        return -1;
+    }
+    public int GetFreeStation()
+    {
+        return GetOppositeStation(GetServicingStation());
+    }
+    public String GetStationNameFromEnum(int station)
+    {
+        if(station < 0 || station > 1) return "Invalid Station";
+        return station == 0 ? "Station Left" : "Station Right";
+    }
+
+
+    public TrainWrapper GetWrapperForStation(int station)
+    {
+        if(station < 0 || station > 1) System.throwRuntimeException("Fatal error, station is illegal");
+        return station == 0 ? m_TrainLeft : m_TrainRight;
+    }
+    public TrainWrapper GetWrapperFromTrain(Train train)
+    {
+        if(m_TrainLeft.GetTrain() == train) return m_TrainLeft;
+        if(m_TrainRight.GetTrain() == train) return m_TrainRight;
+        return null;
+    }
+
+
+    public bool IsSwitching()
+    {
+        float currentFrame = m_TransferAnimation.GetCurrentFrame();
+        return currentFrame > 0.f && currentFrame < 200.f && m_TransferAnimation.IsPlaying();
+    }
+    public bool CanMoveTransferToServiceStation(int station)
+    {
+        bool isLiftRaised = IsLiftRaised();
+        bool isOccupied = false;
+        bool isWaiting = false;
+
+        int servicingStation = GetServicingStation();
+        if(servicingStation == station || servicingStation == -1) return false;
+
+        switch(station)
+        {
+            case STATION_LEFT: // Left
+                isOccupied = m_StationRightSection.isTrainOnSection();
+                if(!isOccupied)
+                {
+                        // If not occupied then can move if drop is raised
+                    return isLiftRaised;
+                }else
+                {
+                        // If its waiting and the drop is raised then can move
+                    isWaiting = m_StationRightSection.isStationWaitingForClearBlock();
+                    return isWaiting && isLiftRaised;
+                }
+            case STATION_RIGHT: // Right
+                isOccupied = m_StationLeftSection.isTrainOnSection();
+                if(!isOccupied)
+                {   
+                        // If not occupied then can move if drop is raised
+                    return isLiftRaised;
+                }else
+                {
+                        // If its waiting and the drop is raised then can move
+                    isWaiting = m_StationLeftSection.isStationWaitingForClearBlock();
+                    return isWaiting && isLiftRaised;
+                }
+        }
+        return false;
+    }
+    public bool TryMoveTransferToServiceStation(int station)
+    {
+        if(!CanMoveTransferToServiceStation(station)) return false;
+        if(IsSwitching()) return false;
+
+        if(station == STATION_LEFT) m_TransferAnimation.PlayBackward();
+        if(station == STATION_RIGHT) m_TransferAnimation.Play();
+        return true;
+    }
+
+    public bool IsLiftRaised()
+    {
+        return m_VerticalAnimation.GetCurrentFrame() == m_VerticalAnimationLiftEnd && !m_VerticalAnimation.IsPlaying();
+    }
+    public bool IsLiftLowered()
+    {
+            // Frame 470 is the same position as frame 0
+        float currentFrame = m_VerticalAnimation.GetCurrentFrame();
+        return (currentFrame == m_VerticalAnimationDropEnd || currentFrame == m_VerticalAnimationLiftStart) && !m_VerticalAnimation.IsPlaying();
+    }
+    public bool IsLiftDropping()
+    {
+        float currentFrame = m_VerticalAnimation.GetCurrentFrame();
+        return currentFrame > m_VerticalAnimationDropStart && currentFrame < m_VerticalAnimationDropEnd && m_VerticalAnimation.IsPlaying();
+    }
+    public bool IsLiftLowering()
+    {
+        if(!m_VerticalAnimation.IsPlaying()) return false;
+
+        float currentFrame = m_VerticalAnimation.GetCurrentFrame();
+        bool playForward = m_VerticalAnimation.IsPlayingForward();
+        return currentFrame > m_VerticalAnimationLiftStart && currentFrame < m_VerticalAnimationLiftEnd && !playForward;
+    }
+    public bool IsLiftRaising()
+    {
+        if(!m_VerticalAnimation.IsPlaying()) return false;
+
+        float currentFrame = m_VerticalAnimation.GetCurrentFrame();
+        bool playForward = m_VerticalAnimation.IsPlayingForward();
+        return currentFrame > m_VerticalAnimationLiftStart && currentFrame < m_VerticalAnimationLiftEnd && playForward;
+    }
+
+    public bool CanRaiseLift()
+    {
+        if(IsLiftRaising()) return true;
+        if(IsLiftDropping() || IsSwitching() || IsLiftLowering() || !IsLiftLowered()) return false;
+
+            // Servicing station is the one that is touching the platform and not over the drop
+        int servicingStation = GetServicingStation();
+        switch(servicingStation)
+        {
+            case STATION_LEFT:
+                if(m_StationRightSection.isTrainOnSection()) return false;
+                break;
+            case STATION_RIGHT:
+                if(m_StationLeftSection.isTrainOnSection()) return false;
+                break;
+        }
+        return true;
+    }
+    public bool TryRaisingLift()
+    {
+        if(!CanRaiseLift()) return false;
+        if(IsLiftRaising()) return true; // Extra gaurd just to break out if already raising to not repeat animation over and over
+        m_VerticalAnimation.Play(m_VerticalAnimationLiftStart, m_VerticalAnimationLiftEnd);
+        return true;
+    }
+    public bool CanLowerLift()
+    {
+        if(IsLiftLowering()) return true;
+        if(IsSwitching() || IsLiftDropping() || IsLiftRaising() || !IsLiftRaised()) return false;
+
+            // Servicing station is the one that is touching the platform and not over the drop
+            // Check if the opposite side has a train and if its ready to leave if not then dont move the lift
+        int servicingStation = GetServicingStation();
+        switch(servicingStation)
+        {
+            case STATION_LEFT:
+                if(m_StationRightSection.isTrainOnSection())
+                {
+                    if(!m_StationRightSection.isStationWaitingForClearBlock()) return false;
+                }
+                break;
+            case STATION_RIGHT:
+                if(m_StationLeftSection.isTrainOnSection())
+                {
+                    if(!m_StationLeftSection.isStationWaitingForClearBlock()) return false;
+                }
+                break;
+        }
+        return true;
+    }
+    public bool TryLowerLift()
+    {
+        if(!CanLowerLift()) return false;
+        if(IsLiftLowering()) return true; // Gaurd to stop spam calls from getting through and resetting the animation
+        m_VerticalAnimation.PlayBackward(m_VerticalAnimationLiftEnd);
+        return true;
+    }
+    public bool CanDropLift()
+    {
+        if(IsLiftDropping()) return true;
+        if(IsSwitching() || IsLiftRaising() || IsLiftLowering() || !IsLiftRaised()) return false;
+
+            // Servicing station is the one that is touching the platform and not over the drop
+            // Check if the opposite side has a train and if its ready to leave if not then dont move the lift
+        int servicingStation = GetServicingStation();
+        switch(servicingStation)
+        {
+            case STATION_LEFT:
+                if(m_StationRightSection.isTrainOnSection())
+                {
+                    if(!m_StationRightSection.isStationWaitingForClearBlock()) return false;
+                }
+                break;
+            case STATION_RIGHT:
+                if(m_StationLeftSection.isTrainOnSection())
+                {
+                    if(!m_StationLeftSection.isStationWaitingForClearBlock()) return false;
+                }
+                break;
+        }
+        return true;
+    }
+    public bool TryDropLift()
+    {
+        if(!CanDropLift()) return false;
+        if(IsLiftDropping()) return true; // Gaurd to stop spam calls from getting through and resetting the animation
+        m_VerticalAnimation.Play(m_VerticalAnimationDropStart, m_VerticalAnimationDropEnd);
+        return true;
+    }
+
+    public void onTrainEntering(TrackTrigger trigger, Train train) {}
+    public void onTrainLeaving(TrackTrigger trigger, Train train) {}
+
+        // ICarModifier
+    public void Run(Matrix4x4f carMatrix, ISetableCar setableCar) 
+    {
+        Train train = setableCar.GetTrain();
+        TrainWrapper wrapper = GetWrapperFromTrain(train);
+        int index = wrapper.GetCarIndex(setableCar);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableCar index");
+
+        Matrix4x4f matrix = wrapper.GetAttachmentMatrix();
+        matrix.multRight(wrapper.GetCarOffset(index));
+        setableCar.SetMatrix(matrix);
+    }
+        // IBogieModifier
+    public void Run(Matrix4x4f carMatrix, Matrix4x4f bogieMatrix, ISetableBogie setableBogie, float rotationFactor) 
+    {
+        Train train = setableBogie.GetTrain();
+        TrainWrapper wrapper = GetWrapperFromTrain(train);
+        int index = wrapper.GetBogieIndex(setableBogie);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableBogie index");
+
+        Matrix4x4f matrix = wrapper.GetAttachmentMatrix();
+        matrix.multRight(wrapper.GetBogieOffset(index));
+        setableBogie.SetMatrix(matrix);
+    }
+}

@@ -1,0 +1,20 @@
+package scripts;
+
+import com.nolimitscoaster.Coaster;
+import com.nolimitscoaster.Train;
+import nlvm.math3d.Vector3f;
+
+public interface ISetableBogie extends ISetable
+{
+    public Coaster GetCoaster();
+    public Train GetTrain();
+    public int GetTrainIndex();
+    public int GetBogieIndex();
+
+    public void SetBogiePitchYaw(Vector3f rotation);
+    public void SetPositionRotation(Vector3f position, Vector3f rotation);
+    public void SetWheelRotation(float rotationFactor, int textureIndex);
+
+    // Cant extend multiple interfaces in this awful language
+    public Object GetData();
+}

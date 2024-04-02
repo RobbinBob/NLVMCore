@@ -1,0 +1,156 @@
+package scripts.utilities;
+import com.nolimitscoaster.*;
+
+public class BlockUtil implements FrameListener
+{
+    protected static final int CMD_FWD_OFF_BLOCK = 1;
+    protected static final int CMD_BWD_OFF_BLOCK = 2;
+    protected static final int CMD_WAIT_FOR_TRAIN_AND_PARK = 3;
+    protected static final int CMD_REPARK_STATION = 4;
+
+    private int m_Command = 0;
+    private Block m_Block = null;
+    private Section m_Section = null;
+
+    private bool m_IsCompleted = false;
+
+    private float m_Timer = 0.0f;
+
+    protected BlockUtil(Block block, int command)
+    {
+        m_Command = command;
+        m_Block = block;
+        m_Section = block.getSection();
+        NoLimits.getSimulator().addFrameListener(this);
+    }
+
+    public static BlockUtil MoveTrainOffBlockFwd(Block block)
+    {
+        BlockUtil instance = new BlockUtil(block, CMD_FWD_OFF_BLOCK);
+        return instance;
+    }
+    public static BlockUtil MoveTrainOffBlockBwd(Block block)
+    {
+        BlockUtil instance = new BlockUtil(block, CMD_BWD_OFF_BLOCK);
+        return instance;
+    }
+    public static BlockUtil WaitForTrainAndPark(Block block)
+    {
+        BlockUtil instance = new BlockUtil(block, CMD_WAIT_FOR_TRAIN_AND_PARK);
+        return instance;
+    }
+    public static void SetBlockToStationEnter(Block block)
+    {
+        Section section = block.getSection();
+        if(!section.isStation()) System.throwRuntimeException("Block is not a station type");
+        section.setStationEntering();
+    }
+    public static BlockUtil ReparkAtStation(Block block)
+    {
+        BlockUtil instance = new BlockUtil(block, CMD_REPARK_STATION);
+        return instance;
+    }
+
+
+    public static void SetBlockToDefaultState(Block block)
+    {
+        SetSectionToDefaultState(block.getSection());
+    }
+    public static void SetSectionToDefaultState(Section section)
+    {
+        section.setBrakesOn();
+        section.setTransportsOff();
+    }
+
+    public bool IsCommandComplete()
+    {
+        return m_IsCompleted;
+    }
+
+    private void CompletedCommand()
+    {
+        NoLimits.getSimulator().removeFrameListener(this);
+        m_IsCompleted = true;
+    }
+
+    public void onNextFrame()
+    {
+        switch(m_Command)
+        {
+            case CMD_FWD_OFF_BLOCK:
+                if(m_Section.isTrainOnSection())
+                {
+                    if(m_Section.isStation())
+                    {
+                        m_Section.setStationNextBlockClear();
+                        m_Section.setStationLeaving();
+                        m_Section.setBrakesOff();
+                        m_Section.setTransportsStandardFwdOn();
+                        break;
+                    }
+
+                    m_Section.setBrakesOff();
+                    m_Section.setTransportsStandardFwdOn();
+                }else
+                {
+                    SetSectionToDefaultState(m_Section);
+                    CompletedCommand();
+                }
+                break;
+            case CMD_BWD_OFF_BLOCK:
+                if(m_Section.isTrainOnSection())
+                {
+                    m_Section.setBrakesOff();
+                    m_Section.setTransportsStandardBwdOn();
+                }else
+                {
+                    SetSectionToDefaultState(m_Section);
+                    CompletedCommand();
+                }
+                break;
+            case CMD_WAIT_FOR_TRAIN_AND_PARK:
+                if(!m_Section.isTrainOnSection())
+                {
+                    m_Section.setBrakesOff();
+                    m_Section.setTransportsOff();
+                }else
+                {
+                    m_Section.setBrakesTrim();
+                    if(m_Section.getTrainOnSection().getSpeed() > 0.f)
+                    {
+                        m_Section.setTransportsStandardFwdDependingOnBrake();
+                        if(m_Section.isTrainBehindCenterOfSection())
+                        {
+                            SetSectionToDefaultState(m_Section);
+                        }
+                    }else if(m_Section.getTrainOnSection().getSpeed() < 0.f)
+                    {
+                        m_Section.setTransportsStandardBwdDependingOnBrake();
+                        if(m_Section.isTrainBeforeCenterOfSection())
+                        {
+                            SetSectionToDefaultState(m_Section);
+                        }
+                    }
+
+                    if(m_Section.getTrainOnSection().getSpeed() == 0)
+                    {
+                        m_Section.setBrakesOn();
+                        CompletedCommand();
+                    }
+                }
+                break;
+            case CMD_REPARK_STATION:
+                if(m_Timer < 0.25f)
+                {
+                    m_Timer += NoLimits.getSimulator().getCurSimulationTickSec();
+                    m_Section.setBrakesOff();
+                    m_Section.setTransportsStandardBwdOn();
+                }else
+                {
+                    m_Section.setStationEntering();
+                    CompletedCommand();
+                }
+                break;
+        }
+    }
+}

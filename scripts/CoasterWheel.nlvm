@@ -1,0 +1,21 @@
+package scripts;
+
+import nlvm.lang.String;
+import nlvm.lang.Object;
+
+public class CoasterWheel extends Object
+{
+    public static final int WHEEL_FWD = 1;
+    public static final int WHEEL_BWD = -1;
+
+    public String Name;
+    public float Radius;
+    public int Direction;
+
+    public CoasterWheel(String name, float radius, int direction)
+    {
+        Name = name;
+        Radius = radius;
+        Direction = direction;
+    }
+}

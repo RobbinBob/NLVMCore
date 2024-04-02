@@ -1,0 +1,8 @@
+package scripts.modifiers;
+import nlvm.math3d.*;
+import scripts.ISetableBogie;
+
+public interface IBogieModifier
+{
+    public void Run(Matrix4x4f carMatrix, Matrix4x4f bogieMatrix, ISetableBogie setableBogie, float wheelRotation);
+}

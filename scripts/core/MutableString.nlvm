@@ -1,0 +1,14 @@
+package scripts.core;
+
+import nlvm.lang.String;
+
+public final class MutableString extends Object
+{
+    private String m_Value = "";
+
+    public MutableString(){}
+    public MutableString(String value) { m_Value = new String(value); }
+
+    public void SetValue(String value) { m_Value = new String(value); }
+    public String GetValue() { return m_Value; }
+}

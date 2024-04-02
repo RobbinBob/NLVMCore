@@ -1,0 +1,68 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.Matrix4x4f;
+import nlvm.lang.Object;
+
+import scripts.utilities.*;
+import scripts.core.*;
+
+public class CoasterCar extends Behaviour implements ISetableCar
+{
+    private TrainHandler m_Handler = null;
+    private TrainHandlerManager m_HandlerManager = null;
+
+    private Coaster m_Coaster;
+    private Train m_Train;
+
+    private String m_CoasterName = "Divinium";
+    private int m_TrainIndex;
+    private int m_CarIndex;
+
+    public bool onInit()
+    {
+        bool success = super.onInit();
+        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
+
+        m_Coaster = sim.getCoaster(m_CoasterName);
+        m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 5.0f);
+        if(m_Train == null) NullReferenceException.Throw("Could not find train within 5 metres");
+        
+        m_TrainIndex = TrainUtil.GetTrainIndex(m_Train);
+        m_CarIndex = m_SceneObject.getIntegerParameter("carAttachInt").intValue();
+
+        String handlerName = m_CoasterName + '_' + m_TrainIndex;
+
+        m_HandlerManager = TrainHandlerManager.GetInstance();
+        m_Handler = m_HandlerManager.GetHandler(handlerName);
+        if(m_Handler == null)
+        {
+            m_Handler = new TrainHandler(handlerName);
+            m_HandlerManager.RegisterHandler(m_Handler);
+            m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
+        }
+        if(m_Handler.GetCarModifier() == null) m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
+
+        m_Handler.RegisterCar(this);
+        return true;
+    }
+
+        // ISetable
+    public void SetMatrix(Matrix4x4f matrix)
+    {
+        m_SceneObject.setMatrix(matrix);
+    }
+    public void SetData(Object object) {}
+
+        // IGetable
+    public Object GetData()
+    {
+        return m_SceneObject;
+    }
+
+        // ISetableCar
+    public Coaster GetCoaster() { return m_Coaster; }
+    public Train GetTrain() { return m_Train; }
+    public int GetTrainIndex() { return m_TrainIndex; }
+    public int GetCarIndex() { return m_CarIndex; }
+}

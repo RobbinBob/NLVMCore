@@ -1,0 +1,103 @@
+package scripts;
+
+import nlvm.util.Vector;
+import com.nolimitscoaster.*;
+
+import scripts.modifiers.*;
+
+public class TrainHandlerManager implements FrameListener
+{
+    private static TrainHandlerManager m_Handler = null;
+    private static Vector m_RegisteredHandlers = null;
+
+    private static GenericCarModifier m_DefaultCarModifier = null;
+    private static GenericBogieModifier m_DefaultBogieModifier = null;
+
+    private static Simulator m_Simulator = null;
+
+    protected TrainHandlerManager()
+    {
+        m_RegisteredHandlers = new Vector();
+        m_DefaultCarModifier = new GenericCarModifier();
+        m_DefaultBogieModifier = new GenericBogieModifier();
+    }
+
+    public static TrainHandlerManager GetInstance()
+    {
+        if(m_Handler == null)
+        {
+            m_Handler = new TrainHandlerManager();
+            m_Simulator = NoLimits.getSimulator();
+            m_Simulator.addFrameListener(m_Handler);
+        }
+        return m_Handler;
+    }
+
+    public GenericCarModifier GetDefaultCarModifier()
+    {
+        return m_DefaultCarModifier;
+    }
+    public GenericBogieModifier GetDefaultBogieModifier()
+    {
+        return m_DefaultBogieModifier;
+    }
+
+
+        // Attempts to find a TrainHandler for the given name
+    public TrainHandler GetHandler(String name)
+    {
+        for(int i = 0; i < m_RegisteredHandlers.size(); i++)
+        {
+            TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
+            if(handler.GetName().equals(name)) return handler;
+        }
+
+        return null;
+    }
+
+        // Attempts to find a TrainHandler for the given Train
+    public TrainHandler GetHandler(Train train)
+    {
+        Simulator sim = NoLimits.getSimulator();
+        for(int i = 0; i < m_RegisteredHandlers.size(); i++)
+        {
+            TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
+            Train _train = handler.GetTrain();
+            if(_train.equals(train)) return handler;
+        }
+        return null;
+    }
+
+
+
+
+    public void RegisterHandler(TrainHandler handler)
+    {
+        if(m_RegisteredHandlers.contains(handler))
+        {
+            System.err.println("Warning: trying to register handler " + handler.GetName() + " when it is already registered");
+            return;
+        }
+        m_RegisteredHandlers.addElement(handler);
+    }
+
+    int curFrame = 0;
+
+    public void onNextFrame()
+    {
+        /*
+        curFrame++;
+        if(curFrame < 12) return;
+        curFrame = 0;
+        */
+
+        float tickstep = m_Simulator.getCurSimulationTickSec();
+        for(int i = 0; i < m_RegisteredHandlers.size(); i++)
+        {
+            TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
+            handler.UpdateTrainPosition(tickstep);
+            handler.HandleCars();
+            handler.HandleBogies();
+        }
+    }
+}

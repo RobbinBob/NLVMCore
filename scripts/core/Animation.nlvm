@@ -1,0 +1,252 @@
+// Wrapper that helps manage and run animated objects
+package scripts.core;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public class Animation implements FrameListener
+{
+    private static Simulator m_Simulator = null;
+
+    private SceneObject m_SceneObject = null;
+    private float m_AnimationLength = 0.0f;
+    private float m_CurrentAnimationTime = 0.0f;
+
+    private float m_AnimationStartTime= 0.0f;
+    private float m_AnimationEndTime = 0.0f;
+
+    private static final float FRAME_RATE = 24.f;
+
+    private bool m_CanLoop = false;
+    private bool m_Play = false;
+
+    private bool m_PlayForward = true;
+
+    public Animation(SceneObject sceneObject)
+    {
+        if(sceneObject == null) System.throwRuntimeException("Null reference exception for argument sceneObject");
+        m_SceneObject = sceneObject;
+
+        m_AnimationLength = (float)m_SceneObject.getMaxKeyFrameAnimationTime();
+        if(m_AnimationLength <= 0) System.throwRuntimeException("Could not find animation on argument sceneObject");
+        if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
+        m_CanLoop = false;
+    }
+    public Animation(SceneObject sceneObject, bool canLoop)
+    {
+        if(sceneObject == null) System.throwRuntimeException("Null reference exception for argument sceneObject");
+        m_SceneObject = sceneObject;
+
+        m_AnimationLength = (float)m_SceneObject.getMaxKeyFrameAnimationTime();
+        if(m_AnimationLength <= 0) System.throwRuntimeException("Could not find animation on argument sceneObject");
+        if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
+        m_CanLoop = canLoop;
+    }
+
+
+        // Begin playing animation
+    public void Play()
+    {
+        m_Simulator.addFrameListener(this);
+        m_CurrentAnimationTime = 0.0f;
+        m_AnimationStartTime = 0.f;
+        m_AnimationEndTime = m_AnimationLength;
+        m_Play = true;
+        m_PlayForward = true;
+    }
+        // Begin playing animation from start time
+    public void Play(float startTime)
+    {
+        startTime /= FRAME_RATE;
+
+        if(startTime >= m_AnimationLength || startTime < 0) System.throwRuntimeException("Out of range exception for argument startTime");
+        m_Simulator.addFrameListener(this);
+        m_CurrentAnimationTime = startTime;
+        m_AnimationStartTime = startTime;
+        m_AnimationEndTime = m_AnimationLength;
+        m_Play = true;
+        m_PlayForward = true;
+    }
+        // Begin playing animation from start time to end time
+    public void Play(float startTime, float stopTime)
+    {
+        startTime /= FRAME_RATE;
+        stopTime /= FRAME_RATE;
+
+        if(startTime > m_AnimationLength || startTime < 0) System.throwRuntimeException("Out of range exception for argument startTime");
+        if(stopTime > m_AnimationLength || stopTime < startTime) System.throwRuntimeException("Out of range exception for argument stopTime " + stopTime + " needs to be within range " + startTime + " to " + m_AnimationLength);
+        m_Simulator.addFrameListener(this);
+        m_CurrentAnimationTime = startTime;
+        m_AnimationStartTime = startTime;
+        m_AnimationEndTime = stopTime;
+        m_Play = true;
+        m_PlayForward = true;
+    }
+
+    public void PlayBackward()
+    {
+        m_Simulator.addFrameListener(this);
+        m_CurrentAnimationTime = m_AnimationLength;
+        m_AnimationStartTime = m_AnimationLength;
+        m_AnimationEndTime = 0.f;
+        m_Play = true;
+        m_PlayForward = false;
+    }
+    public void PlayBackward(float startTime)
+    {
+        startTime /= FRAME_RATE;
+
+        if(startTime > m_AnimationLength || startTime <= 0) System.throwRuntimeException("Out of range exception for argument startTime");
+        m_Simulator.addFrameListener(this);
+        m_CurrentAnimationTime = startTime;
+        m_AnimationStartTime = startTime;
+        m_AnimationEndTime = 0.f;
+        m_Play = true;
+        m_PlayForward = false;
+    }
+
+
+    public void SetFrame(int frame)
+    {
+        float time = frame / FRAME_RATE;
+        if(time < 0 || time > m_AnimationLength) System.throwRuntimeException("Out of range exception for argument frame");
+        m_SceneObject.setKeyFrameAnimationTime(time);
+        m_CurrentAnimationTime = time;
+    }
+
+        // Halt animation or resume animation
+    public bool Pause()
+    {
+        m_Play = !m_Play;
+        return m_Play;
+    }
+        // Stop animation and reset
+    public void Stop()
+    {
+        m_Simulator.removeFrameListener(this);
+        m_Play = false;
+    }
+
+
+    public float GetCurrentFrame()
+    {
+        return m_CurrentAnimationTime * FRAME_RATE;
+    }
+    public float GetAnimationFrames()
+    {
+        return m_AnimationLength * FRAME_RATE;
+    }
+    public float GetAnimationTime()
+    {
+        return m_AnimationLength;
+    }
+
+    public bool IsPlaying()
+    {
+        return m_Play;
+    }
+    public bool IsPlayingBackward()
+    {
+        return m_Play && !m_PlayForward;
+    }
+    public bool IsPlayingForward()
+    {
+        return m_PlayForward;
+    }
+
+
+    public Matrix4x4f GetSceneObjectMatrix()
+    {
+        return m_SceneObject.getMatrix();
+    }
+    public Matrix4x4f GetChildMatrix(int index)
+    {
+        return m_SceneObject.getElementAt(index).getAbsoluteMatrix();
+    }
+    public Matrix4x4f GetChildMatrix(String name)
+    {
+        return m_SceneObject.getElementForName(name).getAbsoluteMatrix();
+    }
+
+
+    private void PlayForwardInternal(float delta)
+    {
+        m_CurrentAnimationTime += delta;
+            // If current time reset or stop
+        if(m_CurrentAnimationTime > m_AnimationLength)
+        {
+            if(m_CanLoop)
+            {
+                m_CurrentAnimationTime = m_AnimationStartTime;
+            }else
+            {
+                m_CurrentAnimationTime = m_AnimationEndTime;
+                Stop();
+            }
+        }
+
+            // If it has a separate end time use it
+        if(m_AnimationEndTime >= 0.0f)
+        {
+            if(m_CurrentAnimationTime > m_AnimationEndTime)
+            {
+                if(m_CanLoop)
+                {
+                    m_CurrentAnimationTime = m_AnimationStartTime;
+                }else
+                {
+                    m_CurrentAnimationTime = m_AnimationEndTime;
+                    Stop();
+                }
+            }
+        }
+    }
+    private void PlayBackwardInternal(float delta)
+    {
+        m_CurrentAnimationTime -= delta;
+            // If current time reset or stop
+        if(m_CurrentAnimationTime < 0.0f)
+        {
+            if(m_CanLoop)
+            {
+                m_CurrentAnimationTime = m_AnimationStartTime;
+            }else
+            {
+                m_CurrentAnimationTime = m_AnimationEndTime;
+                Stop();
+            }
+        }
+            // If has separate end time use it
+        if(m_AnimationEndTime >= 0.0f)
+        {
+            if(m_CurrentAnimationTime < m_AnimationEndTime)
+            {
+                if(m_CanLoop)
+                {
+                    m_CurrentAnimationTime = m_AnimationStartTime;
+                }else
+                {
+                    m_CurrentAnimationTime = m_AnimationEndTime;
+                    Stop();
+                }
+            }
+        }
+    }
+
+
+    public void onNextFrame()
+    {
+        if(!m_Play) return;
+        float delta = m_Simulator.getCurSimulationTickSec();
+
+        if(m_PlayForward)
+        {
+            PlayForwardInternal(delta);
+        }else
+        {
+            PlayBackwardInternal(delta);
+        }
+
+        m_SceneObject.setKeyFrameAnimationTime(m_CurrentAnimationTime);
+    }
+}

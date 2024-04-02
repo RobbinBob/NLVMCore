@@ -1,0 +1,8 @@
+package scripts;
+
+import nlvm.lang.Object;
+
+public interface IGetable
+{
+    public Object GetData();
+}

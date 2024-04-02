@@ -1,0 +1,33 @@
+package scripts.utilities;
+
+import nlvm.math3d.*;
+
+public class MatrixUtil
+{
+    public static Matrix4x4f[] GetOffsetMatrices(Matrix4x4f[] matrices, Matrix4x4f offsetFrom)
+    {
+        Matrix4x4f inverted = new Matrix4x4f(offsetFrom);
+        inverted.invert();
+
+        Matrix4x4f duplicate = null;
+        Matrix4x4f[] offsets = new Matrix4x4f[matrices.length];
+        for(int i = 0; i < matrices.length; i++)
+        {
+                // As to not edit the wrong data
+            duplicate = matrices[i].dup();
+            duplicate.multLeft(inverted);
+            offsets[i] = duplicate;
+        }
+        return offsets;
+    }
+    public static void GetOffsetMatrixAndStore(Matrix4x4f[] matrices, Matrix4x4f offsetFrom)
+    {
+        Matrix4x4f inverted = new Matrix4x4f(offsetFrom);
+        inverted.invert();
+        
+        for(int i = 0; i < matrices.length; i++)
+        {
+            matrices[i].multLeft(inverted);
+        }
+    }
+}

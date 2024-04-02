@@ -1,0 +1,15 @@
+package scripts.core;
+
+import nlvm.lang.Boolean;
+
+public final class MutableBoolean extends Object
+{
+    private bool m_Value = true;
+
+    public MutableBoolean(){}
+    public MutableBoolean(bool value) { m_Value = value; }
+    public MutableBoolean(Boolean value) { m_Value = value.boolValue(); } 
+
+    public void SetValue(bool value) { m_Value = value; }
+    public bool GetValue() { return m_Value; }
+}

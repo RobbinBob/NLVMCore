@@ -1,0 +1,33 @@
+package scripts.modifiers;
+
+import nlvm.math3d.Matrix4x4f;
+import nlvm.math3d.Vector3f;
+import scripts.ISetableBogie;
+import com.nolimitscoaster.Tools;
+import com.nolimitscoaster.Train;
+
+public final class GenericBogieModifier implements IBogieModifier
+{
+    public GenericBogieModifier() {}
+
+    public void Run(Matrix4x4f carMatrix, Matrix4x4f bogieMatrix, ISetableBogie setableBogie, float wheelRotation)
+    {
+        Vector3f rotation = new Vector3f();
+        Vector3f position = new Vector3f();
+
+        bogieMatrix.invert();
+
+        Tools.matrixToPitchHeadBankPos(carMatrix, rotation, position);
+        setableBogie.SetPositionRotation(position, rotation);
+
+        bogieMatrix.multRight(carMatrix);
+        Tools.matrixToPitchHeadBankPos(bogieMatrix, rotation, position);
+        setableBogie.SetBogiePitchYaw(rotation);
+
+        Train train = setableBogie.GetTrain();
+        float trainSpeed = Math.abs((float)train.getSpeed());
+
+        int wheelTextureIndex = trainSpeed > 7.5f ? 1 : 0;
+        setableBogie.SetWheelRotation(wheelRotation, wheelTextureIndex);
+    }
+}

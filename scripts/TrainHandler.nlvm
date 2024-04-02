@@ -1,0 +1,180 @@
+package scripts;
+
+import nlvm.util.Vector;
+import nlvm.lang.Object;
+import nlvm.lang.Integer;
+import nlvm.math3d.Matrix4x4f;
+
+import com.nolimitscoaster.NoLimits;
+import com.nolimitscoaster.Train;
+import com.nolimitscoaster.Coaster;
+
+import scripts.utilities.*;
+import scripts.modifiers.*;
+
+public class TrainHandler extends Object
+{
+    private Vector m_Cars = null;
+    private Vector m_Bogies = null;
+
+    private String m_Name = null;
+
+    private ICarModifier m_CarModifier = null;
+    private IBogieModifier m_BogieModifier = null;
+
+    private Train m_TrainHandled = null;
+
+    private Matrix4x4f m_CarMatrix = new Matrix4x4f();
+    private Matrix4x4f m_BogieMatrix = new Matrix4x4f();
+
+    private float m_Distance = 0.0f;
+
+    private static final float RADIAN = (float)Math.PI * 2.0f;
+
+        // Constructors
+    public TrainHandler(String name)
+    {
+        m_Cars = new Vector();
+        m_Bogies = new Vector();
+        m_Name = name;
+        m_TrainHandled = GetTrainFromString(name);
+    }
+    public TrainHandler(String name, int cars)
+    {
+        m_Cars = new Vector(cars);
+        m_Bogies = new Vector(cars);
+        m_Name = name;
+        m_TrainHandled = GetTrainFromString(name);
+    }
+    public TrainHandler(String name, int cars, int bogies)
+    {
+        m_Cars = new Vector(cars);
+        m_Bogies = new Vector(bogies);
+        m_Name = name;
+        m_TrainHandled = GetTrainFromString(name);
+    }
+
+
+        // Register/Unregister ISetableCar
+    public bool RegisterCar(ISetableCar car)
+    {
+        if(m_Cars.contains(car) || car.GetTrain() != m_TrainHandled) return false;
+        m_Cars.addElement(car);
+        return true;
+    }
+    public bool UnregisterCar(ISetableCar car)
+    {
+        if(!m_Cars.contains(car)) return false;
+        m_Cars.removeElement(car);
+        return true;
+    }
+
+        // Register/Unregister ISetableBogie
+    public bool RegisterBogie(ISetableBogie bogie)
+    {
+        if(m_Bogies.contains(bogie) || bogie.GetTrain() != m_TrainHandled) return false;
+        m_Bogies.addElement(bogie);
+        return true;
+    }
+    public bool UnregisterBogie(ISetableBogie bogie)
+    {
+        if(!m_Bogies.contains(bogie)) return false;
+        m_Bogies.removeElement(bogie);
+        return true;
+    }
+
+
+        // Get/Set modifier
+    public void SetCarModifier(ICarModifier modifier)
+    {
+        m_CarModifier = modifier;
+    }
+    public ICarModifier GetCarModifier()
+    {
+        return m_CarModifier;
+    }
+    public void SetBogieModifier(IBogieModifier modifier)
+    {
+        m_BogieModifier = modifier;
+    }
+    public IBogieModifier GetBogieModifier()
+    {
+        return m_BogieModifier;
+    }
+
+    public void UpdateTrainPosition(float tick)
+    {
+        m_Distance += (float)m_TrainHandled.getSpeed() * tick;
+        if(m_Distance > RADIAN) m_Distance -= RADIAN;
+    }
+
+    public void HandleCars()
+    {
+        for(int i = 0; i < m_Cars.size(); i++)
+        {
+            ISetableCar car = (ISetableCar)m_Cars.elementAt(i);
+            if(car == null) System.throwRuntimeException("ISetableCar could not be cast from Object or was null");
+            HandleCar(car);
+        }
+    }
+    public void HandleCar(ISetableCar car)
+    {
+        m_TrainHandled.getCarMatrix(car.GetCarIndex(), m_CarMatrix);
+        m_CarModifier.Run(m_CarMatrix.dup(), car);
+    }
+    public void HandleBogies()
+    {
+        for(int i = 0; i < m_Bogies.size(); i++)
+        {
+            ISetableBogie bogie = (ISetableBogie)m_Bogies.elementAt(i);
+            if(bogie == null) System.throwRuntimeException("ISetableBogie could not be cast from Object or was null");
+            HandleBogie(bogie);
+        }
+    }
+    public void HandleBogie(ISetableBogie bogie)
+    {
+        m_TrainHandled.getBogieMatrix(bogie.GetBogieIndex(), m_BogieMatrix);
+        m_TrainHandled.getCarMatrix(bogie.GetBogieIndex(), m_CarMatrix);
+        m_BogieModifier.Run(m_CarMatrix.dup(), m_BogieMatrix.dup(), bogie, m_Distance);
+    }
+
+
+    public Train GetTrain()
+    {
+        return m_TrainHandled;
+    }
+    public String GetName()
+    {
+        return m_Name;
+    }
+
+    public ISetableCar[] GetCars()
+    {
+        ISetableCar[] cars = new ISetableCar[m_Cars.size()];
+        for(int i = 0; i < cars.length; i++)
+        {
+            cars[i] = (ISetableCar)m_Cars.elementAt(i);
+        }
+        return cars;
+    }
+    public ISetableBogie[] GetBogies()
+    {
+        ISetableBogie[] bogies = new ISetableBogie[m_Bogies.size()];
+        for(int i = 0; i < bogies.length; i++)
+        {
+            bogies[i] = (ISetableBogie)m_Bogies.elementAt(i);
+        }
+        return bogies;
+    }
+
+
+    private Train GetTrainFromString(String string)
+    {
+        String[] data = StringUtil.SplitString(string, '_');
+        if(data.length != 2) System.throwRuntimeException("Data size returned is not 2, fatal error has occured");
+
+        Coaster coaster = NoLimits.getSimulator().getCoaster(data[0]);
+        Train train = coaster.getTrainAt(Integer.parseInt(data[1]));
+        return train;
+    }
+}

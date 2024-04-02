@@ -1,0 +1,144 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.Object;
+
+import scripts.utilities.*;
+
+public class CoasterBogie extends Behaviour implements ISetableBogie
+{
+    private TrainHandler m_Handler = null;
+    private TrainHandlerManager m_HandlerManager = null;
+
+    private Coaster m_Coaster;
+    private Train m_Train;
+
+    private String m_CoasterName = "Divinium";
+    private int m_TrainIndex;
+    private int m_BogieIndex;
+
+    private SceneObjectElement m_RightYaw, m_LeftYaw;
+    private SceneObjectElement m_RightPitch, m_LeftPitch;
+
+    private static final float WHEEL_RADIUS_RUNNING = 0.15f;
+    private static final float WHEEL_RADIUS_GUIDE = 0.105f;
+    private static final float WHEEL_RADIUS_UPSTOP = 0.105f;
+
+    private int m_WheelTextureIndex = 0;
+
+        // My new way of abstracting bullshit out even more
+    private static final CoasterWheel[] m_WheelTable = {
+        new CoasterWheel("Bogie L Wheel1", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie L Wheel2", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie L Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie L Wheel4", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie L Wheel5", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD),
+        new CoasterWheel("Bogie L Wheel6", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD),
+
+        new CoasterWheel("Bogie R Wheel1", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie R Wheel2", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie R Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),
+        new CoasterWheel("Bogie R Wheel4", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),
+        new CoasterWheel("Bogie R Wheel5", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD),
+        new CoasterWheel("Bogie R Wheel6", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD)
+    };
+    private SceneObjectElement[] m_Wheels = null;
+
+    public bool onInit()
+    {
+        bool success = super.onInit();
+        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
+
+        m_Coaster = sim.getCoaster(m_CoasterName);
+        m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 5.0f);
+        if(m_Train == null) System.throwRuntimeException("Could not find train within 5 metres");
+        m_TrainIndex = TrainUtil.GetTrainIndex(m_Train);
+        m_BogieIndex = m_SceneObject.getIntegerParameter("bogieindex").intValue();
+
+        String handlerName = m_CoasterName + '_' + m_TrainIndex;
+
+        m_HandlerManager = TrainHandlerManager.GetInstance();
+        m_Handler = m_HandlerManager.GetHandler(handlerName);
+        if(m_Handler == null)
+        {
+            m_Handler = new TrainHandler(handlerName);
+            m_HandlerManager.RegisterHandler(m_Handler);
+            m_Handler.SetBogieModifier(m_HandlerManager.GetDefaultBogieModifier());
+        }
+        if(m_Handler.GetBogieModifier() == null) m_Handler.SetBogieModifier(m_HandlerManager.GetDefaultBogieModifier());
+        m_Handler.RegisterBogie(this);
+
+        m_RightYaw = m_SceneObject.getElementForName("Bogie R");
+        m_LeftYaw = m_SceneObject.getElementForName("Bogie L");
+        m_RightPitch = m_SceneObject.getElementForName("Bogie RRot");
+        m_LeftPitch = m_SceneObject.getElementForName("Bogie LRot");
+
+
+        m_Wheels = new SceneObjectElement[m_WheelTable.length];
+        for(int i = 0; i < m_Wheels.length; i++)
+        {
+            m_Wheels[i] = m_SceneObject.getElementForName(m_WheelTable[i].Name);
+            if(m_Wheels[i] == null) System.throwRuntimeException("Could not find wheel object with name " + m_WheelTable[i].Name);
+        }
+        return true;
+    }
+
+        // ISetable
+    public void SetMatrix(Matrix4x4f matrix)
+    {
+        m_SceneObject.setMatrix(matrix);
+    }
+    public void SetData(Object object) {}
+
+        // IGetable
+    public Object GetData()
+    {
+        return m_SceneObject;
+    }    
+
+        // ISetableBogie
+    public Coaster GetCoaster() { return m_Coaster; } 
+    public Train GetTrain() { return m_Train; }
+    public int GetTrainIndex() { return m_TrainIndex; }
+    public int GetBogieIndex() { return m_BogieIndex; }
+
+    public void SetBogiePitchYaw(Vector3f rotation)
+    {
+        m_RightYaw.setRotation(-rotation.x, 0, 0);
+        m_LeftYaw.setRotation(-rotation.x, 0, 0);
+
+        m_RightPitch.setRotation(0, -rotation.y, 0);
+        m_LeftPitch.setRotation(0, -rotation.y, 0);
+    }
+    public void SetPositionRotation(Vector3f position, Vector3f rotation)
+    {
+        m_SceneObject.setTranslation(position);
+        m_SceneObject.setRotation(rotation);
+    }
+    public void SetWheelRotation(float rotationFactor, int textureIndex)
+    {
+        m_Wheels[0].setRotation((rotationFactor / m_WheelTable[0].Radius) * m_WheelTable[0].Direction, 0, 0);
+        m_Wheels[1].setRotation((rotationFactor / m_WheelTable[1].Radius) * m_WheelTable[1].Direction, 0, 0);
+        m_Wheels[6].setRotation((rotationFactor / m_WheelTable[6].Radius) * m_WheelTable[6].Direction, 0, 0);
+        m_Wheels[7].setRotation((rotationFactor / m_WheelTable[7].Radius) * m_WheelTable[7].Direction, 0, 0);
+
+        m_Wheels[2].setRotation(0, (rotationFactor / m_WheelTable[2].Radius) * m_WheelTable[2].Direction, 0);
+        m_Wheels[3].setRotation(0, (rotationFactor / m_WheelTable[3].Radius) * m_WheelTable[3].Direction, 0);
+        m_Wheels[8].setRotation(0, (rotationFactor / m_WheelTable[8].Radius) * m_WheelTable[8].Direction, 0);
+        m_Wheels[9].setRotation(0, (rotationFactor / m_WheelTable[9].Radius) * m_WheelTable[9].Direction, 0);
+
+        m_Wheels[4].setRotation((rotationFactor / m_WheelTable[4].Radius) * m_WheelTable[4].Direction, 0, 0);
+        m_Wheels[5].setRotation((rotationFactor / m_WheelTable[5].Radius) * m_WheelTable[5].Direction, 0, 0);
+        m_Wheels[10].setRotation((rotationFactor / m_WheelTable[10].Radius) * m_WheelTable[10].Direction, 0, 0);
+        m_Wheels[11].setRotation((rotationFactor / m_WheelTable[11].Radius) * m_WheelTable[11].Direction, 0, 0);
+
+        if(m_WheelTextureIndex == textureIndex) return;
+        m_WheelTextureIndex = textureIndex;
+
+        for(int i = 0; i < m_Wheels.length; i++)
+        {
+            m_Wheels[i].setTextureAnimationIndex(m_WheelTextureIndex);
+        }
+    }
+}

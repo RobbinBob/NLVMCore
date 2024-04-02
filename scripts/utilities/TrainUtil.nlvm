@@ -1,0 +1,22 @@
+package scripts.utilities;
+
+import com.nolimitscoaster.*;
+
+public class TrainUtil 
+{
+    public static int GetTrainIndex(Train train)
+    {
+        Coaster coaster = train.getCoaster();
+
+        int trainIndex = 0;
+        while(coaster.getTrainAt(trainIndex) != null) 
+        {
+            Train localTrain = coaster.getTrainAt(trainIndex);
+            if(localTrain.equals(train)) return trainIndex;
+            trainIndex++;
+        }
+        System.throwRuntimeException("Could not find a matching train on this coaster");
+        return -1;
+    }
+
+}

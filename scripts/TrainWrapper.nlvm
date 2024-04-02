@@ -1,0 +1,87 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+import scripts.core.*;
+
+public final class TrainWrapper
+{
+    private SceneObjectElement m_TrackingMatrixObject = null;
+    private Animation m_TrackAnimation = null;
+
+    private Matrix4x4f[] m_CarMatrixOffsets = null;
+    private Matrix4x4f[] m_BogieMatrixOffsets = null;
+    private Train m_Train = null;
+
+    private ISetableCar[] m_Cars = null;
+    private ISetableBogie[] m_Bogies = null;
+
+    public TrainWrapper(Train train)
+    {
+        m_Train = train;
+    }
+    public TrainWrapper() {}
+
+
+
+    public void SetTrain(Train train)
+    {
+        m_Train = train;
+    }
+    public void SetCarOffsetMatrixArray(Matrix4x4f[] array)
+    {
+        m_CarMatrixOffsets = array;
+    }
+    public void SetBogieOffsetMatrixArray(Matrix4x4f[] array)
+    {
+        m_BogieMatrixOffsets = array;
+    }
+    public void SetAnimationAndRoot(Animation animation, SceneObjectElement root)
+    {
+        m_TrackAnimation = animation;
+        m_TrackingMatrixObject = root;
+    }
+    public void SetCarAndBogieInterfaces(ISetableCar[] cars, ISetableBogie[] bogies)
+    {
+        m_Cars = cars;
+        m_Bogies = bogies;
+    }
+
+    public Train GetTrain() 
+    {
+        return m_Train;
+    }
+    public Matrix4x4f GetCarOffset(int index)
+    {
+        return m_CarMatrixOffsets[index];
+    }
+    public Matrix4x4f GetBogieOffset(int index)
+    {
+        return m_BogieMatrixOffsets[index];
+    }
+
+
+
+    public int GetCarIndex(ISetableCar car)
+    {
+        for(int i = 0; i < m_Cars.length; i++)
+        {
+            if(m_Cars[i] == car) return i;
+        }
+        return -1;
+    }
+    public int GetBogieIndex(ISetableBogie bogie)
+    {
+        for(int i = 0; i < m_Bogies.length; i++)
+        {
+            if(m_Bogies[i] == bogie) return i;
+        }
+        return -1;
+    }
+
+    public Matrix4x4f GetAttachmentMatrix()
+    {
+        return m_TrackingMatrixObject.getAbsoluteMatrix();
+    }
+}
