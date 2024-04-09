@@ -1,0 +1,55 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+import scripts.core.*;
+import scripts.core.particles.*;
+
+public final class EmitterTest extends Behaviour
+{
+    private SceneObjectElement[] m_ParticleElements = null;
+    private Coaster m_Coaster;
+    private Train m_Train;
+
+
+    private Matrix4x4f m_AttachmentMatrix = new Matrix4x4f();
+    private Matrix4x4f m_GoalMatrix = new Matrix4x4f();
+
+    private ParticleSystem m_ParticleSystem = null;
+
+    public bool onInit()
+    {
+        bool success = super.onInit();
+        if(!success) System.throwRuntimeException("Error in behaviour class");
+
+        m_Coaster = sim.findNearestCoasterTrack(m_SceneObject.getTranslation(), 5.0f).getCoaster();
+        m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 5.0f);
+
+        m_GoalMatrix = m_SceneObject.getAbsoluteMatrix();
+
+        m_ParticleElements = new SceneObjectElement[m_SceneObject.getElementCount() - 1];
+        for(int i = 1; i < m_ParticleElements.length + 1; i++)
+        {
+            m_ParticleElements[i - 1] = m_SceneObject.getElementAt(i);
+        }
+
+        SceneObject particleGO = GetSceneObject("Particles", true);
+        m_ParticleSystem = new ParticleSystem(particleGO);
+
+        return true;
+    }
+
+    public void onNextFrame(float tick)
+    {
+        m_Train.getCarMatrix(0, m_AttachmentMatrix);
+        m_SceneObject.setMatrix(m_AttachmentMatrix);
+
+        Matrix4x4f inverseOffset = m_AttachmentMatrix.dup();
+        inverseOffset.invert();
+        Matrix4x4f goalCopy = m_GoalMatrix.dup();
+
+        goalCopy.multLeft(inverseOffset);
+        m_ParticleElements[0].setMatrix(goalCopy);
+    }
+}

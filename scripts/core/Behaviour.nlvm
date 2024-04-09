@@ -1,0 +1,38 @@
+package scripts.core;
+
+import com.nolimitscoaster.Script;
+import com.nolimitscoaster.SceneObject;
+
+public abstract class Behaviour extends Script
+{
+    protected SceneObject m_SceneObject = null;
+
+    public bool onInit()
+    {
+            // The whole reason this exists is because im too lazy to write this
+        m_SceneObject = sim.getSceneObjectForEntityId(getParentEntityId());
+        return true;
+    }
+
+
+
+
+    protected final void Print(String obj)
+    {
+        System.out.println(obj);
+    }
+    protected final void Print(float obj)
+    {
+        System.out.println(obj);
+    }
+
+
+    public final SceneObject GetSceneObject(String name, bool throwIfNotFound)
+    {
+        SceneObject go = sim.getSceneObject(name);
+        if(go == null && throwIfNotFound)
+            System.throwRuntimeException("Behaviour: Could not find SceneObject with name '" + name + "'");
+
+        return go;
+    }
+}

@@ -1,0 +1,69 @@
+package scripts.core.particles;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public class Particle extends Object
+{
+    /*
+     Particles should have an update function for simulation
+     Particles should have a dispose function to reset after lifecycle
+     Particles should use their lifetime to sample aspects from ParticleSystem
+    
+
+     Particles need to contain:
+     - Matrix transform
+     - Lifetime
+     - TotalLifetime
+     - Velocity
+     - Rotation
+    */
+
+    private ParticleSystem m_ParticleSystem = null;
+
+    private Vector3f m_CurrentVelocity;
+    private Vector3f m_CurrentAcceleration;
+    private Vector3f m_Gravity;
+    private float m_Drag;
+    private float m_DragCoef;
+
+    private Matrix4x4f m_Transform;
+
+    private float m_Lifetime = 0;
+    private float m_MaxLifetime = 0;
+
+    private SceneObjectElement m_ParticleGO = null;
+
+
+    public static final int PARTICLE_STATE_INACTIVE = 0;
+    private int m_ParticleState = PARTICLE_STATE_INACTIVE;
+
+    public Particle(ParticleSystem system, SceneObjectElement go)
+    {
+        m_ParticleSystem = system;
+        m_ParticleGO = go;
+    }
+
+
+    public int GetParticleState()
+    {
+        return m_ParticleState;
+    }
+
+
+        // Called to initialise the particle before its used
+    public void Initialise() {}
+
+        // Called each frame for the particle to simulates
+    public void Update(float delta, Matrix4x4f origin)
+    {
+        m_Lifetime += delta;
+        if(m_Lifetime > m_MaxLifetime)
+            Dispose();
+
+        float lifetimePercent = m_Lifetime / m_MaxLifetime;
+    }
+
+        // Called when the particles lifetime has ended
+    public void Dispose() {}
+}

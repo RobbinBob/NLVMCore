@@ -1,0 +1,103 @@
+package scripts.core.particles;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.*;
+import nlvm.util.*;
+
+public class ParticleSystem implements FrameListener
+{
+    private SceneObject m_ParticleContainer = null;
+
+    private Particle[] m_Particles = null;
+    private Vector m_ActiveParticles = null;
+    
+    private static Simulator s_Simulator = null;
+
+
+    // Array of particle objects that have been created to service this system
+
+    private Vector3f m_Gravity;
+    private Vector3f m_InitialVelocity;
+
+    private Matrix4x4f m_Transform = null;
+
+    private bool m_IsEmitterActive = false;
+
+    public ParticleSystem(SceneObject particleContainer)
+    {
+        if(particleContainer == null)
+            System.throwRuntimeException("ParticleSystem: Parameter of type 'SceneObject' with name 'particleContainer' was null");
+
+        m_ParticleContainer = particleContainer;
+
+        int elementCount = particleContainer.getElementCount();
+        m_Particles = new Particle[elementCount];
+        for(int i = 0; i < m_Particles.length; i++)
+        {
+            SceneObjectElement elementGO = particleContainer.getElementAt(i);
+            elementGO.setVisible(false);
+            m_Particles[i] = new Particle(this, elementGO);
+
+        }
+
+        m_ActiveParticles = new Vector(elementCount);
+        m_Transform = new Matrix4x4f();
+
+        s_Simulator = NoLimits.getSimulator();
+    }
+
+    public void SetEmitterState(bool isActive)
+    {
+        m_IsEmitterActive = isActive;
+        if(isActive)
+        {
+            s_Simulator.addFrameListener(this);
+        }
+        else
+        {
+            s_Simulator.removeFrameListener(this);
+        }
+    }
+    public bool GetEmitterState()
+    {
+        return m_IsEmitterActive;
+    }
+
+    private Particle GetInactiveParticle()
+    {
+        for(int i = 0; i < m_Particles.length; i++)
+        {
+            if(m_Particles[i].GetParticleState() == Particle.PARTICLE_STATE_INACTIVE)
+                return m_Particles[i];
+        }
+        return null;
+    }
+
+
+
+
+
+    public void onNextFrame()
+    {
+        float delta = s_Simulator.getCurSimulationTickSec();
+
+            // Loop over active particles and update them, add to inactive list if they have completed
+        Vector inactiveParticles = new Vector();
+        for(int i = 0; i < m_ActiveParticles.size(); i++)
+        {
+            Particle particle = (Particle)m_ActiveParticles.elementAt(i);
+            particle.Update(delta, m_Transform);
+
+            if(particle.GetParticleState() == Particle.PARTICLE_STATE_INACTIVE)
+                inactiveParticles.addElement(new Integer(i));
+        }
+
+            // Loop through inactive list and remove them from the main active list
+        for(int j = 0; j < inactiveParticles.size(); j++)
+        {
+            int index = ((Integer)inactiveParticles.elementAt(j)).intValue();
+            m_ActiveParticles.removeElement(m_ActiveParticles.elementAt(index));
+        }
+    }
+}
