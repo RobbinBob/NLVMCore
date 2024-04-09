@@ -1,0 +1,25 @@
+# Ignore nl2 files
+*.nl2park
+*.nl2park_backup
+*.nl2sco
+*.nl2mat
+
+# Ignore model files
+*.[Bb]lend
+*.[Oo]bj
+*.[Gg]lb
+*.[Gg]ltf
+*.[Dd]ae
+
+# Ingore misc
+*.[Bb]in
+*.[Xx]ml
+
+# Ignore image files
+*.[Pp]ng
+*.[Tt]if
+*.[Tt]iff
+*.[Dd]ds
+*.[Jj]peg
+*.[Jj]pg
+*.[Rr]aw
