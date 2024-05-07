@@ -36,6 +36,7 @@ public class Particle extends Object
 
 
     public static final int PARTICLE_STATE_INACTIVE = 0;
+    public static final int PARTICLE_STATE_ACTIVE = 1;
     private int m_ParticleState = PARTICLE_STATE_INACTIVE;
 
     public Particle(ParticleSystem system, SceneObjectElement go)
@@ -49,10 +50,36 @@ public class Particle extends Object
     {
         return m_ParticleState;
     }
+    public float GetParticleLifePercent()
+    {
+        return m_Lifetime / m_MaxLifetime;
+    }
+
+
+
+        // Particle setters
+    public void SetParticleLifetime(float lifetime) { m_MaxLifetime = lifetime; }
+    public void SetParticleMatrix(Matrix4x4f position) { m_ParticleGO.setMatrix(position); }
+
+
 
 
         // Called to initialise the particle before its used
-    public void Initialise() {}
+    public void Initialise() 
+    {
+        m_ParticleState = PARTICLE_STATE_ACTIVE;
+        m_ParticleGO.setVisible(true);
+        
+        float startScale = m_ParticleSystem.GetStartScale();
+        m_ParticleGO.setScale(startScale, startScale, startScale);
+
+        float startRotation = m_ParticleSystem.GetStartRotation();
+        startRotation = (float)Math.toRadians(startRotation);
+        m_ParticleGO.setAutospriteRotationAngle(startRotation);
+
+        m_Lifetime = 0;
+        m_MaxLifetime = m_ParticleSystem.GetLifetime();
+    }
 
         // Called each frame for the particle to simulates
     public void Update(float delta, Matrix4x4f origin)
@@ -62,8 +89,17 @@ public class Particle extends Object
             Dispose();
 
         float lifetimePercent = m_Lifetime / m_MaxLifetime;
+        float alpha = m_ParticleSystem.GetAlphaValue(lifetimePercent);
+        Vector3f color = m_ParticleSystem.GetColorValue(lifetimePercent);
+
+        Vector4f entity = new Vector4f(color.x, color.y, color.z, alpha);
+        m_ParticleGO.setEntityColor(entity);
     }
 
         // Called when the particles lifetime has ended
-    public void Dispose() {}
+    public void Dispose() 
+    {
+        m_ParticleState = PARTICLE_STATE_INACTIVE;
+        m_ParticleGO.setVisible(false);
+    }
 }

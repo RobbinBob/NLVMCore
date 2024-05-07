@@ -1,0 +1,6 @@
+package scripts.core.math;
+
+public interface IInterpFloat
+{
+    public float GetValue(float t);
+}

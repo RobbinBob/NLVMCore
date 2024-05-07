@@ -1,0 +1,20 @@
+package scripts.core.particles;
+
+import scripts.core.math.*;
+import nlvm.lang.Math;
+
+public final class ParticleAlpha implements IInterpFloat
+{
+    public ParticleAlpha() {}
+
+
+
+    public float GetValue(float t)
+    {
+        t *= Math.PI;
+        t = (float)Math.sin(t);
+        return t;
+    }
+
+    public IInterpFloat GetDefault() { return new ParticleAlpha(); } 
+}

@@ -1,5 +1,7 @@
 package scripts.core.particles;
 
+import scripts.core.math.*;
+
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
 import nlvm.lang.*;
@@ -14,6 +16,8 @@ public class ParticleSystem implements FrameListener
     
     private static Simulator s_Simulator = null;
 
+    private float m_SpawnRate = 1.0f / 2.0f;
+    private float m_ElapsedTime = 0.0f;
 
     // Array of particle objects that have been created to service this system
 
@@ -24,12 +28,29 @@ public class ParticleSystem implements FrameListener
 
     private bool m_IsEmitterActive = false;
 
+
+        // Interpolators
+    private IInterpFloat m_AlphaInterp = new ParticleAlpha();
+    private IInterpVector3 m_ColorInterp = new ParticleColor();
+
+    private RandomRangeFloat m_StartScaleRand = new RandomRangeFloat(1.0f, 1.0f);
+    private RandomRangeFloat m_StartRotationRand = new RandomRangeFloat(0.0f, 0.0f);
+    private RandomRangeFloat m_LifetimeRand = new RandomRangeFloat(5.f, 5.f);
+
+    public static final int WORLD_SPACE = 0;
+    public static final int LOCAL_SPACE = 1;
+    private int m_ObjectSpace = WORLD_SPACE;
+
     public ParticleSystem(SceneObject particleContainer)
     {
         if(particleContainer == null)
             System.throwRuntimeException("ParticleSystem: Parameter of type 'SceneObject' with name 'particleContainer' was null");
 
         m_ParticleContainer = particleContainer;
+
+        Matrix4x4f matrix = new Matrix4x4f();
+        matrix.initIdentity();
+        particleContainer.setMatrix(matrix);
 
         int elementCount = particleContainer.getElementCount();
         m_Particles = new Particle[elementCount];
@@ -46,6 +67,83 @@ public class ParticleSystem implements FrameListener
 
         s_Simulator = NoLimits.getSimulator();
     }
+
+
+
+        // Optional Setters
+    public void SetMatrix(Matrix4x4f matrix)
+    {
+        m_Transform = matrix.dup();
+    }
+    public void SetMatrixRef(Matrix4x4f matrix)
+    {
+        m_Transform = matrix;
+    }
+
+
+    public void SetTransformSpace(int transformspace)
+    {
+        m_ObjectSpace = transformspace;
+    }
+
+
+    public void SetSpawnRate(float rate)
+    {
+        m_SpawnRate = 1.0f / rate;
+    }
+
+    public void SetAlphaInterp(IInterpFloat interpolator)
+    {
+        if(interpolator == null)
+            System.throwRuntimeException("IInterpFloat parameter 'interpolator' cannot be null");
+        m_AlphaInterp = interpolator;
+    }
+    public void SetColorInterp(IInterpVector3 interpolator)
+    {
+        if(interpolator == null)
+            System.throwRuntimeException("IInterpVector3 parameter 'interpolator' cannot be null");
+        m_ColorInterp = interpolator;
+    }
+
+    public void SetStartScale(float scale)
+    {
+        m_StartScaleRand.Min = scale;
+        m_StartScaleRand.Max = scale;
+    }
+    public void SetStartScale(float min, float max)
+    {
+        m_StartScaleRand.Min = min;
+        m_StartScaleRand.Max = max;
+    }
+
+    public void SetStartRotation(float rotation)
+    {
+        m_StartRotationRand.Min = rotation;
+        m_StartRotationRand.Max = rotation;
+    }
+    public void SetStartRotation(float min, float max)
+    {
+        m_StartRotationRand.Min = min;
+        m_StartRotationRand.Max = max;
+    }
+
+    public void SetLifetime(float lifetime)
+    {
+        m_LifetimeRand.Min = lifetime;
+        m_LifetimeRand.Max = lifetime;
+    }
+    public void SetLifetime(float min, float max)
+    {
+        m_LifetimeRand.Min = min;
+        m_LifetimeRand.Max = max;
+    }
+
+        // Particle queries (Might refactor into Particle class later if performance hits)
+    public float GetAlphaValue(float t) { return m_AlphaInterp.GetValue(t); }
+    public Vector3f GetColorValue(float t) { return m_ColorInterp.GetValue(t); }
+    public float GetStartScale() { return m_StartScaleRand.GetRandom(); }
+    public float GetStartRotation() { return m_StartRotationRand.GetRandom(); }
+    public float GetLifetime() { return m_LifetimeRand.GetRandom(); }
 
     public void SetEmitterState(bool isActive)
     {
@@ -74,13 +172,38 @@ public class ParticleSystem implements FrameListener
         return null;
     }
 
-
-
-
-
     public void onNextFrame()
     {
         float delta = s_Simulator.getCurSimulationTickSec();
+
+        m_ElapsedTime += delta;
+        if(m_ElapsedTime >= m_SpawnRate)
+        {
+            m_ElapsedTime = 0.0f;
+            Particle particle = GetInactiveParticle();
+            if(particle != null)
+            {
+                m_ActiveParticles.addElement(particle);
+
+                float x = ((float)Math.random() * 5.0f) - 2.5f;
+                float y = ((float)Math.random() * 5.0f) + 1.0f;
+                float z = ((float)Math.random() * 5.0f) - 2.5f;
+                
+                Matrix4x4f randomPosition = new Matrix4x4f();
+                Vector3f pos = m_Transform.getTrans();
+                randomPosition.initTrans(pos);
+
+                particle.SetParticleLifetime(2.0f);
+                particle.SetParticleMatrix(randomPosition);
+                particle.Initialise();
+            }
+            else
+            {
+                System.out.println("Error, couldnt get particle");
+            }
+        }
+
+
 
             // Loop over active particles and update them, add to inactive list if they have completed
         Vector inactiveParticles = new Vector();
@@ -90,14 +213,13 @@ public class ParticleSystem implements FrameListener
             particle.Update(delta, m_Transform);
 
             if(particle.GetParticleState() == Particle.PARTICLE_STATE_INACTIVE)
-                inactiveParticles.addElement(new Integer(i));
+                inactiveParticles.addElement(particle);
         }
 
             // Loop through inactive list and remove them from the main active list
         for(int j = 0; j < inactiveParticles.size(); j++)
         {
-            int index = ((Integer)inactiveParticles.elementAt(j)).intValue();
-            m_ActiveParticles.removeElement(m_ActiveParticles.elementAt(index));
+            m_ActiveParticles.removeElement((Particle)inactiveParticles.elementAt(j));
         }
     }
 }

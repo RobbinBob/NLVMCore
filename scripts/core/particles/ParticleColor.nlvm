@@ -1,0 +1,22 @@
+package scripts.core.particles;
+
+import scripts.core.math.*;
+import nlvm.math3d.Vector3f;
+
+public final class ParticleColor implements IInterpVector3
+{
+    public ParticleColor() {}
+
+        // Temporary
+    private Vector3f m_StartColor = new Vector3f(0.0f, 1.0f, 0.1f);
+    private Vector3f m_EndColor = new Vector3f(0.15f, 0.0f, 1.0f); 
+    private Vector3f m_Lerp = new Vector3f();
+
+    public Vector3f GetValue(float t)
+    {
+        m_Lerp.lerp(t, m_StartColor, m_EndColor);
+        return m_Lerp.dup();
+    }
+
+    public IInterpVector3 GetDefault() { return new ParticleColor(); }
+}

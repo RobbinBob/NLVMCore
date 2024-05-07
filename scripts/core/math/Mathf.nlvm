@@ -1,0 +1,9 @@
+package scripts.core.math;
+
+public final class Mathf
+{
+    public static float Remap(float t, float minA, float maxA, float minB, float maxB)
+    {
+        return (t - minA) * (maxB - minB) / (maxA - minA) + minB;
+    }
+}

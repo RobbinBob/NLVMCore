@@ -1,0 +1,22 @@
+package scripts.core.math;
+
+import nlvm.lang.Math;
+
+public final class RandomRangeFloat
+{
+    public float Min = 0.0f;
+    public float Max = 1.0f;
+
+    public RandomRangeFloat() {}
+    public RandomRangeFloat(float min, float max)
+    {
+        Min = min;
+        Max = max;
+    }
+
+    public float GetRandom()
+    {
+        float randomVal = (float)Math.random();
+        return Mathf.Remap(randomVal, 0, 1, Min, Max);
+    }
+}

@@ -1,0 +1,8 @@
+package scripts.core.math;
+
+import nlvm.math3d.Vector3f;
+
+public interface IInterpVector3
+{
+    public Vector3f GetValue(float t);
+}
