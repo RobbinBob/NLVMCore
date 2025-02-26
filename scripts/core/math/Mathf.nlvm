@@ -2,6 +2,9 @@ package scripts.core.math;
 
 public final class Mathf
 {
+    public static final float PI = 3.141592f;
+    public static final float TAU = PI * 2.0f;
+
     public static float Remap(float t, float minA, float maxA, float minB, float maxB)
     {
         return (t - minA) * (maxB - minB) / (maxA - minA) + minB;

@@ -1,0 +1,12 @@
+package scripts.modifiers;
+
+import scripts.ISetableCar;
+import nlvm.math3d.*;
+
+public class CarModifierData 
+{
+    public ISetableCar SetableCar;
+    public Matrix4x4f CarMatrix;
+    public float TrainDistance;
+    public float CarOffset;
+}

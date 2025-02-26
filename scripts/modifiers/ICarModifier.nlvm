@@ -4,5 +4,5 @@ import scripts.ISetableCar;
 
 public interface ICarModifier
 {
-    public void Run(Matrix4x4f carMatrix, ISetableCar setableCar);
+    public void Run(CarModifierData carData);
 }

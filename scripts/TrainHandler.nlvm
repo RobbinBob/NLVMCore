@@ -11,6 +11,7 @@ import com.nolimitscoaster.Coaster;
 
 import scripts.utilities.*;
 import scripts.modifiers.*;
+import scripts.core.math.*;
 
 public class TrainHandler extends Object
 {
@@ -28,8 +29,9 @@ public class TrainHandler extends Object
     private Matrix4x4f m_BogieMatrix = new Matrix4x4f();
 
     private float m_Distance = 0.0f;
+    private float m_WrappedDistance = 0.0f;
 
-    private static final float RADIAN = (float)Math.PI * 2.0f;
+    private int m_SeatsPerCar = 0;
 
         // Constructors
     public TrainHandler(String name)
@@ -53,7 +55,14 @@ public class TrainHandler extends Object
         m_Name = name;
         m_TrainHandled = GetTrainFromString(name);
     }
-
+    public TrainHandler(String name, int cars, int bogies, int carSeats)
+    {
+        m_Cars = new Vector(cars);
+        m_Bogies = new Vector(bogies);
+        m_Name = name;
+        m_TrainHandled = GetTrainFromString(name);
+        m_SeatsPerCar = carSeats;
+    }
 
         // Register/Unregister ISetableCar
     public bool RegisterCar(ISetableCar car)
@@ -104,8 +113,11 @@ public class TrainHandler extends Object
 
     public void UpdateTrainPosition(float tick)
     {
-        m_Distance += (float)m_TrainHandled.getSpeed() * tick;
-        if(m_Distance > RADIAN) m_Distance -= RADIAN;
+        float scaledSpeed = (float)m_TrainHandled.getSpeed() * tick;
+
+        m_Distance += scaledSpeed;
+        m_WrappedDistance += scaledSpeed;
+        while(m_WrappedDistance > Mathf.TAU) m_WrappedDistance -= Mathf.TAU;
     }
 
     public void HandleCars()
@@ -120,7 +132,14 @@ public class TrainHandler extends Object
     public void HandleCar(ISetableCar car)
     {
         m_TrainHandled.getCarMatrix(car.GetCarIndex(), m_CarMatrix);
-        m_CarModifier.Run(m_CarMatrix.dup(), car);
+
+        CarModifierData data = new CarModifierData();
+        data.SetableCar = car;
+        data.CarMatrix = m_CarMatrix.dup();
+        data.TrainDistance = m_Distance;
+        data.CarOffset = 0;
+
+        m_CarModifier.Run(data);
     }
     public void HandleBogies()
     {
@@ -135,7 +154,26 @@ public class TrainHandler extends Object
     {
         m_TrainHandled.getBogieMatrix(bogie.GetBogieIndex(), m_BogieMatrix);
         m_TrainHandled.getCarMatrix(bogie.GetBogieIndex(), m_CarMatrix);
-        m_BogieModifier.Run(m_CarMatrix.dup(), m_BogieMatrix.dup(), bogie, m_Distance);
+
+        BogieModifierData data = new BogieModifierData();
+        data.SetableBogie = bogie;
+        data.CarMatrix = m_CarMatrix.dup();
+        data.BogieMatrix = m_BogieMatrix.dup();
+        data.TrainDistance = m_Distance;
+        data.BogieOffset = 0;
+        data.WheelRotation = m_WrappedDistance;
+
+        m_BogieModifier.Run(data);
+    }
+
+
+    public void SetCarSeats(int carSeats)
+    {
+        m_SeatsPerCar = carSeats;
+    }
+    public int GetCarSeats()
+    {
+        return m_SeatsPerCar;
     }
 
 
@@ -167,6 +205,10 @@ public class TrainHandler extends Object
         return bogies;
     }
 
+    public int hashCode()
+    {
+        return m_Name.hashCode();
+    }
 
     private Train GetTrainFromString(String string)
     {

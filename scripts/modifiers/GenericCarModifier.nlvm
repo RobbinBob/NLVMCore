@@ -6,8 +6,8 @@ public final class GenericCarModifier implements ICarModifier
 {
     public GenericCarModifier() {}
 
-    public void Run(Matrix4x4f carMatrix, ISetableCar setableCar)
+    public void Run(CarModifierData data)
     {
-        setableCar.SetMatrix(carMatrix);
+        data.SetableCar.SetMatrix(data.CarMatrix);
     }
 }

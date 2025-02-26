@@ -1,0 +1,14 @@
+package scripts.modifiers;
+
+import scripts.ISetableBogie;
+import nlvm.math3d.*;
+
+public class BogieModifierData 
+{
+    public ISetableBogie SetableBogie;
+    public Matrix4x4f CarMatrix;
+    public Matrix4x4f BogieMatrix;
+    public float TrainDistance;
+    public float BogieOffset;
+    public float WheelRotation;
+}

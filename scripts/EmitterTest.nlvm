@@ -27,7 +27,9 @@ public final class EmitterTest extends Behaviour
         m_ParticleSystem.SetStartRotation(-25.f, 25.f);
         m_ParticleSystem.SetStartScale(0.2f, 0.6f);
         m_ParticleSystem.SetLifetime(2.f, 5.f);
-        
+        ParticleColor m_PColor = new ParticleColor(new Vector3f(1.0f, 0.0f, 1.0f), new Vector3f(0.0f, 1.0f, 0.0f));
+        m_ParticleSystem.SetColorInterp(m_PColor);
+
         m_ParticleSystem.SetMatrixRef(m_Matrix);
 
         m_ParticleSystem.SetEmitterState(true);

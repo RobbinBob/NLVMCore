@@ -6,11 +6,34 @@ import nlvm.math3d.Vector3f;
 public final class ParticleColor implements IInterpVector3
 {
     public ParticleColor() {}
+    public ParticleColor(Vector3f startColor, Vector3f endColor)
+    {
+        m_StartColor.set(startColor);
+        m_EndColor.set(endColor);
+    }
 
         // Temporary
     private Vector3f m_StartColor = new Vector3f(0.0f, 1.0f, 0.1f);
     private Vector3f m_EndColor = new Vector3f(0.15f, 0.0f, 1.0f); 
     private Vector3f m_Lerp = new Vector3f();
+
+
+    public void SetStartColor(Vector3f startColor)
+    {
+        m_StartColor.set(startColor);
+    }
+    public void SetStartColor(float r, float g, float b)
+    {
+        m_StartColor.set(r, g, b);
+    }
+    public void SetEndColor(Vector3f endColor)
+    {
+        m_EndColor.set(endColor);
+    }
+    public void SetEndColor(float r, float g, float b)
+    {
+        m_EndColor.set(r, g, b);
+    }
 
     public Vector3f GetValue(float t)
     {

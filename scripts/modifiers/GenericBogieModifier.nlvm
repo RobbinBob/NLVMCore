@@ -10,24 +10,24 @@ public final class GenericBogieModifier implements IBogieModifier
 {
     public GenericBogieModifier() {}
 
-    public void Run(Matrix4x4f carMatrix, Matrix4x4f bogieMatrix, ISetableBogie setableBogie, float wheelRotation)
+    public void Run(BogieModifierData bogieData)
     {
         Vector3f rotation = new Vector3f();
         Vector3f position = new Vector3f();
 
-        bogieMatrix.invert();
+        bogieData.BogieMatrix.invert();
 
-        Tools.matrixToPitchHeadBankPos(carMatrix, rotation, position);
-        setableBogie.SetPositionRotation(position, rotation);
+        Tools.matrixToPitchHeadBankPos(bogieData.CarMatrix, rotation, position);
+        bogieData.SetableBogie.SetPositionRotation(position, rotation);
 
-        bogieMatrix.multRight(carMatrix);
-        Tools.matrixToPitchHeadBankPos(bogieMatrix, rotation, position);
-        setableBogie.SetBogiePitchYaw(rotation);
+        bogieData.BogieMatrix.multRight(bogieData.CarMatrix);
+        Tools.matrixToPitchHeadBankPos(bogieData.BogieMatrix, rotation, position);
+        bogieData.SetableBogie.SetBogiePitchYaw(rotation);
 
-        Train train = setableBogie.GetTrain();
+        Train train = bogieData.SetableBogie.GetTrain();
         float trainSpeed = Math.abs((float)train.getSpeed());
 
         int wheelTextureIndex = trainSpeed > 7.5f ? 1 : 0;
-        setableBogie.SetWheelRotation(wheelRotation, wheelTextureIndex);
+        bogieData.SetableBogie.SetWheelRotation(bogieData.WheelRotation, wheelTextureIndex);
     }
 }

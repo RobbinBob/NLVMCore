@@ -5,6 +5,7 @@ import nlvm.math3d.*;
 import nlvm.lang.Object;
 
 import scripts.utilities.*;
+import scripts.core.*;
 
 public class CoasterBogie extends Behaviour implements ISetableBogie
 {
@@ -14,7 +15,7 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     private Coaster m_Coaster;
     private Train m_Train;
 
-    private String m_CoasterName = "Divinium";
+    private String m_CoasterName = "";
     private int m_TrainIndex;
     private int m_BogieIndex;
 
@@ -31,15 +32,15 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     private static final CoasterWheel[] m_WheelTable = {
         new CoasterWheel("Bogie L Wheel1", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
         new CoasterWheel("Bogie L Wheel2", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
-        new CoasterWheel("Bogie L Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_BWD),
-        new CoasterWheel("Bogie L Wheel4", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie L Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),
+        new CoasterWheel("Bogie L Wheel4", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),
         new CoasterWheel("Bogie L Wheel5", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD),
         new CoasterWheel("Bogie L Wheel6", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD),
 
         new CoasterWheel("Bogie R Wheel1", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
         new CoasterWheel("Bogie R Wheel2", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
-        new CoasterWheel("Bogie R Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),
-        new CoasterWheel("Bogie R Wheel4", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),
+        new CoasterWheel("Bogie R Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_BWD),
+        new CoasterWheel("Bogie R Wheel4", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_BWD),
         new CoasterWheel("Bogie R Wheel5", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD),
         new CoasterWheel("Bogie R Wheel6", WHEEL_RADIUS_UPSTOP, CoasterWheel.WHEEL_FWD)
     };
@@ -50,11 +51,13 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
         bool success = super.onInit();
         if(!success) System.throwRuntimeException("Error occured in Behaviour class");
 
-        m_Coaster = sim.getCoaster(m_CoasterName);
+        m_Coaster = m_SceneObject.getCoasterParameter("coaster");
+        m_CoasterName = m_Coaster.getName();
+
         m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 5.0f);
         if(m_Train == null) System.throwRuntimeException("Could not find train within 5 metres");
         m_TrainIndex = TrainUtil.GetTrainIndex(m_Train);
-        m_BogieIndex = m_SceneObject.getIntegerParameter("bogieindex").intValue();
+        m_BogieIndex = m_SceneObject.getIntegerParameter("bogie_index").intValue();
 
         String handlerName = m_CoasterName + '_' + m_TrainIndex;
 
@@ -62,6 +65,7 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
         m_Handler = m_HandlerManager.GetHandler(handlerName);
         if(m_Handler == null)
         {
+            System.out.println(handlerName);
             m_Handler = new TrainHandler(handlerName);
             m_HandlerManager.RegisterHandler(m_Handler);
             m_Handler.SetBogieModifier(m_HandlerManager.GetDefaultBogieModifier());

@@ -17,7 +17,11 @@ public class ParticleSystem implements FrameListener
     private static Simulator s_Simulator = null;
 
     private float m_SpawnRate = 1.0f / 2.0f;
+    private float m_SpawnDist = 1.0f;
+    private float m_ElapsedDist = 0.0f;
     private float m_ElapsedTime = 0.0f;
+    private int m_SpawnType = 1; // 0 Is by time, 1 Is by dist
+
 
     // Array of particle objects that have been created to service this system
 
@@ -25,6 +29,7 @@ public class ParticleSystem implements FrameListener
     private Vector3f m_InitialVelocity;
 
     private Matrix4x4f m_Transform = null;
+    private Vector3f m_PreviousPosition = null;
 
     private bool m_IsEmitterActive = false;
 
@@ -74,10 +79,12 @@ public class ParticleSystem implements FrameListener
     public void SetMatrix(Matrix4x4f matrix)
     {
         m_Transform = matrix.dup();
+        m_PreviousPosition = m_Transform.getTrans().dup();
     }
     public void SetMatrixRef(Matrix4x4f matrix)
     {
         m_Transform = matrix;
+        m_PreviousPosition = m_Transform.getTrans().dup();
     }
 
 
@@ -172,10 +179,9 @@ public class ParticleSystem implements FrameListener
         return null;
     }
 
-    public void onNextFrame()
-    {
-        float delta = s_Simulator.getCurSimulationTickSec();
 
+    private void HandleParticleSpawnByTime(float delta)
+    {
         m_ElapsedTime += delta;
         if(m_ElapsedTime >= m_SpawnRate)
         {
@@ -193,7 +199,7 @@ public class ParticleSystem implements FrameListener
                 Vector3f pos = m_Transform.getTrans();
                 randomPosition.initTrans(pos);
 
-                particle.SetParticleLifetime(2.0f);
+                particle.SetParticleLifetime(m_LifetimeRand.GetRandom());
                 particle.SetParticleMatrix(randomPosition);
                 particle.Initialise();
             }
@@ -201,6 +207,53 @@ public class ParticleSystem implements FrameListener
             {
                 System.out.println("Error, couldnt get particle");
             }
+        }
+    }
+    private void HandleParticleSpawnByDistance(float delta)
+    {
+        m_ElapsedDist += delta;
+        if(m_ElapsedDist >= m_SpawnDist)
+        {
+            m_ElapsedDist = 0.0f;
+            Particle particle = GetInactiveParticle();
+            if(particle != null)
+            {
+                m_ActiveParticles.addElement(particle);
+
+                float x = ((float)Math.random() * 5.0f) - 2.5f;
+                float y = ((float)Math.random() * 5.0f) + 1.0f;
+                float z = ((float)Math.random() * 5.0f) - 2.5f;
+                
+                Matrix4x4f randomPosition = new Matrix4x4f();
+                Vector3f pos = m_Transform.getTrans();
+                randomPosition.initTrans(pos);
+
+                particle.SetParticleLifetime(m_LifetimeRand.GetRandom());
+                particle.SetParticleMatrix(randomPosition);
+                particle.Initialise();
+            }
+            else
+            {
+                System.out.println("Error, couldnt get particle");
+            }
+        }
+    }
+
+    public void onNextFrame()
+    {
+        float delta = s_Simulator.getCurSimulationTickSec();
+
+        switch(m_SpawnType)
+        {
+            case 0:
+                HandleParticleSpawnByTime(delta);
+                break;
+            case 1:
+                Vector3f currPos = m_Transform.getTrans();
+                float distDelta = currPos.distance(m_PreviousPosition);
+                HandleParticleSpawnByDistance(distDelta);
+                m_PreviousPosition = currPos;
+            break;
         }
 
 

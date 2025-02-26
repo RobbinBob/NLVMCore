@@ -95,6 +95,28 @@ public class StringUtil
         }
         return false;
     }
+    public static bool Contains(String string, String s)
+    {
+        char[] chars = string.toCharArray();
+        char[] compare = s.toCharArray();
+
+        int compIndex = 0;
+        for(int i = 0; i < chars.length; ++i)
+        {
+            if(chars[i] == compare[compIndex])
+            {
+                compIndex++;
+                if(compIndex >= compare.length)
+                    break;
+            }
+            else
+            {
+                compIndex = 0;
+            }
+        }
+
+        return compIndex >= compare.length;
+    }
 
     public static String ToLower(String string)
     {
