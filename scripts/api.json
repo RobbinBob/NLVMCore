@@ -1,0 +1,36 @@
+{
+    "Classes": {
+        "scripts.CoasterBogie": {
+            "extends": "scripts.core.Behaviour",
+            "implements": "ISetableBogie",
+            "methods": {
+                "onInit": {
+                    "accessor": "public",
+                    "return": "bool"
+                },
+                "SetMatrix": {
+                    "accessor": "public",
+                    "return": "void",
+                    "args": {
+                        "matrix": {
+                            "type": "nlvm.math3d.Matrix4x4f"
+                        }
+                    }
+                },
+                "SetData": {
+                    "accessor": "public",
+                    "return": "void",
+                    "args": {
+                        "object": {
+                            "type": "nlvm.lang.Object"
+                        }
+                    }
+                },
+                "GetData": {
+                    "accesspr": "public",
+                    "return": "nlvm.lang.Object"
+                }
+            }
+        }
+    }
+}
