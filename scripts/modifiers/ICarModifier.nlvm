@@ -1,6 +1,4 @@
 package scripts.modifiers;
-import nlvm.math3d.Matrix4x4f;
-import scripts.ISetableCar;
 
 public interface ICarModifier
 {

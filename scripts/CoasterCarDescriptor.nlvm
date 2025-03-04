@@ -1,0 +1,13 @@
+package scripts;
+
+import nlvm.lang.*;
+
+public class CoasterCarDescriptor extends Object
+{
+    public int Restraints = 0;
+    public int Cameras = 0;
+    public float RestraintOpenDuration = 1.0f;
+    public float RestraintCloseDuration = 1.0f;
+
+    public CoasterCarDescriptor() { }
+}

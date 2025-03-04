@@ -23,3 +23,7 @@
 *.[Jj]peg
 *.[Jj]pg
 *.[Rr]aw
+
+# Ignore custom working directories
+Custom/
+ParticleTest/

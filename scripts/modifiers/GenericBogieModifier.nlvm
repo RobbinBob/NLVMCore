@@ -1,8 +1,6 @@
 package scripts.modifiers;
 
-import nlvm.math3d.Matrix4x4f;
 import nlvm.math3d.Vector3f;
-import scripts.ISetableBogie;
 import com.nolimitscoaster.Tools;
 import com.nolimitscoaster.Train;
 

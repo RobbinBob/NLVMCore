@@ -1,31 +1,148 @@
 package scripts.core;
 
-import com.nolimitscoaster.Script;
-import com.nolimitscoaster.SceneObject;
+import com.nolimitscoaster.*;
 
 public abstract class Behaviour extends Script
 {
     protected SceneObject m_SceneObject = null;
+    protected String m_Name = "";
 
     public bool onInit()
     {
             // The whole reason this exists is because im too lazy to write this
         m_SceneObject = sim.getSceneObjectForEntityId(getParentEntityId());
+        if(m_SceneObject == null)
+            NullReferenceException.Throw("Unable to find SceneObject, is this Behaviour attached to one?");
+
+        m_Name = m_SceneObject.getName();
         return true;
+    }
+    public String toString()
+    {
+        return "Behaviour" + getEntityId();
     }
 
 
+    protected final float GetFloatParameter(String name)
+    {
+        Double val = m_SceneObject.getDoubleParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
+        return val.floatValue();
+    }
+    protected final double GetDoubleParameter(String name)
+    {
+        Double val = m_SceneObject.getDoubleParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
+        return val.doubleValue();
+    }
+    protected final int GetIntegerParameter(String name)
+    {
+        Integer val = m_SceneObject.getIntegerParameter(name);
+        if (val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'Integer' with name '" + name + "' on SceneObject");
+        return val.intValue();
+    }
+    protected final String GetStringParameter(String name)
+    {
+        String val = m_SceneObject.getStringParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'String' with name '" + name + "' on SceneObject");
+        return val;
+    }
+    protected final bool GetBoolParameter(String name)
+    {
+        Boolean val = m_SceneObject.getBooleanParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'Boolean' with name '" + name + "' on SceneObject");
+        return val.boolValue();
+    }
+    protected final Coaster GetCoasterParameter(String name)
+    {
+        Coaster val = m_SceneObject.getCoasterParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'Coaster' with name '" + name + "' on SceneObject");
+        return val;
+    }
+    protected final TrackTrigger GetTriggerParameter(String name)
+    {
+        TrackTrigger val = m_SceneObject.getTrackTriggerParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'TrackTrigger' with name '" + name + "' on SceneObject");
+        return val;
+    }
+    protected final Block GetBlockParameter(String name)
+    {
+        Block val = m_SceneObject.getBlockParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");
+        return val;
+    }
+    protected final Section GetSectionParameter(String name)
+    {
+        Block val = m_SceneObject.getBlockParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");   
+        return val.getSection();
+    }
+    protected final SpecialTrack GetSpecialTrackParameter(String name)
+    {
+        SpecialTrack val = m_SceneObject.getSpecialTrackParameter(name);
+        if(val == null)
+            NullReferenceException.Throw("COuld not find parameter of type 'SpecialTrack' with name '" + name + "' on SceneObject");   
+        return val;
+    }
+    protected final ResourcePath GetResourcePathParameter(String name)
+    {
+        ResourcePath val = m_SceneObject.getResourcePathParameter(name);
+        if(val == null) 
+            NullReferenceException.Throw("Could not find parameter of type 'TextFile | AudioFile | VideoFile | File' with name '" + name + "' on SceneObject");
+        return val;
+    }
 
+
+    private final String GetTimeDataSequence()
+    {
+        return "Elapsed Time: " + String.valueOf((float)sim.getCurAbsSimulationTimeSec()) + " | ";
+    } 
 
     protected final void Print(String obj)
     {
-        System.out.println(obj);
+        System.out.println(GetTimeDataSequence() + obj);
     }
     protected final void Print(float obj)
     {
-        System.out.println(obj);
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
-
+    protected final void Print(int obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    protected final void Print(bool obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    protected final void Print(double obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    protected final void Print(long obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    protected final void Print(char obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    protected final void Print(Object obj)
+    {
+        System.out.println(GetTimeDataSequence() + obj);
+    }
+    protected final void Print(Behaviour obj)
+    {
+        System.out.println(GetTimeDataSequence() + obj.toString());
+    }
 
     public final SceneObject GetSceneObject(String name, bool throwIfNotFound)
     {

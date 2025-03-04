@@ -1,0 +1,102 @@
+package scripts.core.train;
+
+import com.nolimitscoaster.SceneObjectElement;
+import com.nolimitscoaster.Simulator;
+import com.nolimitscoaster.FrameListener;
+import com.nolimitscoaster.NoLimits;
+import com.nolimitscoaster.Tools;
+
+import scripts.core.math.Mathf;
+
+public abstract class Restraint extends Object implements FrameListener
+{
+    private Simulator m_Simulator = null;
+    protected SceneObjectElement m_RestraintElement = null;
+
+    protected static final float MIN_ACTIVATION = 0.0f;
+    protected static final float MAX_ACTIVATION = 1.0f;
+    private float m_CurrentActivation = MIN_ACTIVATION;
+
+    public float OpeningTime = 2.0f;
+    public float ClosingTime = 0.5f;
+
+    protected static final int STATE_CLOSED = 0;
+    protected static final int STATE_OPENING = 1;
+    protected static final int STATE_OPEN = 2;
+    protected static final int STATE_CLOSING = 3;
+    private int m_State = STATE_CLOSED;
+
+    private float m_DelayDeviation = 0.5f;
+
+    public Restraint(SceneObjectElement restraintElement)
+    {
+        m_RestraintElement = restraintElement;
+        m_Simulator = NoLimits.getSimulator();
+    }
+
+    public void Open()
+    {
+        if(m_State == STATE_CLOSED || m_State == STATE_CLOSING)
+        {
+            m_State = STATE_OPENING;
+            m_Simulator.addFrameListener(this);
+                // Apply deviation if closed
+            if(m_CurrentActivation == MIN_ACTIVATION)
+                m_CurrentActivation -= Mathf.Random(0.0f, m_DelayDeviation);
+        }
+    }
+    public void Close()
+    {
+        if(m_State == STATE_OPEN || m_State == STATE_OPENING)
+        {
+            m_State = STATE_CLOSING;
+            m_Simulator.addFrameListener(this);
+                // Apply deviation if open
+            if(m_CurrentActivation == MAX_ACTIVATION)
+                m_CurrentActivation += Mathf.Random(0.0f, m_DelayDeviation);
+        }
+    }
+
+    protected abstract void Update(float activation);
+
+    public final void onNextFrame()
+    {
+        float tick = m_Simulator.getCurSimulationTickSec();
+
+        switch(m_State)
+        {
+            case STATE_CLOSING:
+            {
+                if(m_CurrentActivation > MIN_ACTIVATION)
+                {
+                    m_CurrentActivation -= tick * (1.0f / ClosingTime);
+                }
+                else
+                {
+                    m_CurrentActivation = MIN_ACTIVATION;
+                    m_State = STATE_CLOSED;
+                }
+                break;
+            }
+            case STATE_OPENING:
+            {
+                if(m_CurrentActivation < MAX_ACTIVATION)
+                {
+                    m_CurrentActivation += tick * (1.0f / OpeningTime);
+                }
+                else
+                {
+                    m_CurrentActivation = MAX_ACTIVATION;
+                    m_State = STATE_OPEN;
+                }
+                break;
+            }
+            case STATE_OPEN:
+            case STATE_CLOSED:
+                m_Simulator.removeFrameListener(this);
+                break;
+        }
+
+        Update((float)Tools.cubicRamp(Mathf.Clamp01(m_CurrentActivation)));
+    }
+}

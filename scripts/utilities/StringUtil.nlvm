@@ -49,14 +49,18 @@ public class StringUtil
     public static bool IsStringNumber(String string)
     {
         bool isFullNumber = true;
-        char[] chars = string.toCharArray();
+        char[] chars = RemoveWhiteSpace(string).toCharArray();
 
         int decimals = 0;
 
         for(int i = 0; i < chars.length; i++)
         {
             bool isNumber = IsCharNumber(chars[i]);
-            if(chars[i] == '.') decimals++;
+            if(chars[i] == '.')
+            {
+                decimals++;
+                continue;
+            } 
             if(!isNumber) return false;
         }
 
@@ -136,5 +140,18 @@ public class StringUtil
             return (char)(dec - 32);
         }
         return c;
+    }
+
+    public static String RemoveWhiteSpace(String string)
+    {
+        StringBuilder builder = new StringBuilder();
+        char[] chars = string.toCharArray();
+        for(int i = 0; i < chars.length; ++i)
+        {
+            if(chars[i] == '\r' || chars[i] == '\n' || chars[i] == '\t' || chars[i] == ' ')
+                continue;
+            builder.append(chars[i]);
+        }
+        return builder.toString();
     }
 }

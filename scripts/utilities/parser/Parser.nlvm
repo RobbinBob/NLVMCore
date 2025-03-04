@@ -51,9 +51,6 @@ public final class Parser
         String id = string.substring(0, splitPoint);
         String content = string.substring(splitPoint + 1);
 
-        System.out.println("Pair id " + id);
-        System.out.println("Pair value " + content);
-
         Pair pair = new Pair();
         pair.Id = id;
 

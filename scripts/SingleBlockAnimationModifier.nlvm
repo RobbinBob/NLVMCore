@@ -2,9 +2,6 @@ package scripts;
 
 import scripts.modifiers.*;
 import scripts.utilities.*;
-import scripts.ISetableBogie;
-import scripts.TrainHandler;
-import scripts.TrainWrapper;
 import scripts.core.*;
 import scripts.utilities.parser.*;
 
@@ -195,7 +192,6 @@ public class SingleBlockAnimationModifier extends Behaviour implements ICarModif
                 }
                 if(!IsFwdAnimationComplete()) break;
                 m_AnimationState = ANIMATION_STATE_END;
-                Print("Animation ended");
                 break;
             }
             case ANIMATION_STATE_END:
@@ -208,8 +204,6 @@ public class SingleBlockAnimationModifier extends Behaviour implements ICarModif
                     m_Section.setBrakesOff();
                     m_Section.setTransportsOff();
                     m_NextBlock.setState(STATE_APPROACHING);
-
-                    Print(TryGetBlockState(m_Block));
                 }
                 else if(TryGetBlockState(m_Block) == STATE_LEAVING || TryGetBlockState(m_Block) == Block.STATE_OCCUPIED)
                 {

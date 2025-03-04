@@ -1,6 +1,4 @@
 package scripts.modifiers;
-import nlvm.math3d.*;
-import scripts.ISetableBogie;
 
 public interface IBogieModifier
 {
