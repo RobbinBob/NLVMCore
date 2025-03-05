@@ -16,7 +16,8 @@
                     "return": "void",
                     "args": [
                         {
-                            "matrix": "nlvm.math3d.Matrix4x4f"
+                            "name": "matrix",
+                            "type": "nlvm.math3d.Matrix4x4f"
                         }
                     ]
                 },
@@ -26,13 +27,14 @@
                     "return": "void",
                     "args": [
                         {
-                            "object" : "nlvm.lang.Object"
+                            "name": "object",
+                            "type" : "nlvm.lang.Object"
                         }
                     ]
                 },
                 {
                     "name": "GetData",
-                    "accesspr": "public",
+                    "accessor": "public",
                     "return": "nlvm.lang.Object"
                 }
             ]
@@ -53,7 +55,8 @@
                     "return": "void",
                     "args": [
                         {
-                            "tick": "float"
+                            "name": "tick",
+                            "type": "float"
                         }
                     ]
                 }
