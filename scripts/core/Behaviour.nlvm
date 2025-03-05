@@ -143,7 +143,6 @@ public abstract class Behaviour extends Script
     {
         System.out.println(GetTimeDataSequence() + obj.toString());
     }
-
     public final SceneObject GetSceneObject(String name, bool throwIfNotFound)
     {
         SceneObject go = sim.getSceneObject(name);

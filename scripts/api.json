@@ -125,6 +125,134 @@
                     ]
                 }
             ]
+        },
+        {
+            "full_name": "scripts.core.Behaviour",
+            "extends": "com.nolimitscoaster.Script",
+            "type": "abstract class",
+            "description": "Base class for scripts to inherit from for attaching to SceneObjects",
+            "methods": [
+                {
+                    "name": "onInit",
+                    "accessor": "public",
+                    "return": "bool"
+                },
+                {
+                    "name": "toString",
+                    "accessor": "public",
+                    "return": "nlvm.lang.String"
+                },
+                {
+                    "name": "GetFloatParameter",
+                    "accessor": "protected final",
+                    "return": "float",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetDoubleParameter",
+                    "accessor": "protected final",
+                    "return": "double",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetIntegerParameter",
+                    "accessor": "protected final",
+                    "return": "int",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetStringParameter",
+                    "accessor": "protected final",
+                    "return": "nlvm.lang.String",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetBoolParameter",
+                    "accessor": "protected final",
+                    "return": "bool",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetCoasterParameter",
+                    "accessor": "protected final",
+                    "return": "com.nolimitscoaster.Coaster",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetTriggerParameter",
+                    "accessor": "protected final",
+                    "return": "com.nolimitscoaster.TrackTrigger",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetBlockParameter",
+                    "accessor": "protected final",
+                    "return": "com.nolimitscoaster.Block",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetSpecialTrackParameter",
+                    "accessor": "protected final",
+                    "return": "com.nolimitscoaster.SpecialTrack",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetResourcePathParameter",
+                    "accessor": "protected final",
+                    "return": "com.nolimitscoaster.ResourcePath",
+                    "args": [
+                        {
+                            "name": "name",
+                            "type": "nlvm.lang.String"
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
