@@ -3,7 +3,10 @@
         {
             "full_name": "scripts.CoasterBogie",
             "extends": "scripts.core.Behaviour",
-            "implements": "ISetableBogie",
+            "implements": [
+                "ISetableBogie"
+            ],
+            "type": "class",
             "methods": [
                 {
                     "name": "onInit",
@@ -42,7 +45,10 @@
         {
             "full_name": "scripts.CoasterCar",
             "extends": "scripts.core.Behaviour",
-            "implements": "ISetableCar",
+            "implements": [
+                "ISetableCar"
+            ],
+            "type": "class",
             "methods": [
                 {
                     "name": "onInit",
