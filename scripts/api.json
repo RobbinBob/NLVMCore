@@ -7,6 +7,21 @@
                 "ISetableBogie"
             ],
             "type": "class",
+            "constructors": [
+                {
+                    "accessor": "public",
+                    "args": [
+                        {
+                            "name": "carCount",
+                            "type": "int"
+                        },
+                        {
+                            "name": "bogieCount",
+                            "type": "int"
+                        }
+                    ]
+                }
+            ],
             "methods": [
                 {
                     "name": "onInit",
