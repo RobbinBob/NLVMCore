@@ -7,21 +7,6 @@
                 "ISetableBogie"
             ],
             "type": "class",
-            "constructors": [
-                {
-                    "accessor": "public",
-                    "args": [
-                        {
-                            "name": "carCount",
-                            "type": "int"
-                        },
-                        {
-                            "name": "bogieCount",
-                            "type": "int"
-                        }
-                    ]
-                }
-            ],
             "methods": [
                 {
                     "name": "onInit",
@@ -78,6 +63,64 @@
                         {
                             "name": "tick",
                             "type": "float"
+                        }
+                    ]
+                },
+                {
+                    "name": "SetMatrix",
+                    "accessor": "public",
+                    "return": "void",
+                    "args": [
+                        {
+                            "name": "matrix",
+                            "type": "nlvm.math3d.Matrix4x4f"
+                        }
+                    ]
+                },
+                {
+                    "name": "SetData",
+                    "accessor": "public",
+                    "return": "void",
+                    "args": [
+                        {
+                            "name": "object",
+                            "type": "nlvm.lang.Object"
+                        }
+                    ]
+                },
+                {
+                    "name": "GetData",
+                    "accessor": "public",
+                    "return": "nlvm.lang.Object"
+                },
+                {
+                    "name": "GetCoaster",
+                    "accessor": "public",
+                    "return": "com.nolimitscoaster.Coaster"
+                },
+                {
+                    "name": "GetTrain",
+                    "accessor": "public",
+                    "return": "com.nolimitscoaster.Train"
+                },
+                {
+                    "name": "GetTrainIndex",
+                    "accessor": "public",
+                    "return": "int"
+                },
+                {
+                    "name": "GetCarIndex",
+                    "accessor": "public",
+                    "return": "int"
+                },
+                {
+                    "name": "MakeCoasterCarDescriptorFromFile",
+                    "accessor": "protected",
+                    "return": "scripts.CoasterCarDescriptor",
+                    "args": [
+                        {
+                            "name": "resource",
+                            "type": "nlvm.lang.String"
                         }
                     ]
                 }
