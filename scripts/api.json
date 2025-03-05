@@ -1,36 +1,63 @@
 {
-    "Classes": {
-        "scripts.CoasterBogie": {
+    "classes": [
+        {
+            "full_name": "scripts.CoasterBogie",
             "extends": "scripts.core.Behaviour",
             "implements": "ISetableBogie",
-            "methods": {
-                "onInit": {
+            "methods": [
+                {
+                    "name": "onInit",
                     "accessor": "public",
                     "return": "bool"
                 },
-                "SetMatrix": {
+                {
+                    "name": "SetMatrix",
                     "accessor": "public",
                     "return": "void",
-                    "args": {
-                        "matrix": {
-                            "type": "nlvm.math3d.Matrix4x4f"
+                    "args": [
+                        {
+                            "matrix": "nlvm.math3d.Matrix4x4f"
                         }
-                    }
+                    ]
                 },
-                "SetData": {
+                {
+                    "name": "SetData",
                     "accessor": "public",
                     "return": "void",
-                    "args": {
-                        "object": {
-                            "type": "nlvm.lang.Object"
+                    "args": [
+                        {
+                            "object" : "nlvm.lang.Object"
                         }
-                    }
+                    ]
                 },
-                "GetData": {
+                {
+                    "name": "GetData",
                     "accesspr": "public",
                     "return": "nlvm.lang.Object"
                 }
-            }
+            ]
+        },
+        {
+            "full_name": "scripts.CoasterCar",
+            "extends": "scripts.core.Behaviour",
+            "implements": "ISetableCar",
+            "methods": [
+                {
+                    "name": "onInit",
+                    "accessor": "public",
+                    "return": "bool" 
+                },
+                {
+                    "name": "onNextFrame",
+                    "accessor": "public",
+                    "return": "void",
+                    "args": [
+                        {
+                            "tick": "float"
+                        }
+                    ]
+                }
+            ]
         }
-    }
+    ]
 }
