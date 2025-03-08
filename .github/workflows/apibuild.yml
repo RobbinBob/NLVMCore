@@ -1,0 +1,38 @@
+name: Update NLVMCore API
+
+on: pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout-repository
+      - uses: actions/checkout@v2 # Open the repository
+        with:
+          ref: ${{ github.head_ref }}
+          sparse-checkout: |
+            scripts
+            build/api.json
+
+      - name: setup-python
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' # Install python 3.10
+
+      - name: install-python-packages
+        run:
+          python -m pip install --upgrade pip
+          pip install -r build/python-requirements.txt
+
+      - name: run-python
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python build/api-builder.py
+
+      - name: commit-changes # Creates the commit to the repository
+        run:
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git diff-index --quiet HEAD || (git commit -a -m "Updated API")
+          git push origin ${{ github.head_ref }}
