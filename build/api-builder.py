@@ -37,7 +37,6 @@ else:
 
 
 ### MODIFY JSON OBJECT HERE
-
 ### -----------------------
 
 # Modify the set the new data

@@ -1,4 +1,3 @@
-/// <root>
 package scripts.core;
 
 import com.nolimitscoaster.*;
@@ -12,7 +11,7 @@ public abstract class Behaviour extends Script
     /// </member>
     protected SceneObject m_SceneObject = null;
     /// <member>
-    /// <decs>The name of the SceneObject.</desc>
+    /// <desc>The name of the SceneObject.</desc>
     /// </member>
     protected String m_Name = "";
 
@@ -170,4 +169,3 @@ public abstract class Behaviour extends Script
     }
 }
 /// </class>
-/// </root>
