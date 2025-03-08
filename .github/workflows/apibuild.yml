@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout-repository
-      - uses: actions/checkout@v2 # Open the repository
+        uses: actions/checkout@v2 # Open the repository
         with:
           ref: ${{ github.head_ref }}
           sparse-checkout: |
@@ -15,7 +15,7 @@ jobs:
             build/api.json
 
       - name: setup-python
-      - uses: actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10' # Install python 3.10
 
