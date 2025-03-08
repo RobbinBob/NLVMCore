@@ -25,7 +25,7 @@ pr_files = response.json()
 
 print("Filed changed in this PR:")
 for file in pr_files:
-    print(f"- {file["filename"]}")
+    print(f"- {file['filename']}")
 
 # Load and update api.json
 api_json_path = "build/api.json"
