@@ -21,7 +21,7 @@ jobs:
 
       - name: install-python-packages
         run:
-          python3 -m pip install -r python-requirements.txt
+          python3 -m pip install -r build/python-requirements.txt
 
       - name: run-python
         env:
