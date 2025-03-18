@@ -11,7 +11,7 @@ with open(GITHUB_EVENT_PATH, "r") as event_file:
 
 # Extract PR number and repo details
 pr_number = event_data["pull_request"]["number"]
-repo_full_name = event_data["repository"["full_name"]]
+repo_full_name = event_data["repository"]["full_name"]
 
 print(f"Processing PR #{pr_number} in repository {repo_full_name}")
 
