@@ -22,7 +22,7 @@ jobs:
       - name: install-python-packages
         run:
           python3 -m pip install --upgrade pip
-          python3 -m pip install build/python-requirements.txt
+          python3 -m pip install -r python-requirements.txt
 
       - name: run-python
         env:
