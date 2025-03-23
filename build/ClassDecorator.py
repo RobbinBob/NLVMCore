@@ -292,7 +292,14 @@ class ClassDecorator:
             if xml is None:
                 raise Exception(f"Unable to extract XML information from file: {self.file_path}")
 
-            root = ET.fromstring(xml)
+            try:
+                root = ET.fromstring(xml)
+            except ET.ParseError as pe:
+                print(pe)
+                print(f"XML: {xml}")
+                return None
+            
+
             if not validateRootElement(root):
                 raise Exception(f"Invalid root tag in XML: {root.tag}")
             
