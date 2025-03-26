@@ -171,7 +171,7 @@ class ClassDecorator:
                 # Checks for a type that its extending
                 extends_index = findIndexOf(declarationElements, SCRIPT_EXTENDS)
                 if extends_index > -1:
-                    json[JSON_TAG_EXTENDS] = declarationElements[extends_index + 1]
+                    json[JSON_TAG_EXTENDS] = declarationElements[extends_index + 1].strip()
                 # Checks for types that its implementing
                 implements_index = findIndexOf(declarationElements, SCRIPT_IMPLEMENTS)
                 if implements_index > -1:
@@ -195,7 +195,7 @@ class ClassDecorator:
                 # Checks for a type that its extending
                 extends_index = findIndexOf(declarationElements, SCRIPT_EXTENDS)
                 if extends_index > -1: # NLVM is weird as doesnt let you extend multiple interfaces
-                    json[JSON_TAG_EXTENDS] = declarationElements[extends_index + 1]
+                    json[JSON_TAG_EXTENDS] = declarationElements[extends_index + 1].strip()
                 # Checks for an implementation keyword that would be illegal
                 implements_index = findIndexOf(declarationElements, SCRIPT_IMPLEMENTS)
                 if implements_index > -1:
