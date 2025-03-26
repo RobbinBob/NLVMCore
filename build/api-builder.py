@@ -45,11 +45,11 @@ for file in pr_files:
         status = file['status']
         if status == 'added' or status == 'modified':
             class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
-            print(f"Generated data {json.dump(class_json)}")
+            print(f"Generated data {json.dumps(class_json, indent=2)}")
             api_data['classes'][class_json[ClassDecorator.JSON_TAG_TYPENAME]] = class_json
         elif status == 'removed':
             class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
-            print(f"Generated data {json.dump(class_json)}")
+            print(f"Generated data {json.dumps(class_json, indent=2)}")
             api_data['classes'].pop(class_json[ClassDecorator.JSON_TAG_TYPENAME], None)
 
 
