@@ -42,15 +42,37 @@ for file in pr_files:
     if '.nlvm' in file['filename']:
         print("NLVM file found")
 
+        def findIndexOfType(haystack: list[any], type: any) -> int:
+            index = 0
+            for item in haystack:
+                if item[ClassDecorator.JSON_TAG_TYPENAME] == type:
+                    return index
+                index += 1
+            return -1
+
         status = file['status']
         if status == 'added' or status == 'modified':
             class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
             print(f"Generated data {json.dumps(class_json, indent=2)}")
-            api_data['classes'][class_json[ClassDecorator.JSON_TAG_TYPENAME]] = class_json
+
+            type_index = findIndexOfType(api_data['classes'], class_json[ClassDecorator.JSON_TAG_TYPENAME])
+            if type_index < 0: # Not found
+                print(f"{class_json[ClassDecorator.JSON_TAG_TYPENAME]} not found in api, creating new index!")
+                api_data['classes'].append(class_json)
+            else: # Found
+                print(f"{class_json[ClassDecorator.JSON_TAG_TYPENAME]} found in api, updating entry!")
+                api_data['classes'][type_index] = class_json
+
         elif status == 'removed':
             class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
             print(f"Generated data {json.dumps(class_json, indent=2)}")
-            api_data['classes'].pop(class_json[ClassDecorator.JSON_TAG_TYPENAME], None)
+
+            type_index = findIndexOfType(api_data['classes'], class_json[ClassDecorator.JSON_TAG_TYPENAME])
+            if type_index < 0:
+                print(f"{class_json[ClassDecorator.JSON_TAG_TYPENAME]} not found in api, unable to remove!")
+            else:
+                print(f"{class_json[ClassDecorator.JSON_TAG_TYPENAME]} found in api, removing!")
+                api_data['classes'].pop(type_index, None)
 
 
 
