@@ -32,7 +32,7 @@ if os.path.exists(api_json_path):
         api_data = json.load(json_file)
 else:
     print(f"{api_json_path} is invalid!")
-    api_data = {}
+    api_data = {'classes': []}
 
 
 print("Files changed in this PR:")
