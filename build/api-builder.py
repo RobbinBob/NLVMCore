@@ -39,12 +39,18 @@ else:
 print("Filed changed in this PR:")
 for file in pr_files:
     print(f"- {file['filename']}")
-    if 'nlvm' in file['filename']:
+    if '.nlvm' in file['filename']:
         print("NLVM file found")
-        decorator = ClassDecorator.ClassDecorator(file['filename'])
-        class_json = decorator.decorate()
-        print(f"Generated data {json.dump(class_json)}")
-        api_data['classes'][class_json[ClassDecorator.JSON_TAG_TYPENAME]] = class_json
+
+        status = file['status']
+        if status == 'added' or status == 'modified':
+            class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
+            print(f"Generated data {json.dump(class_json)}")
+            api_data['classes'][class_json[ClassDecorator.JSON_TAG_TYPENAME]] = class_json
+        elif status == 'removed':
+            class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
+            print(f"Generated data {json.dump(class_json)}")
+            api_data['classes'].pop(class_json[ClassDecorator.JSON_TAG_TYPENAME], None)
 
 
 

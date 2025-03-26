@@ -4,7 +4,7 @@ import com.nolimitscoaster.*;
 import com.nolimitscoaster.Script;
 import nlvm.math3d.Matrix4x4f;
 
-/// <class>
+/// <class ignore="true">
 /// <desc>Class Description.</desc>
 public abstract class TestClass extends Script implements MyInterfaceA, MyInterfaceB
 {
