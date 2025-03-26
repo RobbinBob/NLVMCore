@@ -283,6 +283,10 @@ class ClassDecorator:
                 method_object[JSON_TAG_RETURN_DESC] = NO_DESC
                 if method.find(XML_RETURN_TAG) is not None:
                     method_object[JSON_TAG_RETURN_DESC] = method.find(XML_RETURN_TAG).text
+
+                method_object[JSON_TAG_DESCRIPTION] = NO_DESC
+                if method.find(XML_DESC_TAG) is not None:
+                    method_object[JSON_TAG_DESCRIPTION] = method.find(XML_DESC_TAG).text
                 
                 method_arr.append(method_object)
             json[JSON_TAG_METHODS] = method_arr
