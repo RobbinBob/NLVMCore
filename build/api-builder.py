@@ -29,6 +29,7 @@ api_json_path = "build/api.json"
 if os.path.exists(api_json_path):
     print(f"{api_json_path} is valid!")
     with open(api_json_path, "r") as json_file:
+        print(f"Old file: {json_file}")
         api_data = json.load(json_file)
 else:
     print(f"{api_json_path} is invalid!")
@@ -78,5 +79,6 @@ for file in pr_files:
 # Modify the set the new data
 with open(api_json_path, "w") as json_file:
     json.dump(api_data, json_file, indent=4)
+    print(f"New file: {json_file}")
 
 print("Updated api.json file successfully")
