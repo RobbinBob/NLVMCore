@@ -36,7 +36,7 @@ else:
     api_data = {}
 
 
-print("Filed changed in this PR:")
+print("Files changed in this PR:")
 for file in pr_files:
     print(f"- {file['filename']}")
     if '.nlvm' in file['filename']:
