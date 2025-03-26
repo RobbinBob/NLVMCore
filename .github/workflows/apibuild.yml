@@ -27,11 +27,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python build/api-builder.py
-
-      - name: commit-changes # Creates the commit to the repository
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff-index --quiet HEAD || git commit -a -m "Updated API"
-          git push origin ${{ github.head_ref }}

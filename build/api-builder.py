@@ -1,6 +1,5 @@
 import os
 import json
-import xml
 import requests
 
 import ClassDecorator
