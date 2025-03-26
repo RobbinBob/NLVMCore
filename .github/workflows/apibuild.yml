@@ -26,9 +26,15 @@ jobs:
       - name: run-python
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_FILE: ${{ vars.API_FILE }}
         run: python build/api-builder.py
 
-      - name: Commit and Push Changes
+      - name: check-changes
+        run: |
+          git status
+          git diff ${{ vars.API_FILE }}
+
+      - name: push-changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"

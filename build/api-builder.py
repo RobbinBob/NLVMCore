@@ -25,7 +25,7 @@ response = requests.get(pr_files_url, headers=headers)
 pr_files = response.json()
 
 # Load and update api.json
-api_json_path = "build/api.json"
+api_json_path = os.getenv("API_FILE")
 if os.path.exists(api_json_path):
     print(f"{api_json_path} is valid!")
     with open(api_json_path, "r") as json_file:
