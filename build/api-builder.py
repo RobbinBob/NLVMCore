@@ -79,6 +79,7 @@ for file in pr_files:
 # Modify the set the new data
 with open(api_json_path, "w") as json_file:
     json.dump(api_data, json_file, indent=4)
+    print(api_data)
     print(f"New file: {json_file}")
 
 print("Updated api.json file successfully")
