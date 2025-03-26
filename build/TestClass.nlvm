@@ -1,0 +1,74 @@
+package testapi;
+
+import com.nolimitscoaster.*;
+import com.nolimitscoaster.Script;
+import nlvm.math3d.Matrix4x4f;
+
+/// <class ignore="true">
+/// <desc>Class Description.</desc>
+public abstract class TestClass extends Script implements MyInterfaceA, MyInterfaceB
+{
+    /// <member>
+    /// <desc>MemberTypeA Description.</desc>
+    /// </member>
+    public MyTypeA MemberTypeA = null;
+    /// <member>
+    /// <desc>MemberTypeB Description.</desc>
+    /// </member>
+    public MyTypeB MemberTypeB=null;
+    /// <member>
+    /// <desc>MemberTypeC Description.</desc>
+    /// </member>
+    public MyTypeC MemberTypeC ;
+    /// <member>
+    /// <desc>MemberTypeD Description.</desc>
+    /// </member>
+    public MyTypeD MemberTypeD= null;
+    /// <member>
+    /// <desc>MemberTypeE Description.</desc>
+    /// </member>
+    public MyTypeE MemberTypeE =null;
+
+    /// <method>
+    /// <desc>MyEmptyMethod Description.</desc>
+    /// </method>
+    public void MyEmptyMethod()
+    {
+    }
+    /// <method>
+    /// <desc>MyReturnMethod Description.</desc>
+    /// <return>MyReturnMethod Return Description.</return>
+    /// </method>
+    public MyTypeA MyReturnMethod()
+    {
+    }
+    /// <method>
+    /// <desc>MyArgMethod Description.</desc>
+    /// <arg name="arg">arg Description.</arg>
+    /// </method>
+    public void MyArgMethod(MyTypeA arg)
+    {
+    }
+    /// <method>
+    /// <desc>MyMultipleArgMethod Description.</desc>
+    /// <arg name="argA">argA Description.</arg>
+    /// <arg name="argB">argB Description.</arg>
+    /// <arg name="argC">argC Description.</arg>
+    /// </method>
+    public void MyMultipleArgMethod(MyTypeA argA, MyTypeB argB, MyTypeC argC)
+    {
+    }
+    /// <method>
+    /// <desc>MyAbstractMethod Description.</desc>
+    /// </method>
+    public abstract void MyAbstractMethod()
+    {
+    }
+    /// <method>
+    /// <desc>MyAbstractArgMethod Description.</desc>
+    /// </method>
+    public abstract MyTypeA MyAbstractArgMethod(MyTypeA argA, MyTypeB argB)
+    {
+    }
+}
+///</class>

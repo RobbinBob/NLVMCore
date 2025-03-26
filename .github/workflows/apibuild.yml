@@ -12,7 +12,7 @@ jobs:
           ref: ${{ github.head_ref }}
           sparse-checkout: |
             scripts
-            build/api.json
+            ${{ vars.API_FILE }}
 
       - name: setup-python
         uses: actions/setup-python@v4
@@ -21,18 +21,29 @@ jobs:
 
       - name: install-python-packages
         run:
-          python -m pip install --upgrade pip
-          pip install -r build/python-requirements.txt
+          python3 -m pip install -r build/python-requirements.txt
 
       - name: run-python
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_FILE: ${{ vars.API_FILE }}
         run: python build/api-builder.py
 
-      - name: commit-changes # Creates the commit to the repository
-        run:
+      - name: check-changes
+        run: |
+          git status
+          git diff ${{ vars.API_FILE }}
+
+      - name: push-changes
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "Updated API")
-          git push origin ${{ github.head_ref }}
+          git add ${{ vars.API_FILE }}
+          if git diff --cached --quiet; then
+            echo "No changed to commit"
+          else
+            git commit -m "Updated API JSON based on PR changed"
+            git push origin ${{ github.head_ref }}
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

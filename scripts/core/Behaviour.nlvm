@@ -2,11 +2,23 @@ package scripts.core;
 
 import com.nolimitscoaster.*;
 
+/// <class>
+/// <desc>Base class to derrive any SceneObject attached scripts.</desc>
 public abstract class Behaviour extends Script
 {
+    /// <member>
+    /// <desc>Reference to the SceneObject this Behaviour is attached to.</desc>
+    /// </member>
     protected SceneObject m_SceneObject = null;
+    /// <member>
+    /// <desc>The name of the SceneObject.</desc>
+    /// </member>
     protected String m_Name = "";
 
+    /// <method>
+    /// <desc>Called once to initialize the object.</desc>
+    /// <return>True if success otherwise false.</return>
+    /// </method>
     public bool onInit()
     {
             // The whole reason this exists is because im too lazy to write this
@@ -17,6 +29,10 @@ public abstract class Behaviour extends Script
         m_Name = m_SceneObject.getName();
         return true;
     }
+    
+    /// <method>
+    /// <desc>A String representation of this Behaviour.</desc>
+    /// </method>
     public String toString()
     {
         return "Behaviour" + getEntityId();
@@ -152,3 +168,4 @@ public abstract class Behaviour extends Script
         return go;
     }
 }
+/// </class>

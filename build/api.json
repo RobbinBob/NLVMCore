@@ -1,0 +1,173 @@
+{
+    "classes": [
+        {
+            "type": "class",
+            "package": "testapi",
+            "libraries": [
+                "com.nolimitscoaster",
+                "com.nolimitscoaster.Script",
+                "nlvm.math3d.Matrix4x4f"
+            ],
+            "accessor": "public abstract",
+            "name": "TestClass",
+            "full_name": "testapi.TestClass",
+            "extends": "Script",
+            "implements": [
+                "MyInterfaceA",
+                "MyInterfaceB"
+            ],
+            "description": "Class Description.",
+            "members": [
+                {
+                    "name": "MemberTypeA",
+                    "type": "MyTypeA",
+                    "accessor": "public",
+                    "description": "MemberTypeA Description."
+                },
+                {
+                    "name": "MemberTypeB",
+                    "type": "MyTypeB",
+                    "accessor": "public",
+                    "description": "MemberTypeB Description."
+                },
+                {
+                    "name": "MemberTypeC",
+                    "type": "MyTypeC",
+                    "accessor": "public",
+                    "description": "MemberTypeC Description."
+                },
+                {
+                    "name": "MemberTypeD",
+                    "type": "MyTypeD",
+                    "accessor": "public",
+                    "description": "MemberTypeD Description."
+                },
+                {
+                    "name": "MemberTypeE",
+                    "type": "MyTypeE",
+                    "accessor": "public",
+                    "description": "MemberTypeE Description."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "MyEmptyMethod",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied."
+                },
+                {
+                    "args": [],
+                    "name": "MyReturnMethod",
+                    "return": "MyTypeA",
+                    "accessor": "public",
+                    "return_desc": "MyReturnMethod Return Description."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "MyTypeA",
+                            "name": "arg",
+                            "description": "arg Description."
+                        }
+                    ],
+                    "name": "MyArgMethod",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "MyTypeA",
+                            "name": "argA",
+                            "description": "argA Description."
+                        },
+                        {
+                            "type": "MyTypeB",
+                            "name": "argB",
+                            "description": "argB Description."
+                        },
+                        {
+                            "type": "MyTypeC",
+                            "name": "argC",
+                            "description": "argC Description."
+                        }
+                    ],
+                    "name": "MyMultipleArgMethod",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied."
+                },
+                {
+                    "args": [],
+                    "name": "MyAbstractMethod",
+                    "return": "void",
+                    "accessor": "public abstract",
+                    "return_desc": "No Description Supplied."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "MyTypeA",
+                            "name": "argA",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "MyTypeB",
+                            "name": "argB",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "MyAbstractArgMethod",
+                    "return": "MyTypeA",
+                    "accessor": "public abstract",
+                    "return_desc": "No Description Supplied."
+                }
+            ]
+        },
+        {
+            "type": "class",
+            "package": "scripts.core",
+            "libraries": [
+                "com.nolimitscoaster"
+            ],
+            "accessor": "public abstract",
+            "name": "Behaviour",
+            "full_name": "scripts.core.Behaviour",
+            "extends": "Script",
+            "description": "Base class to derrive any SceneObject attached scripts.",
+            "members": [
+                {
+                    "name": "m_SceneObject",
+                    "type": "SceneObject",
+                    "accessor": "protected",
+                    "description": "Reference to the SceneObject this Behaviour is attached to."
+                },
+                {
+                    "name": "m_Name",
+                    "type": "String",
+                    "accessor": "protected",
+                    "description": "The name of the SceneObject."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "onInit",
+                    "return": "bool",
+                    "accessor": "public",
+                    "return_desc": "True if success otherwise false."
+                },
+                {
+                    "args": [],
+                    "name": "toString",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied."
+                }
+            ]
+        }
+    ]
+}

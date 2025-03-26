@@ -27,3 +27,4 @@
 # Ignore custom working directories
 Custom/
 ParticleTest/
+build/__pycache__/
