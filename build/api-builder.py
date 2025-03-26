@@ -53,7 +53,7 @@ for file in pr_files:
         status = file['status']
         if status == 'added' or status == 'modified':
             class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
-            print(f"Generated data {json.dumps(class_json, indent=2)}")
+            #print(f"Generated data {json.dumps(class_json, indent=2)}")
 
             type_index = findIndexOfType(api_data['classes'], class_json[ClassDecorator.JSON_TAG_TYPENAME])
             if type_index < 0: # Not found
@@ -65,7 +65,7 @@ for file in pr_files:
 
         elif status == 'removed':
             class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
-            print(f"Generated data {json.dumps(class_json, indent=2)}")
+            #print(f"Generated data {json.dumps(class_json, indent=2)}")
 
             type_index = findIndexOfType(api_data['classes'], class_json[ClassDecorator.JSON_TAG_TYPENAME])
             if type_index < 0:

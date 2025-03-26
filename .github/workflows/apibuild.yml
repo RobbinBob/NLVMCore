@@ -29,7 +29,7 @@ jobs:
         run: python build/api-builder.py
 
       - name: commit-changes # Creates the commit to the repository
-        run:
+        run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
