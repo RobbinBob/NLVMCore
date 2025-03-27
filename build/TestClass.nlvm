@@ -36,9 +36,9 @@ public abstract class TestClass extends Script implements MyInterfaceA, MyInterf
     public TestClass()
     {
     }
-    /// <method>
+    /// <constructor>
     /// <desc>TestClass arg constructor Description.</desc>
-    /// </method>
+    /// </constructor>
     public TestClass(MyTypeA arg)
     {
     }
