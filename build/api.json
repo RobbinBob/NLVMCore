@@ -55,14 +55,16 @@
                     "name": "MyEmptyMethod",
                     "return": "void",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied."
+                    "return_desc": "No Description Supplied.",
+                    "description": "MyEmptyMethod Description."
                 },
                 {
                     "args": [],
                     "name": "MyReturnMethod",
                     "return": "MyTypeA",
                     "accessor": "public",
-                    "return_desc": "MyReturnMethod Return Description."
+                    "return_desc": "MyReturnMethod Return Description.",
+                    "description": "MyReturnMethod Description."
                 },
                 {
                     "args": [
@@ -75,7 +77,8 @@
                     "name": "MyArgMethod",
                     "return": "void",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied."
+                    "return_desc": "No Description Supplied.",
+                    "description": "MyArgMethod Description."
                 },
                 {
                     "args": [
@@ -98,14 +101,16 @@
                     "name": "MyMultipleArgMethod",
                     "return": "void",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied."
+                    "return_desc": "No Description Supplied.",
+                    "description": "MyMultipleArgMethod Description."
                 },
                 {
                     "args": [],
                     "name": "MyAbstractMethod",
                     "return": "void",
                     "accessor": "public abstract",
-                    "return_desc": "No Description Supplied."
+                    "return_desc": "No Description Supplied.",
+                    "description": "MyAbstractMethod Description."
                 },
                 {
                     "args": [
@@ -123,7 +128,47 @@
                     "name": "MyAbstractArgMethod",
                     "return": "MyTypeA",
                     "accessor": "public abstract",
-                    "return_desc": "No Description Supplied."
+                    "return_desc": "No Description Supplied.",
+                    "description": "MyAbstractArgMethod Description."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [],
+                    "accessor": "public",
+                    "description": "TestClass constructor Description."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "MyTypeA",
+                            "name": "arg",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "TestClass arg constructor Description."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "MyTypeA",
+                            "name": "argA",
+                            "description": "argA Description."
+                        },
+                        {
+                            "type": "MyTypeB",
+                            "name": "argB",
+                            "description": "argB Description."
+                        },
+                        {
+                            "type": "MyTypeC",
+                            "name": "argC",
+                            "description": "argC Description."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Test class multiple arg constructor Description."
                 }
             ]
         },

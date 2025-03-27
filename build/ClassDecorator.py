@@ -34,6 +34,7 @@ XML_CONSTRUCTOR_TAG = 'constructor'
 XML_DESC_TAG = 'desc'
 XML_RETURN_TAG = 'return'
 XML_ARG_TAG = 'arg'
+XML_CONSTRUCTOR_TAG = 'constructor'
 
 JSON_TAG_ACCESSOR = 'accessor'
 JSON_TAG_TYPE = 'type'
@@ -49,6 +50,7 @@ JSON_TAG_MEMBERS = 'members'
 JSON_TAG_METHODS = 'methods'
 JSON_TAG_DESCRIPTION = 'description'
 JSON_TAG_RETURN_DESC = "return_desc"
+JSON_TAG_CONSTRUCTORS = 'constructors'
 
 # TODO - Search the cached types to see if we can fetch the full qualified name
 def getFullTypeName(shortname: str, libraries: list[str] = None):
@@ -290,6 +292,31 @@ class ClassDecorator:
                 
                 method_arr.append(method_object)
             json[JSON_TAG_METHODS] = method_arr
+        def createConstructors(constructors: list[ET.Element], json: list[any]):
+            constructor_arr = []
+            for constructor in constructors:
+                constructor_data = constructor.find(XML_DATA_TAG)
+                if constructor_data is None:
+                    raise Exception(f"Constructor lacks the '{XML_DATA_TAG}' tag")
+                constructor_declaration = cleanWhiteSpaceArr(constructor_data.text.split(SPACE))
+
+                constructor_object = {}
+
+                argument_open_index = findIndexOfChr(constructor_declaration, OPENPAREN)
+                argument_close_index = findIndexOfChr(constructor_declaration, CLOSEPAREN)
+
+                constructor_object[JSON_TAG_ARGS] = []
+                argument_declaration = combineStrList(constructor_declaration[argument_open_index:argument_close_index+1], SPACE).split(OPENPAREN)[1].split(CLOSEPAREN)[0]
+                if len(argument_declaration) > 0:
+                    createArgs(argument_declaration, constructor.findall(XML_ARG_TAG), constructor_object)
+
+                constructor_object[JSON_TAG_ACCESSOR] = constructor_declaration[0]
+                constructor_object[JSON_TAG_DESCRIPTION] = NO_DESC
+                if constructor.find(XML_DESC_TAG) is not None:
+                    constructor_object[JSON_TAG_DESCRIPTION] = constructor.find(XML_DESC_TAG).text
+
+                constructor_arr.append(constructor_object)
+            json[JSON_TAG_CONSTRUCTORS] = constructor_arr
 
         with open(self.file_path, 'r') as file:
             xml, package, library = extractXML(file)
@@ -324,5 +351,9 @@ class ClassDecorator:
             json_object[JSON_TAG_METHODS] = []
             if root.find(XML_METHOD_TAG) is not None:
                 createMethods(root.findall(XML_METHOD_TAG), json_object)
+
+            json_object[JSON_TAG_CONSTRUCTORS] = []
+            if root.find(XML_CONSTRUCTOR_TAG) is not None:
+                createConstructors(root.findall(XML_CONSTRUCTOR_TAG), json_object)
 
             return json_object

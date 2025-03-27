@@ -29,6 +29,30 @@ public abstract class TestClass extends Script implements MyInterfaceA, MyInterf
     /// </member>
     public MyTypeE MemberTypeE =null;
 
+
+    /// <constructor>
+    /// <desc>TestClass constructor Description.</desc>
+    /// </constructor>
+    public TestClass()
+    {
+    }
+    /// <constructor>
+    /// <desc>TestClass arg constructor Description.</desc>
+    /// </constructor>
+    public TestClass(MyTypeA arg)
+    {
+    }
+    /// <constructor>
+    /// <desc>Test class multiple arg constructor Description.</desc>
+    /// <arg name="argA">argA Description.</arg>
+    /// <arg name="argB">argB Description.</arg>
+    /// <arg name="argC">argC Description.</arg>
+    /// </constructor>
+    public TestClass(MyTypeA argA, MyTypeB argB, MyTypeC argC)
+    {
+    }
+
+
     /// <method>
     /// <desc>MyEmptyMethod Description.</desc>
     /// </method>
