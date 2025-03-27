@@ -1,8 +1,9 @@
-// Wrapper that helps manage and run animated objects
-package scripts.core;
+package scripts.core.animation;
 
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
+
+import scripts.core.NullReferenceException;
 
 /// <class>
 /// <desc>A class that allows easy manipulation of SceneObject's with key-frame animations.</desc>
@@ -33,11 +34,11 @@ public final class Animation implements FrameListener
     /// </constructor>
     public Animation(SceneObject sceneObject)
     {
-        if(sceneObject == null) System.throwRuntimeException("Null reference exception for argument sceneObject");
+        if(sceneObject == null) NullReferenceException.Throw("Null reference exception for argument sceneObject");
         m_SceneObject = sceneObject;
 
         m_AnimationLength = (float)m_SceneObject.getMaxKeyFrameAnimationTime();
-        if(m_AnimationLength <= 0) System.throwRuntimeException("Could not find animation on argument sceneObject");
+        if(m_AnimationLength <= 0) InvalidAnimationException.Throw("Could not find animation on argument sceneObject");
         if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
         m_CanLoop = false;
     }
@@ -48,11 +49,11 @@ public final class Animation implements FrameListener
     /// </constructor>
     public Animation(SceneObject sceneObject, bool canLoop)
     {
-        if(sceneObject == null) System.throwRuntimeException("Null reference exception for argument sceneObject");
+        if(sceneObject == null) NullReferenceException.Throw("Null reference exception for argument sceneObject");
         m_SceneObject = sceneObject;
 
         m_AnimationLength = (float)m_SceneObject.getMaxKeyFrameAnimationTime();
-        if(m_AnimationLength <= 0) System.throwRuntimeException("Could not find animation on argument sceneObject");
+        if(m_AnimationLength <= 0) InvalidAnimationException.Throw("Could not find animation on argument sceneObject");
         if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
         m_CanLoop = canLoop;
     }
@@ -78,7 +79,7 @@ public final class Animation implements FrameListener
     {
         startTime /= FRAME_RATE;
 
-        if(startTime >= m_AnimationLength || startTime < 0) System.throwRuntimeException("Out of range exception for argument startTime");
+        if(startTime >= m_AnimationLength || startTime < 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
         m_Simulator.addFrameListener(this);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;
@@ -96,8 +97,8 @@ public final class Animation implements FrameListener
         startTime /= FRAME_RATE;
         stopTime /= FRAME_RATE;
 
-        if(startTime > m_AnimationLength || startTime < 0) System.throwRuntimeException("Out of range exception for argument startTime");
-        if(stopTime > m_AnimationLength || stopTime < startTime) System.throwRuntimeException("Out of range exception for argument stopTime " + stopTime + " needs to be within range " + startTime + " to " + m_AnimationLength);
+        if(startTime > m_AnimationLength || startTime < 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
+        if(stopTime > m_AnimationLength || stopTime < startTime) InvalidAnimationException.Throw("Argument 'stopTime' is out of range, argument needs to be within range " + startTime + " to " + m_AnimationLength);
         m_Simulator.addFrameListener(this);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;
@@ -126,7 +127,7 @@ public final class Animation implements FrameListener
     {
         startTime /= FRAME_RATE;
 
-        if(startTime > m_AnimationLength || startTime <= 0) System.throwRuntimeException("Out of range exception for argument startTime");
+        if(startTime > m_AnimationLength || startTime <= 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
         m_Simulator.addFrameListener(this);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;
@@ -142,7 +143,7 @@ public final class Animation implements FrameListener
     public void SetFrame(float timeStamp)
     {
         float time = frame / FRAME_RATE;
-        if(time < 0 || time > m_AnimationLength) System.throwRuntimeException("Out of range exception for argument frame");
+        if(time < 0 || time > m_AnimationLength) InvalidAnimationException.Throw("Argument 'timeStamp' is out of range of animation length");
         m_SceneObject.setKeyFrameAnimationTime(time);
         m_CurrentAnimationTime = time;
     }
