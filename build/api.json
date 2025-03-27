@@ -51,20 +51,6 @@
             ],
             "methods": [
                 {
-                    "args": [
-                        {
-                            "type": "MyTypeA",
-                            "name": "arg",
-                            "description": "No Description Supplied."
-                        }
-                    ],
-                    "name": "TestClass",
-                    "return": "public",
-                    "accessor": "",
-                    "return_desc": "No Description Supplied.",
-                    "description": "TestClass arg constructor Description."
-                },
-                {
                     "args": [],
                     "name": "MyEmptyMethod",
                     "return": "void",
@@ -151,6 +137,17 @@
                     "args": [],
                     "accessor": "public",
                     "description": "TestClass constructor Description."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "MyTypeA",
+                            "name": "arg",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "TestClass arg constructor Description."
                 },
                 {
                     "args": [
