@@ -27,16 +27,16 @@ public abstract class Behaviour extends Script
         m_Name = m_SceneObject.getName();
         return Start();
     }
-    public final onNextFrame(float tick)
+    public final void onNextFrame(float tick)
     {
         m_PreviousTick = tick;
         Update(tick);
     }
-    public final onLateUpdate()
+    public final void onLateUpdate()
     {
         LateUpdate(m_PreviousTick);
     }
-    public final onExit()
+    public final void onExit()
     {
         Destroy();
     }

@@ -9,6 +9,6 @@ public abstract class Exception extends Object
 
     protected static String CreateThrowMessage(String typeName, String message)
     {
-        return typeName + " | Message: " + message
+        return typeName + " | Message: " + message;
     }
 }

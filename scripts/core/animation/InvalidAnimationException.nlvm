@@ -12,6 +12,6 @@ public class InvalidAnimationException extends Exception
     }
     public static void Throw(String message)
     {
-        System.throwRuntimeException(CreateThrowMessage("InvalidAnimationException", message))
+        System.throwRuntimeException(CreateThrowMessage("InvalidAnimationException", message));
     }
 }
