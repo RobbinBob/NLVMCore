@@ -15,11 +15,9 @@ public abstract class Behaviour extends Script
     /// </member>
     protected String m_Name = "";
 
-    /// <method>
-    /// <desc>Called once to initialize the object.</desc>
-    /// <return>True if success otherwise false.</return>
-    /// </method>
-    public bool onInit()
+    private float m_PreviousTick = 0.0f;
+
+    public final bool onInit()
     {
             // The whole reason this exists is because im too lazy to write this
         m_SceneObject = sim.getSceneObjectForEntityId(getParentEntityId());
@@ -27,9 +25,48 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Unable to find SceneObject, is this Behaviour attached to one?");
 
         m_Name = m_SceneObject.getName();
-        return true;
+        return Start();
     }
-    
+    public final onNextFrame(float tick)
+    {
+        m_PreviousTick = tick;
+        Update(tick);
+    }
+    public final onLateUpdate()
+    {
+        LateUpdate(m_PreviousTick);
+    }
+    public final onExit()
+    {
+        Destroy();
+    }
+
+    /// <method>
+    /// <desc>Called once to initialize the object.</desc>
+    /// <return>Pass True to allow it to continue excecution, otherwise False to cancel.</return>
+    /// </method>
+    public abstract bool Start();
+    /// <method>
+    /// <desc>Called each frame the Behaviour is active.</desc>
+    /// <arg name="tick">The time-step the previous frame took to execute.</arg>
+    /// </method>
+    public void Update(float tick) 
+    {
+    }
+    /// <method>
+    /// <desc>Called each frame after Update is called.</desc>
+    /// <arg name="tick">The time-step the previous frame took to execute.</arg>
+    /// </method>
+    public void LateUpdate(float tick)
+    {
+    }
+    /// <method>
+    /// <desc>Called before this Behaviour is destroyed.</desc>
+    /// </method>
+    public void Destroy()
+    {
+    }
+
     /// <method>
     /// <desc>A String representation of this Behaviour.</desc>
     /// </method>
@@ -38,7 +75,10 @@ public abstract class Behaviour extends Script
         return "Behaviour" + getEntityId();
     }
 
-
+    /// <method>
+    /// <desc>Attempts to retrieve a float parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final float GetFloatParameter(String name)
     {
         Double val = m_SceneObject.getDoubleParameter(name);
@@ -46,6 +86,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
         return val.floatValue();
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a double parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final double GetDoubleParameter(String name)
     {
         Double val = m_SceneObject.getDoubleParameter(name);
@@ -53,6 +97,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
         return val.doubleValue();
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a int parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final int GetIntegerParameter(String name)
     {
         Integer val = m_SceneObject.getIntegerParameter(name);
@@ -60,6 +108,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'Integer' with name '" + name + "' on SceneObject");
         return val.intValue();
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a String parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final String GetStringParameter(String name)
     {
         String val = m_SceneObject.getStringParameter(name);
@@ -67,6 +119,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'String' with name '" + name + "' on SceneObject");
         return val;
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a bool parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final bool GetBoolParameter(String name)
     {
         Boolean val = m_SceneObject.getBooleanParameter(name);
@@ -74,6 +130,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'Boolean' with name '" + name + "' on SceneObject");
         return val.boolValue();
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a Coaster parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final Coaster GetCoasterParameter(String name)
     {
         Coaster val = m_SceneObject.getCoasterParameter(name);
@@ -81,6 +141,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'Coaster' with name '" + name + "' on SceneObject");
         return val;
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a TrackTrigger parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final TrackTrigger GetTriggerParameter(String name)
     {
         TrackTrigger val = m_SceneObject.getTrackTriggerParameter(name);
@@ -88,6 +152,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'TrackTrigger' with name '" + name + "' on SceneObject");
         return val;
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a Block parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final Block GetBlockParameter(String name)
     {
         Block val = m_SceneObject.getBlockParameter(name);
@@ -95,6 +163,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");
         return val;
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a Section parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final Section GetSectionParameter(String name)
     {
         Block val = m_SceneObject.getBlockParameter(name);
@@ -102,6 +174,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");   
         return val.getSection();
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a SpecialTrack parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final SpecialTrack GetSpecialTrackParameter(String name)
     {
         SpecialTrack val = m_SceneObject.getSpecialTrackParameter(name);
@@ -109,6 +185,10 @@ public abstract class Behaviour extends Script
             NullReferenceException.Throw("COuld not find parameter of type 'SpecialTrack' with name '" + name + "' on SceneObject");   
         return val;
     }
+    /// <method>
+    /// <desc>Attempts to retrieve a ResourcePath parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// </method>
     protected final ResourcePath GetResourcePathParameter(String name)
     {
         ResourcePath val = m_SceneObject.getResourcePathParameter(name);
@@ -123,48 +203,82 @@ public abstract class Behaviour extends Script
         return "Elapsed Time: " + String.valueOf((float)sim.getCurAbsSimulationTimeSec()) + " | ";
     } 
 
+    
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(String obj)
     {
         System.out.println(GetTimeDataSequence() + obj);
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(float obj)
     {
         System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(int obj)
     {
         System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(bool obj)
     {
         System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(double obj)
     {
         System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(long obj)
     {
         System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(char obj)
     {
         System.out.println(GetTimeDataSequence() + String.valueOf(obj));
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(Object obj)
     {
-        System.out.println(GetTimeDataSequence() + obj);
+        System.out.println(GetTimeDataSequence() + obj.toString());
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
     protected final void Print(Behaviour obj)
     {
         System.out.println(GetTimeDataSequence() + obj.toString());
     }
+
+
+    /// <method>
+    /// <desc>Attempts to fetch a SceneObject with a given name.</desc>
+    /// <arg name="name">The id of the SceneObject to fetch.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
     public final SceneObject GetSceneObject(String name, bool throwIfNotFound)
     {
         SceneObject go = sim.getSceneObject(name);
         if(go == null && throwIfNotFound)
-            System.throwRuntimeException("Behaviour: Could not find SceneObject with name '" + name + "'");
-
+            NullReferenceException.Throw("Behaviour: Could not find SceneObject with name '" + name + "'");
         return go;
     }
 }

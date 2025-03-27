@@ -4,7 +4,9 @@ package scripts.core;
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
 
-public class Animation implements FrameListener
+/// <class>
+/// <desc>A class that allows easy manipulation of SceneObject's with key-frame animations.</desc>
+public final class Animation implements FrameListener
 {
     private static Simulator m_Simulator = null;
 
@@ -15,13 +17,20 @@ public class Animation implements FrameListener
     private float m_AnimationStartTime= 0.0f;
     private float m_AnimationEndTime = 0.0f;
 
-    private static final float FRAME_RATE = 24.f;
+    /// <member>
+    /// <desc>The fixed frame-rate that all Animations run on.</desc>
+    /// </member>
+    public static final float FRAME_RATE = 24.f;
 
     private bool m_CanLoop = false;
     private bool m_Play = false;
 
     private bool m_PlayForward = true;
 
+    /// <constructor>
+    /// <desc>Creates a new Animation for a SceneObject.</desc>
+    /// <arg name="sceneObject">The SceneObject which has a key-frame animation.</arg>
+    /// </constructor>
     public Animation(SceneObject sceneObject)
     {
         if(sceneObject == null) System.throwRuntimeException("Null reference exception for argument sceneObject");
@@ -32,6 +41,11 @@ public class Animation implements FrameListener
         if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
         m_CanLoop = false;
     }
+    /// <constructor>
+    /// <desc>Creates a new Animation for a SceneObject.</desc>
+    /// <arg name="sceneObject">The SceneObject which has a key-frame animation.</arg>
+    /// <arg name="canLoop">Specifies if the animation should loop repeatedly.</arg>
+    /// </constructor>
     public Animation(SceneObject sceneObject, bool canLoop)
     {
         if(sceneObject == null) System.throwRuntimeException("Null reference exception for argument sceneObject");
@@ -44,7 +58,9 @@ public class Animation implements FrameListener
     }
 
 
-        // Begin playing animation
+    /// <method>
+    /// <desc>Begins playing the animation.</desc>
+    /// </method>
     public void Play()
     {
         m_Simulator.addFrameListener(this);
@@ -54,7 +70,10 @@ public class Animation implements FrameListener
         m_Play = true;
         m_PlayForward = true;
     }
-        // Begin playing animation from start time
+    /// <method>
+    /// <desc>Begins playing the animation from a time stamp.</desc>
+    /// <arg name="startTime">The time(seconds) to begin playing from.</arg>
+    /// </method>
     public void Play(float startTime)
     {
         startTime /= FRAME_RATE;
@@ -67,7 +86,11 @@ public class Animation implements FrameListener
         m_Play = true;
         m_PlayForward = true;
     }
-        // Begin playing animation from start time to end time
+    /// <method>
+    /// <desc>Begins playing the animation from a time stamp and stops at another.</desc>
+    /// <arg name="startTime">The time(seconds) to begin playing from.</arg>
+    /// <arg name="stopTime">The time(seconds) to stop playing when reached.</arg>
+    /// </method>
     public void Play(float startTime, float stopTime)
     {
         startTime /= FRAME_RATE;
@@ -83,6 +106,9 @@ public class Animation implements FrameListener
         m_PlayForward = true;
     }
 
+    /// <method>
+    /// <desc>Plays the animation in reverse from the end.</desc>
+    /// </method>
     public void PlayBackward()
     {
         m_Simulator.addFrameListener(this);
@@ -92,6 +118,10 @@ public class Animation implements FrameListener
         m_Play = true;
         m_PlayForward = false;
     }
+    /// <method>
+    /// <desc>Plays the animation in reverse from a time-stamp.</desc>
+    /// <arg name="startTime">The time(seconds) to begin playing backwards from.</arg>
+    /// </method>
     public void PlayBackward(float startTime)
     {
         startTime /= FRAME_RATE;
@@ -105,8 +135,11 @@ public class Animation implements FrameListener
         m_PlayForward = false;
     }
 
-
-    public void SetFrame(int frame)
+    /// <method>
+    /// <desc>Sets the animation to a given time-stamp.</desc>
+    /// <arg name="timeStamp">The time(seconds) to set the animation to.</arg>
+    /// </method>
+    public void SetFrame(float timeStamp)
     {
         float time = frame / FRAME_RATE;
         if(time < 0 || time > m_AnimationLength) System.throwRuntimeException("Out of range exception for argument frame");
@@ -114,55 +147,96 @@ public class Animation implements FrameListener
         m_CurrentAnimationTime = time;
     }
 
-        // Halt animation or resume animation
+    /// <method>
+    /// <desc>Pauses and resumes the animation.</desc>
+    /// <return>False if stopped playing, otherwise True if began playing.</return>
+    /// </method>
     public bool Pause()
     {
         m_Play = !m_Play;
         return m_Play;
     }
-        // Stop animation and reset
+    /// <method>
+    /// <desc>Stops the animation and resets it.</desc>
+    /// </method>
     public void Stop()
     {
         m_Simulator.removeFrameListener(this);
         m_Play = false;
     }
 
-
-    public float GetCurrentFrame()
+    /// <method>
+    /// <desc>Gets the current frame of the animation.</desc>
+    /// <return>Returns the current frame the animation is at.</return>
+    /// </method>
+    public int GetCurrentFrame()
     {
-        return m_CurrentAnimationTime * FRAME_RATE;
+        return (int)Mathf.Floor(m_CurrentAnimationTime * FRAME_RATE);
     }
-    public float GetAnimationFrames()
+    /// <method>
+    /// <desc>Gets the total frames in the animation.</desc>
+    /// <return>Returns the overall animation frames.</return>
+    /// </method>
+    public int GetAnimationFrames()
     {
-        return m_AnimationLength * FRAME_RATE;
+        return (int)Mathf.Floor(m_AnimationLength * FRAME_RATE);
     }
+    /// <method>
+    /// <desc>Gets the total time of the animation.</desc>
+    /// <return>Returns the overall animation time(seconds).</return>
+    /// </method>
     public float GetAnimationTime()
     {
         return m_AnimationLength;
     }
 
+    /// <method>
+    /// <desc>Gets the state of the animation if it's playing regardless of direction.</desc>
+    /// <return>True if playing, otherwise False.</return>
+    /// </method>
     public bool IsPlaying()
     {
         return m_Play;
     }
+    /// <method>
+    /// <desc>Gets the state of the animation if it's playing in reverse.</desc>
+    /// <return>True if playing, otherwise False.</return>
+    /// </method>
     public bool IsPlayingBackward()
     {
         return m_Play && !m_PlayForward;
     }
+    /// <method>
+    /// <desc>Gets the state of the animation if it's playing forward.</desc>
+    /// <return>True if playing, otherwise False.</return>
+    /// </method>
     public bool IsPlayingForward()
     {
         return m_PlayForward;
     }
 
-
+    /// <method>
+    /// <desc>Gets the current Matrix4x4f of the animation.</desc>
+    /// <return>The Matrix4x4f representation of the SceneObject.</return>
+    /// </method>
     public Matrix4x4f GetSceneObjectMatrix()
     {
         return m_SceneObject.getMatrix();
     }
+    /// <method>
+    /// <desc>Gets the current Matrix4x4f of the animation.</desc>
+    /// <return>The Matrix4x4f representation of the SceneObjectElement.</return>
+    /// <arg name="index">The index of the child to fetch the Matrix4x4f.</arg>
+    /// </method>
     public Matrix4x4f GetChildMatrix(int index)
     {
         return m_SceneObject.getElementAt(index).getAbsoluteMatrix();
     }
+    /// <method>
+    /// <desc>Gets the current Matrix4x4f of the animation.</desc>
+    /// <return>The Matrix4x4f representation of the SceneObjectElement.</return>
+    /// <arg name="name">The name of the child to fetch the Matrix4x4f.</arg>
+    /// </method>
     public Matrix4x4f GetChildMatrix(String name)
     {
         return m_SceneObject.getElementForName(name).getAbsoluteMatrix();
@@ -250,3 +324,4 @@ public class Animation implements FrameListener
         m_SceneObject.setKeyFrameAnimationTime(m_CurrentAnimationTime);
     }
 }
+/// </class>
