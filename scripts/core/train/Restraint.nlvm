@@ -8,6 +8,8 @@ import com.nolimitscoaster.Tools;
 
 import scripts.core.math.Mathf;
 
+/// <class>
+/// <desc>Base class for restraints to inherit from for animating.</desc>
 public abstract class Restraint extends Object implements FrameListener
 {
     private Simulator m_Simulator = null;
@@ -17,8 +19,18 @@ public abstract class Restraint extends Object implements FrameListener
     protected static final float MAX_ACTIVATION = 1.0f;
     private float m_CurrentActivation = MIN_ACTIVATION;
 
+    /// <member>
+    /// <desc>The time taken for the restraint to fully open.</desc>
+    /// </member>
     public float OpeningTime = 2.0f;
+    /// <member>
+    /// <desc>The time taken for the restraint to fully close.</desc>
+    /// </member>
     public float ClosingTime = 0.5f;
+    /// <member>
+    /// <desc>The deviation(seconds) this restraint could have before beginning animation.</desc>
+    /// </member>
+    public float DelayDeviation = 0.5f;
 
     protected static final int STATE_CLOSED = 0;
     protected static final int STATE_OPENING = 1;
@@ -26,14 +38,20 @@ public abstract class Restraint extends Object implements FrameListener
     protected static final int STATE_CLOSING = 3;
     private int m_State = STATE_CLOSED;
 
-    private float m_DelayDeviation = 0.5f;
 
+    /// <constructor>
+    /// <desc>Creates a new Restraint attached to a SceneObjectElement.</desc>
+    /// <arg name="restraintElement">The SceneObjectElement this restraint will animate.</arg>
+    /// </constructor>
     public Restraint(SceneObjectElement restraintElement)
     {
         m_RestraintElement = restraintElement;
         m_Simulator = NoLimits.getSimulator();
     }
 
+    /// <method>
+    /// <desc>Begins opening the restraint.</desc>
+    /// </method>
     public void Open()
     {
         if(m_State == STATE_CLOSED || m_State == STATE_CLOSING)
@@ -42,9 +60,12 @@ public abstract class Restraint extends Object implements FrameListener
             m_Simulator.addFrameListener(this);
                 // Apply deviation if closed
             if(m_CurrentActivation == MIN_ACTIVATION)
-                m_CurrentActivation -= Mathf.Random(0.0f, m_DelayDeviation);
+                m_CurrentActivation -= Mathf.Random(0.0f, DelayDeviation);
         }
     }
+    /// <method>
+    /// <desc>Begins closing the restraint.</desc>
+    /// </method>
     public void Close()
     {
         if(m_State == STATE_OPEN || m_State == STATE_OPENING)
@@ -53,10 +74,14 @@ public abstract class Restraint extends Object implements FrameListener
             m_Simulator.addFrameListener(this);
                 // Apply deviation if open
             if(m_CurrentActivation == MAX_ACTIVATION)
-                m_CurrentActivation += Mathf.Random(0.0f, m_DelayDeviation);
+                m_CurrentActivation += Mathf.Random(0.0f, DelayDeviation);
         }
     }
 
+    /// <method>
+    /// <desc>Called each frame the restraint is updating.</desc>
+    /// <arg name="activation">The current restraint activation 0 being closed, 1 fully open.</arg>
+    /// </method>
     protected abstract void Update(float activation);
 
     public final void onNextFrame()
@@ -100,3 +125,4 @@ public abstract class Restraint extends Object implements FrameListener
         Update((float)Tools.cubicRamp(Mathf.Clamp01(m_CurrentActivation)));
     }
 }
+/// </class>

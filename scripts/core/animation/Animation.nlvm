@@ -8,7 +8,7 @@ import scripts.core.math.Mathf;
 
 /// <class>
 /// <desc>A class that allows easy manipulation of SceneObject's with key-frame animations.</desc>
-public final class Animation implements FrameListener
+public final class Animation extends Object implements FrameListener
 {
     private static Simulator m_Simulator = null;
 

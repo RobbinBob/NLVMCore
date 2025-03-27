@@ -3,7 +3,8 @@ package scripts.core;
 
 import com.nolimitscoaster.*;
 
-
+/// <class>
+/// <desc>A class that allows for basic timer functionality.</desc>
 public final class Timer extends Object implements FrameListener
 {
     private Simulator m_Simulator = null;
@@ -13,13 +14,19 @@ public final class Timer extends Object implements FrameListener
     private bool m_IsTimerComplete = false;
     private bool m_IsRunning = false;
 
+    /// <constructor>
+    /// <desc>Creates a new Timer with a specific timespan.</desc>
+    /// <arg name="timespan">The time-span(seconds) the timer will run for.</arg>
+    /// </constructor>
     public Timer(float timespan)
     {
         m_Simulator = NoLimits.getSimulator();
         m_Timespan = timespan;
-    }   
+    }
 
-
+    /// <method>
+    /// <desc>Begins the timer.</desc>
+    /// </method>
     public void Start()
     {
         if(m_IsRunning)
@@ -27,6 +34,9 @@ public final class Timer extends Object implements FrameListener
         m_Simulator.addFrameListener(this);
         m_IsRunning = true;
     }
+    /// <method>
+    /// <desc>Stops the timer.</desc>
+    /// </method>
     public void Stop()
     {
         if(!m_IsRunning)
@@ -34,32 +44,52 @@ public final class Timer extends Object implements FrameListener
         m_Simulator.removeFrameListener(this);
         m_IsRunning = false;
     }
+    /// <method>
+    /// <desc>Resets the timer to its initial state.</desc>
+    /// </method>
     public void Reset()
     {
         m_IsTimerComplete = false;
         m_ElapsedTime = 0.0f;
     }
+    /// <method>
+    /// <desc>Stops and resets the timer.</desc>
+    /// </method>
     public void StopAndReset()
     {
         Stop();
         Reset();
     }
 
-
+    /// <method>
+    /// <desc>Gets the current state of the timer.</desc>
+    /// <return>True if timer has not completed, otherwise False.</return>
+    /// </method>
     public bool WaitForComplete()
     {
         return !m_IsTimerComplete;
     }
+    /// <method>
+    /// <desc>Gets the current running state of the timer.</desc>
+    /// <return>True if the timer is running, otherwise False.</return>
+    /// </method>
     public bool IsRunning()
     {
         return m_IsRunning;
     }
 
-    
+    /// <method>
+    /// <desc>Gets the current time elapsed.</desc>
+    /// <return>The amount of time(seconds) elapsed.</return>
+    /// </method>
     public float GetTime()
     {
         return m_ElapsedTime;
     }
+    /// <method>
+    /// <desc>Gets the current time as a percentage.</desc>
+    /// <return>The time represented as a percentage (0-1).</return>
+    /// </method>
     public float GetTimePercent()
     {
         return m_ElapsedTime / m_Timespan;
@@ -80,3 +110,4 @@ public final class Timer extends Object implements FrameListener
         }
     }
 }
+/// </class>
