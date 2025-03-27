@@ -13,4 +13,4 @@ store_next_line = False
 temp_path = os.path.join(os.path.dirname(__file__), "TestClass.nlvm")
 
 decorator = ClassDecorator.ClassDecorator(temp_path)
-decorator.decorate()
+print(json.dumps(decorator.decorate(), indent=4))
