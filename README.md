@@ -72,4 +72,52 @@ if (statement)
 - Classes, Interfaces, Methods, Members and Constructors with a scope accessible outside of the encompassing type should include [documentation tags](#documenting-code).
 
 ## Documenting Code
-Code documentation is incredibly important for you and others viewing your code, it helps make understanding new code faster and point out important information you might need. I've been working on a system to make code documentation easier and provide a good basis to develop syntax tools.
+> [!WARNING]
+> Documentation is required for contributions to this API
+ 
+Code documentation is incredibly important for you and others viewing your code, it helps make understanding new code faster and point out important information you might need. I've been working on a system to make code documentation easier and provide a good basis to develop syntax tools. The documentation tags follow XML standards but are prefixed by /// to signify it is a documentation tag.  
+
+All documented code in the library has its API generated and can be accessed for viewing at [NLVMCore API - Under work](invalid)
+
+For a quick overview of the tags:
+- \<class\> - Declares a class that will have documentation, must be before class declaration and have a closing tag after closing brace.
+- \<interface\> - Declares an interface that will have documentation, must be before the interface declaration and have a closing tag after the closing brace.
+- \<member\> - Declares a types member for documentation, must be placed before the member declaration.
+- \<method\> - Declares a types method for documentation, must be placed before the method declaration.
+- \<constructor\> - Declares a types constructor for documentation, must be placed before the constructor declaration.
+- \<desc\> - Declares a description that will be displayed for the parent tag, only useable within tags; \<class\>, \<interface\>, \<member\>, \<method\> and \<constructor\>.
+- \<return\> - Declares a return description that will be displayed for the method, only useable with tags; \<method\>.
+- \<arg name=""\> - Declares an argument description that will be displayed for the parent tag, only useable within tags; \<method\> and \<constructor\>.
+
+A basic example of using documentation tags on a class:
+```java
+/// <class>
+/// <desc>Base class that all animals can extend to inherit basic functionality.</desc>
+public abstract class Animal extends Object
+{
+  /// <member>
+  /// <desc>The animals name.</desc>
+  /// </member>
+  public String Name = "Bob";
+
+  /// <constructor>
+  /// <desc>Creates a new Animal with name.</desc>
+  /// <arg name="animalName">The new name to give the animal.</arg>
+  /// </constructor>
+  public Animal(String animalName)
+  {
+    ...
+  }
+
+  /// <method>
+  /// <desc>When called the animal will make a noise.</desc>
+  /// </method>
+  public abstract void MakeNoise();
+  /// <method>
+  /// <desc>Attempts to attack an animal</desc>
+  /// <arg name="animalToAttack">The animal that will be attacked.</arg>
+  /// <method>
+  public abstract void AttackAnimal(Animal animalToAttack);
+}
+/// </class>
+```
