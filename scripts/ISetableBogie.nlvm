@@ -4,6 +4,8 @@ import com.nolimitscoaster.Coaster;
 import com.nolimitscoaster.Train;
 import nlvm.math3d.Vector3f;
 
+/// <interface>
+/// <desc>Exposes methods for custom bogies.</desc>
 public interface ISetableBogie extends ISetable
 {
     public Coaster GetCoaster();
@@ -18,3 +20,4 @@ public interface ISetableBogie extends ISetable
     // Cant extend multiple interfaces in this awful language
     public Object GetData();
 }
+/// </interface>

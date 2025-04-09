@@ -1,0 +1,13 @@
+package scripts;
+
+public final class Json
+{
+    private Json[] m_Children = new Json[0];
+
+    public Json()
+    {
+    }
+
+
+
+}

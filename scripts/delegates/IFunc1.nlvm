@@ -1,0 +1,6 @@
+package scripts.core.delegates;
+
+public interface IFunc1
+{
+    public void OnCalled(Object arg1);
+}

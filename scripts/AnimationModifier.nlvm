@@ -1,0 +1,194 @@
+package scripts;
+
+import com.nolimitscoaster.SceneObject;
+import com.nolimitscoaster.SceneObjectElement;
+import com.nolimitscoaster.ResourcePath;
+import com.nolimitscoaster.Tools;
+
+import scripts.modifiers.*;
+
+/// <class>
+/// <desc>Base type for simple animated train modifiers.</desc>
+public abstract class AnimationModifier extends Behaviour implements ICarModifier, IBogieModifier
+{
+    public static final String ANIMATED_ROOT_ELEMENT = "root";
+
+    public static final String PARAM_SCENEOBJECT_NAME = "sceneobject_name";
+    public static final String PARAM_ANIMATION_FILE = "animation_file";
+
+    public static final String SELF_REFERENCED_NAME = "*self";
+
+    protected SceneObject m_AnimatedObject = null;
+    protected SceneObjectElement m_AnimatedRoot = null;
+
+    protected Animation m_Animation = null;
+    protected int m_AnimationStart = -1;
+    protected int m_AnimationEnd = -1;
+    protected int m_ReturnAnimationStart = -1;
+    protected int m_ReturnAnimationEnd = -1;
+
+    protected static final int ANIMATION_SINGLE = 0;
+    protected static final int ANIMATION_DOUBLE = 1;
+    protected int m_AnimationMode = ANIMATION_SINGLE;
+
+
+    public bool Start()
+    {
+            // Fetch the SceneObject that has the animation, *self means this script instance
+        String animatedObjectName = GetStringParameter(PARAM_SCENEOBJECT_NAME);
+        if(animatedObjectName.equals(SELF_REFERENCED_NAME))
+        {
+            m_AnimatedObject = m_SceneObject;
+        }
+        else
+        {
+            m_AnimatedObject = GetSceneObject(animatedObjectName, true);
+        }
+
+            // Check that the fetched SceneObject has a valid animation and root element
+        if(m_AnimatedObject.getMaxKeyFrameAnimationTime() <= 0)
+            Exception.Throw("Could not find animation no SceneObject '" + animatedObjectName + "'");
+
+        m_AnimatedRoot = m_AnimatedObject.getElementForName(ANIMATED_ROOT_ELEMENT);
+        if(m_AnimatedRoot == null)
+            NullReferenceException.Throw("Could not find child element of '" + animatedObjectName + "' with name '" + ANIMATED_ROOT_ELEMENT + "'");
+
+            // Setup the animation information
+        m_Animation = new Animation(m_AnimatedObject);
+        ResourcePath animationFile = GetResourcePathParameter(PARAM_ANIMATION_FILE);
+        String animationString = Tools.loadTextFileFromResource(animationFile);
+
+            // Decode the animation file to fetch the key frame indexes
+        Pair[] pairs = Parser.MiniParse(animationString);
+        MutableInteger mutInteger = new MutableInteger();
+        bool success = false;
+        if(pairs.length == 2)
+        {
+            m_AnimationMode = ANIMATION_SINGLE;
+            success = pairs[0].TryGetInteger(mutInteger);
+            m_AnimationStart = mutInteger.GetValue();
+            success = pairs[1].TryGetInteger(mutInteger);
+            m_AnimationEnd = mutInteger.GetValue();
+        }
+        else if(pairs.length == 4)
+        {
+            m_AnimationMode = ANIMATION_DOUBLE;
+            success = pairs[0].TryGetInteger(mutInteger);
+            m_AnimationStart = mutInteger.GetValue();
+            success = pairs[1].TryGetInteger(mutInteger);
+            m_AnimationEnd = mutInteger.GetValue();
+            success = pairs[2].TryGetInteger(mutInteger);
+            m_ReturnAnimationStart = mutInteger.GetValue();
+            success = pairs[3].TryGetInteger(mutInteger);
+            m_ReturnAnimationEnd = mutInteger.GetValue();
+        }
+        else
+            Exception.Throw("Animation clip provided has an invalid format");
+
+        return true;
+    }
+
+
+    protected final bool IsPlayingFwdAnimation()
+    {
+        if(!m_Animation.IsPlaying())
+            return false;
+
+        int frame = m_Animation.GetCurrentFrame();
+        bool isPlayForward = m_Animation.IsPlayingForward();
+        return frame >= m_AnimationStart && frame <= m_AnimationEnd && isPlayForward;
+    }
+    protected final bool CanPlayFwdAnimation()
+    {
+        int frame = m_Animation.GetCurrentFrame();
+        return !m_Animation.IsPlaying() && frame == m_AnimationStart;
+    }
+    protected final bool TryPlayFwdAnimation()
+    {
+        if(!CanPlayFwdAnimation()) return false;
+        if(IsPlayingFwdAnimation()) return true;
+        m_Animation.Play(m_AnimationStart, m_AnimationEnd);
+        return true;
+    }
+    protected final bool IsFwdAnimationComplete()
+    {
+        if(m_Animation.IsPlaying())
+            return false;
+        
+        int frame = m_Animation.GetCurrentFrame();
+        return frame == m_AnimationEnd;
+    }
+
+    protected final bool IsPlayingBwdAnimation()
+    {
+        switch(m_AnimationMode)
+        {
+            case ANIMATION_SINGLE:
+                {
+                    if(!m_Animation.IsPlayingBackward()) 
+                        return false;
+                    int frame = m_Animation.GetCurrentFrame();
+                    bool isPlayBackward = !m_Animation.IsPlayingForward();
+                    return frame <= m_AnimationEnd && frame >= m_AnimationStart && isPlayBackward;
+                }
+            case ANIMATION_DOUBLE:
+                {
+                    if(!m_Animation.IsPlaying())
+                        return false;
+                    int frame = m_Animation.GetCurrentFrame();
+                    bool isPlayForward = m_Animation.IsPlayingForward();
+                    return frame >= m_ReturnAnimationStart && frame <= m_ReturnAnimationEnd && isPlayForward;
+                }
+        }
+        return false;
+    }
+    protected final bool CanPlayBwdAnimation()
+    {
+        switch(m_AnimationMode)
+        {
+            case ANIMATION_SINGLE:
+                {
+                    if(m_Animation.IsPlaying() || m_Animation.IsPlayingBackward()) 
+                        return false;
+                    int frame = m_Animation.GetCurrentFrame();
+                    return frame == m_AnimationEnd;
+                }
+            case ANIMATION_DOUBLE:
+                {
+                    if(m_Animation.IsPlaying())
+                        return false;
+                    int frame = m_Animation.GetCurrentFrame();
+                    return frame == m_ReturnAnimationStart;
+                }
+        }
+        return false;
+    }
+    protected final bool TryPlayBwdAnimation()
+    {
+        if(!CanPlayBwdAnimation()) return false;
+        if(IsPlayingBwdAnimation()) return true;
+
+        switch(m_AnimationMode)
+        {
+            case ANIMATION_SINGLE:
+                {
+                    m_Animation.PlayBackward(m_AnimationEnd);
+                    break;
+                }
+            case ANIMATION_DOUBLE:
+                {
+                    m_Animation.Play(m_ReturnAnimationStart, m_ReturnAnimationEnd);
+                    break;
+                }
+        }
+        return true;
+    }
+    protected final bool IsBwdAnimationComplete()
+    {
+        if(m_Animation.IsPlaying() || m_Animation.IsPlayingBackward())
+            return false;
+        int frame = m_Animation.GetCurrentFrame();
+        return frame == m_AnimationStart || frame == m_ReturnAnimationEnd;
+    }
+}
+/// </class>

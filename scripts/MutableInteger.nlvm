@@ -1,0 +1,16 @@
+package scripts;
+
+import nlvm.lang.Object;
+import nlvm.lang.Integer;
+
+public final class MutableInteger extends Object
+{
+    private int m_Value = 0;
+
+    public MutableInteger(){}
+    public MutableInteger(int value) { m_Value = value; }
+    public MutableInteger(Integer value) { m_Value = value.intValue(); }
+
+    public void SetValue(int value) { m_Value = value; }
+    public int GetValue() { return m_Value; }
+}

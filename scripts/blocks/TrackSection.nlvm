@@ -1,0 +1,75 @@
+package scripts.core.blocks;
+
+import com.nolimitscoaster.Block;
+import com.nolimitscoaster.Section;
+
+public abstract class TrackSection extends Object implements ITrackProcess
+{
+    protected Section m_Section = null;
+
+    public static final int E_TRANSPORT_OFF = 0;
+    public static final int E_TRANSPORT_FWD = 1;
+    public static final int E_TRANSPORT_FWD_LAUNCH = 2;
+    public static final int E_TRANSPORT_BWD = -1;
+    public static final int E_TRANSPORT_BWD_LAUNCH = -2;
+    private int m_TransportState = E_TRANSPORT_OFF;
+
+    public TrackSection(Section section)
+    {
+        m_Section = section;
+    }
+
+
+    public void SetTransportState(int transportState)
+    {
+        if(transportState < -2 || transportState > 2)
+            return;
+
+        switch(transportState)
+        {
+            case E_TRANSPORT_OFF:
+                m_Section.setTransportsOff();
+                break;
+            case E_TRANSPORT_FWD:
+                m_Section.setTransportsStandardFwdOn();
+                break;
+            case E_TRANSPORT_BWD:
+                m_Section.setTransportsStandardBwdOn();
+                break;
+            case E_TRANSPORT_FWD_LAUNCH:
+                m_Section.setTransportsLaunchFwdOn();
+                break;
+            case E_TRANSPORT_BWD_LAUNCH:
+                m_Section.setTransportsLaunchBwdOn();
+                break;
+        }
+
+        m_TransportState = transportState;
+    }
+    public int GetTransportState()
+    {
+        return m_TransportState;
+    }
+
+
+    public float GetDeviceSpeed()
+    {
+        return m_Section.getTransportCurrentSpeed();
+    }
+
+    public bool IsTrainOnTrackSection()
+    {
+        return m_Section.isTrainOnSection();
+    }
+
+    public abstract void Process();
+
+    public final Coaster GetCoaster()
+    {
+        m_Section.getCoaster();
+    }
+    public final Section GetSection()
+    {
+        return m_Section;
+    }
+}

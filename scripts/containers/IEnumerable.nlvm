@@ -1,0 +1,7 @@
+package scripts.containers;
+
+public interface IEnumerable 
+{
+    public Object[] ToArray();
+    public IEnumerator GetEnumerator();
+}

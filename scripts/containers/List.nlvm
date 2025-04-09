@@ -1,0 +1,105 @@
+package scripts.containers;
+
+import nlvm.util.Vector;
+
+public final class List extends Object implements IEnumerable
+{
+    private Vector m_Vector = null;
+
+
+    public List() 
+    {
+        m_Vector = new Vector();
+    }
+    public List(int capacity)
+    {
+        m_Vector = new Vector(capacity);
+    }
+    public List(int capacity, int capacityIncrement)
+    {
+        m_Vector = new Vector(capacity, capacityIncrement);
+    }
+    public List(IEnumerable enumerable)
+    {
+        Object[] arr = enumerable.ToArray();
+        m_Vector = new Vector(arr.length);
+        for(int i = 0; i < arr.length; ++i)
+            m_Vector.addElement(arr[i]);
+    }
+    public List(Object[] array)
+    {
+        m_Vector = new Vector(array.length);
+        for(int i = 0; i < array.length; ++i)
+            m_Vector.addElement(array[i]);
+    }
+
+
+    public int Count()
+    {
+        return m_Vector.size();
+    }
+    public bool Contains(Object object)
+    {
+        return m_Vector.contains(object);
+    }
+    public void Clear()
+    {
+        m_Vector.clear();
+    }
+
+
+    public void Insert(Object object)
+    {
+        m_Vector.addElement(object);
+    }
+    public void InsertAt(Object object, int index)
+    {
+        m_Vector.insertElementAt(object, index);
+    }
+
+    public void Remove(Object object)
+    {
+        m_Vector.removeElement(object);
+    }
+    public void RemoveAt(int index)
+    {
+        m_Vector.removeElementAt(index);
+    }
+
+    public void SetAt(Object object, int index)
+    {
+        m_Vector.setElementAt(object, index);
+    }
+    public Object At(int index)
+    {
+        return m_Vector.elementAt(index);
+    }
+
+
+    public Object PopBack()
+    {
+        int backIndex = m_Vector.size() - 1;
+        Object object = m_Vector.elementAt(backIndex);
+        m_Vector.removeElementAt(backIndex);
+        return object;
+    }
+    public Object PopFront()
+    {
+        Object object = m_Vector.elementAt(0);
+        m_Vector.removeElementAt(0);
+        return object;
+    }
+
+
+    public Object[] ToArray()
+    {
+        Object[] arr = new Object[m_Vector.size()];
+        for(int i = 0; i < arr.length; ++i)
+            arr[i] = m_Vector.elementAt(i);
+        return arr;
+    }
+    public IEnumerator GetEnumerator()
+    {
+        return new ListEnumerator(this);
+    }
+}

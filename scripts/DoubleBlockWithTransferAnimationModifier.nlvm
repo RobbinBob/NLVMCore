@@ -1,0 +1,280 @@
+package scripts;
+
+import scripts.modifiers.*;
+import scripts.utilities.*;
+import scripts.math.*;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+import nlvm.lang.*;
+
+public final class DoubleBlockWithTransferAnimationModifier extends AnimationModifier implements ICarModifier, IBogieModifier
+{
+    private Block m_EnterBlock = null;
+    private Section m_EnterSection = null;
+    private Block m_ExitBlock = null;
+    private Section m_ExitSection = null;
+
+    private Block m_NextBlock = null;
+
+    private Block m_TransferBlock = null;
+    private Section m_TransferSection = null;
+    private SpecialTrack m_TransferTrack = null;
+    private int m_EnterIndex = 1;
+    private int m_ExitIndex = 2;
+
+    private static final int STATE_EMPTY = 0;
+    private static final int STATE_APPROACHING = 1;
+    private static final int STATE_PROCESSING = 2;
+    private static final int STATE_LEAVING = 3;
+
+    private static final int ANIMATION_STATE_IDLE = 0;
+    private static final int ANIMATION_STATE_START = 1;
+    private static final int ANIMATION_STATE_RUNNING_FWD = 2;
+    private static final int ANIMATION_STATE_WAIT_FOR_SYNC = 3;
+    private static final int ANIMATION_STATE_RUNNING_BWD = 4;
+    private static final int ANIMATION_STATE_END = 500;
+    private int m_AnimationState = ANIMATION_STATE_IDLE;
+
+
+    private static final int DIRECTION_FWD_FWD = 0;
+    private static final int DIRECTION_FWD_BWD = 1;
+    private static final int DIRECTION_BWD_BWD = 2;
+    private static final int DIRECTION_BWD_FWD = 3;
+    private int m_Direction = DIRECTION_FWD_BWD;
+
+
+    private InterpolateTrainMatrixModifier m_InterpolateModifier = null;
+
+
+    private TrainWrapper m_TrainWrapper = new TrainWrapper();
+    private TrainHandler m_ActiveHandler = null;
+    private BlockUtil m_BlockHandler = null;
+
+    private ICarModifier m_PreviousCarModifier = null;
+    private IBogieModifier m_PreviousBogieModifier = null;
+
+    public bool Start()
+    {
+            // Call super to setup the animation stuff for us
+        super.Start();
+
+        m_EnterBlock = GetBlockParameter("enter_block");
+        m_EnterSection = m_EnterBlock.getSection();
+        m_ExitBlock = GetBlockParameter("exit_block");
+        m_ExitSection = m_ExitBlock.getSection();
+
+        m_TransferBlock = GetBlockParameter("transfer_block");
+        m_TransferSection = m_TransferBlock.getSection();
+        m_TransferTrack = GetSpecialTrackParameter("transfer_track");
+        m_EnterIndex = GetIntegerParameter("transfer_enter_index") - 1;
+        m_ExitIndex = GetIntegerParameter("transfer_exit_index") - 1;
+
+        m_NextBlock = GetBlockParameter("next_block");
+        m_Direction = GetIntegerParameter("train_direction");
+        return true;
+    }
+
+    public void Update(float tick)
+    {
+        switch(m_AnimationState)
+        {
+            case ANIMATION_STATE_IDLE:
+                {
+                    if(m_EnterBlock.getState() == STATE_APPROACHING)
+                    {
+                        m_BlockHandler = BlockUtil.WaitForTrainAndPark(m_EnterBlock);
+                        m_TransferTrack.setSwitchDirection(m_EnterIndex);
+                        m_AnimationState = ANIMATION_STATE_START;
+                    }
+                    break;
+                }
+            case ANIMATION_STATE_START:
+                {
+                    if(m_EnterSection.isTrainOnSection()) 
+                        m_EnterBlock.setState(STATE_PROCESSING);
+
+                        // Wait for train to park
+                    if(!m_BlockHandler.IsCommandComplete())
+                        break;
+
+                    Train train = m_EnterSection.getTrainOnSection();
+                    m_ActiveHandler = TrainHandlerManager.GetInstance().GetHandler(train);
+                    if(m_ActiveHandler == null)
+                        NullReferenceException.Throw("Could not find TrainHandle for the train occupying this section");
+
+                        // Fetch the previous modifier so we can re-apply after this modifier is done
+                    m_PreviousCarModifier = m_ActiveHandler.GetCarModifier();
+                    m_PreviousBogieModifier = m_ActiveHandler.GetBogieModifier();
+
+                    ISetableCar[] cars = m_ActiveHandler.GetCars();
+                    ISetableBogie[] bogies = m_ActiveHandler.GetBogies();
+                    Matrix4x4f[] carOffsetMatrices = new Matrix4x4f[cars.length];
+                    Matrix4x4f[] bogieOffsetMatrices = new Matrix4x4f[bogies.length];
+
+                        // Loop over the car matrices and store their offsets
+                    for(int i = 0; i < carOffsetMatrices.length; ++i)
+                        carOffsetMatrices[i] = ((SceneObject)cars[i].GetData()).getMatrix();
+                    MatrixUtil.GetOffsetMatrixAndStore(carOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+
+                        // Loop over the bogie matrices ans store their offsets
+                    for(int i = 0; i < bogieOffsetMatrices.length; ++i)
+                        bogieOffsetMatrices[i] = ((SceneObject)cars[i].GetData()).getMatrix();
+                    MatrixUtil.GetOffsetMatrixAndStore(bogieOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+                
+                    m_TrainWrapper.SetTrain(train);
+                    m_TrainWrapper.SetCarOffsetMatrixArray(carOffsetMatrices);
+                    m_TrainWrapper.SetBogieOffsetMatrixArray(bogieOffsetMatrices);
+                    m_TrainWrapper.SetCarAndBogieInterfaces(cars, bogies);
+                    m_TrainWrapper.SetAnimationAndRoot(m_Animation, m_AnimatedRoot);
+
+                    m_ActiveHandler.SetCarModifier(this);
+                    m_ActiveHandler.SetBogieModifier(this);
+
+                    m_BlockHandler = BlockUtil.WaitForTrainAndPark(m_TransferBlock);
+                    switch(m_Direction)
+                    {
+                        case DIRECTION_FWD_FWD:
+                        case DIRECTION_FWD_BWD:
+                            m_EnterSection.setTransportsStandardFwdOn();
+                            m_EnterSection.setBrakesOff();
+                            break;
+                        case DIRECTION_BWD_BWD:
+                        case DIRECTION_BWD_FWD:
+                            m_EnterSection.setTransportsStandardBwdOn();
+                            m_EnterSection.setBrakesOff();
+                            break;
+                    }
+
+                    m_AnimationState = ANIMATION_STATE_RUNNING_FWD;
+                    TryPlayFwdAnimation();
+                    break;
+                }
+            case ANIMATION_STATE_RUNNING_FWD:
+                {
+                    if(m_BlockHandler.IsCommandComplete())
+                        m_TransferTrack.setSwitchDirection(m_ExitIndex);
+                        // Dont continue until the track has switched
+                    if(m_TransferTrack.getSwitchDirection() != m_ExitIndex)
+                        return;
+
+                    m_BlockHandler = BlockUtil.WaitForTrainAndPark(m_ExitBlock);
+                    switch(m_Direction)
+                    {
+                        case DIRECTION_FWD_FWD:
+                        case DIRECTION_BWD_FWD:
+                            m_TransferSection.setTransportsStandardFwdOn();
+                            m_TransferSection.setBrakesOff();
+                            break;
+                        case DIRECTION_BWD_BWD:
+                        case DIRECTION_FWD_BWD:
+                            m_TransferSection.setTransportsStandardBwdOn();
+                            m_TransferSection.setBrakesOff();
+                            break;
+                    }
+
+                    m_AnimationState = ANIMATION_STATE_WAIT_FOR_SYNC;
+                    break;
+                }
+            case ANIMATION_STATE_WAIT_FOR_SYNC:
+                {
+                        // Wait for the animation to complete and the train to be in position
+                    if(!m_BlockHandler.IsCommandComplete() || !IsFwdAnimationComplete())
+                        return;
+
+                    //m_AnimationState = ANIMATION_STATE_END;
+                    m_InterpolateModifier = new InterpolateTrainMatrixModifier(m_ActiveHandler, m_TrainWrapper, 0.5f);
+                    ISetableCar[] cars = m_ActiveHandler.GetCars();
+                    ISetableBogie[] bogies = m_ActiveHandler.GetBogies();
+                    Matrix4x4f[] carOffsetMatrices = new Matrix4x4f[cars.length];
+                    Matrix4x4f[] bogieOffsetMatrices = new Matrix4x4f[bogies.length];
+                        // Loop over the car matrices and store their offsets
+                    for(int i = 0; i < carOffsetMatrices.length; ++i)
+                    {
+                        carOffsetMatrices[i] = ((SceneObject)cars[i].GetData()).getMatrix();
+                    }
+                        // Loop over the bogie matrices ans store their offsets
+                    for(int i = 0; i < bogieOffsetMatrices.length; ++i)
+                    {
+                        bogieOffsetMatrices[i] = ((SceneObject)bogies[i].GetData()).getMatrix();
+                    }
+
+                    m_InterpolateModifier.SetStartMatrices(carOffsetMatrices, bogieOffsetMatrices);
+
+                    m_ActiveHandler.SetCarModifier(m_InterpolateModifier);
+                    m_ActiveHandler.SetBogieModifier(m_InterpolateModifier);
+
+                    m_InterpolateModifier.Start();
+
+                    m_AnimationState = ANIMATION_STATE_END;
+
+                    break;
+                }
+            case ANIMATION_STATE_END:
+                {
+                    if(m_InterpolateModifier != null && m_InterpolateModifier.IsComplete())
+                    {
+                        m_ActiveHandler.SetCarModifier(m_PreviousCarModifier);
+                        m_ActiveHandler.SetBogieModifier(m_PreviousBogieModifier);
+                        m_InterpolateModifier = null;
+                    }
+
+                    Train train = m_TrainWrapper.GetTrain();
+                    if(m_NextBlock.getState() == STATE_EMPTY)
+                    {
+                        m_ExitSection.setBrakesOff();
+                        m_ExitSection.setTransportsStandardFwdOn();
+                        m_NextBlock.setState(STATE_APPROACHING);
+                        m_ExitBlock.setState(STATE_LEAVING);
+                    }
+                    else if(m_ExitBlock.getState() == STATE_LEAVING)
+                    {
+                        if(!m_ExitSection.isTrainOnSection())
+                        {
+                            m_ExitBlock.setState(STATE_EMPTY);
+                            m_ExitSection.setBrakesOn();
+                            m_ExitSection.setTransportsOff();
+
+                            m_AnimationState = ANIMATION_STATE_RUNNING_BWD;
+                        }
+                    }
+                    break;
+                }
+            case ANIMATION_STATE_RUNNING_BWD:
+                {
+                    if(!IsPlayingBwdAnimation())
+                        TryPlayBwdAnimation();
+                    if(!IsBwdAnimationComplete())
+                        return;
+
+                        // Animation is complete we can now free the blocks
+                    m_EnterBlock.setState(STATE_EMPTY);
+                    m_AnimationState = ANIMATION_STATE_IDLE;
+                    m_Animation.SetFrame(0);
+                    break;
+                }
+        }
+    }
+
+
+    public void Run(CarModifierData data)
+    {
+        Train train = data.SetableCar.GetTrain();
+        int index = m_TrainWrapper.GetCarIndex(data.SetableCar);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableCar index");
+
+        Matrix4x4f matrix = m_TrainWrapper.GetAttachmentMatrix();
+        matrix.multRight(m_TrainWrapper.GetCarOffset(index));
+        data.SetableCar.SetMatrix(matrix);
+    }
+    public void Run(BogieModifierData data)
+    {
+        Train train = data.SetableBogie.GetTrain();
+        int index = m_TrainWrapper.GetBogieIndex(data.SetableBogie);
+        if(index == -1) System.throwRuntimeException("Fatal erroe fetching ISetableBogie index");
+
+        Matrix4x4f matrix = m_TrainWrapper.GetAttachmentMatrix();
+        matrix.multRight(m_TrainWrapper.GetBogieOffset(index));
+        data.SetableBogie.SetMatrix(matrix);
+    }
+}

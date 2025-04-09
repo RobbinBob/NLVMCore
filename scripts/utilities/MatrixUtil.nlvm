@@ -1,6 +1,7 @@
 package scripts.utilities;
 
 import nlvm.math3d.*;
+import com.nolimitscoaster.Tools;
 
 public class MatrixUtil
 {
@@ -29,5 +30,19 @@ public class MatrixUtil
         {
             matrices[i].multLeft(inverted);
         }
+    }
+
+    public static Matrix4x4f Lerp(float t, Matrix4x4f in, Matrix4x4f out)
+    {
+        float[] inComp = in.elems();
+        float[] outComp = out.elems();
+
+        Matrix4x4f matrix = new Matrix4x4f();
+        float[] comp = matrix.elems();
+
+        for(int i = 0; i < 16; ++i)
+            comp[i] = Tools.lerp(t, inComp[i], outComp[i]);
+        
+        return matrix;
     }
 }

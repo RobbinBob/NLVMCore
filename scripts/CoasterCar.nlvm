@@ -6,11 +6,8 @@ import nlvm.lang.Object;
 import nlvm.util.Vector;
 
 import scripts.utilities.*;
-import scripts.utilities.parser.*;
-import scripts.core.*;
-import scripts.core.containers.*;
-import scripts.core.math.Mathf;
-import scripts.core.train.*;
+import scripts.containers.*;
+import scripts.math.Mathf;
 
 public class CoasterCar extends Behaviour implements ISetableCar
 {
@@ -25,11 +22,8 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
     private Restraint[] m_Restraints = null;
 
-    public bool onInit()
+    public bool Start()
     {
-        bool success = super.onInit();
-        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
-
         m_Coaster = GetCoasterParameter("coaster");
         String coasterName = m_Coaster.getName();
 
@@ -88,7 +82,7 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
 
     float previousRestraintState = 0.0f;
-    public void onNextFrame(float tick)
+    public void Update(float tick)
     {
         float restraintState = m_Train.getHarnessState();
         if(restraintState > previousRestraintState)

@@ -1,0 +1,16 @@
+package scripts;
+
+import nlvm.lang.System;
+import nlvm.lang.String;
+
+public class InvalidAnimationException extends Exception
+{
+    public static void Throw()
+    {
+        System.throwRuntimeException("InvalidAnimationException");
+    }
+    public static void Throw(String message)
+    {
+        System.throwRuntimeException(CreateThrowMessage("InvalidAnimationException", message));
+    }
+}

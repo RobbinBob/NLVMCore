@@ -11,7 +11,7 @@ import com.nolimitscoaster.Coaster;
 
 import scripts.utilities.*;
 import scripts.modifiers.*;
-import scripts.core.math.*;
+import scripts.math.*;
 
 public class TrainHandler extends Object
 {
@@ -64,11 +64,77 @@ public class TrainHandler extends Object
         m_SeatsPerCar = carSeats;
     }
 
+    private void SortByCarIndex()
+    {
+        Vector sortedVector = new Vector();
+        int index = 0;
+        int iterations = 0;
+        while(!m_Cars.isEmpty() && iterations < 500)
+        {
+            for(int i = 0; i < m_Cars.size(); ++i)
+            {
+                if(m_Cars.elementAt(i) != null)
+                {
+                    ISetableCar car = (ISetableCar)m_Cars.elementAt(i);
+                    if(car.GetCarIndex() != index)
+                        continue;
+
+                    sortedVector.addElement(car);
+                    m_Cars.removeElementAt(i);
+                }
+            }
+            iterations++;
+            index++;
+        }
+        if(iterations >= 499)
+            System.err.println("Aborted");
+
+        m_Cars.clear();
+        for(int i = 0; i < sortedVector.size(); ++i)
+        {
+            m_Cars.addElement(sortedVector.elementAt(i));
+        }
+    }
+    private void SortByBogieIndex()
+    {
+        Vector sortedVector = new Vector();
+        int index = 0;
+        int iterations = 0;
+        while(!m_Bogies.isEmpty() && iterations < 500)
+        {
+            for(int i = 0; i < m_Bogies.size(); ++i)
+            {
+                if(m_Bogies.elementAt(i) != null)
+                {
+                    ISetableBogie bogie = (ISetableBogie)m_Bogies.elementAt(i);
+                    if(bogie.GetBogieIndex() != index)
+                        continue;
+
+                    sortedVector.addElement(bogie);
+                    m_Bogies.removeElementAt(i);
+                }
+            }
+            iterations++;
+            index++;
+        }
+        if(iterations >= 499)
+            System.err.println("Aborted");
+        
+        m_Bogies.clear();
+        for(int i = 0; i < sortedVector.size(); ++i)
+        {
+            m_Bogies.addElement(sortedVector.elementAt(i));
+        }
+    }
+
+
+
         // Register/Unregister ISetableCar
     public bool RegisterCar(ISetableCar car)
     {
         if(m_Cars.contains(car) || car.GetTrain() != m_TrainHandled) return false;
         m_Cars.addElement(car);
+        SortByCarIndex();
         return true;
     }
     public bool UnregisterCar(ISetableCar car)
@@ -83,6 +149,7 @@ public class TrainHandler extends Object
     {
         if(m_Bogies.contains(bogie) || bogie.GetTrain() != m_TrainHandled) return false;
         m_Bogies.addElement(bogie);
+        SortByBogieIndex();
         return true;
     }
     public bool UnregisterBogie(ISetableBogie bogie)

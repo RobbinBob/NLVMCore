@@ -1,0 +1,13 @@
+package scripts.core.delegates;
+
+import scripts.core.containers.*;
+
+public abstract class Delegate extends Object
+{
+    protected List m_Subscribers = new List();
+
+    public abstract void Invoke(Object[] args);
+
+    public abstract bool Connect(Object listener);
+    public abstract bool Disconnect(Object listener);
+} 

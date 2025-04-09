@@ -1,0 +1,34 @@
+package scripts;
+
+import com.nolimitscoaster.SceneObjectElement;
+import nlvm.math3d.Vector3f;
+
+/// <class>
+/// <desc>Represents a simple hindged rotating restraint.</desc>
+public class HingeRestraint extends Restraint
+{
+    private Vector3f m_ClosedAngle = null;
+    private Vector3f m_OpenAngle = null;
+    private Vector3f m_CurrentAngle = new Vector3f();
+
+    /// <constructor>
+    /// <desc>Creates a new HingedRestraint attached to a SceneObjectElement.</desc>
+    /// <arg name="restraintElement">The SceneObjectElement this restraint will animate.</arg>
+    /// <arg name="closeAngle">The angle(radians) of the restraint when closed.</arg>
+    /// <arg name="openAngle">The angle(radians) of the restraint when open.</arg>
+    /// </constructor>
+    public HingeRestraint(SceneObjectElement restraintElement, Vector3f closeAngle, Vector3f openAngle)
+    {
+        super(restraintElement);
+
+        m_ClosedAngle = closeAngle;
+        m_OpenAngle = openAngle;
+    }
+
+    protected void Update(float activation)
+    {
+        m_CurrentAngle.lerp(activation, m_ClosedAngle, m_OpenAngle);
+        m_RestraintElement.setRotation(m_CurrentAngle);
+    }
+}
+/// </class>

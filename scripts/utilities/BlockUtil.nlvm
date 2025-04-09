@@ -119,14 +119,14 @@ public class BlockUtil implements FrameListener
                     if(m_Section.getTrainOnSection().getSpeed() > 0.f)
                     {
                         m_Section.setTransportsStandardFwdDependingOnBrake();
-                        if(m_Section.isTrainBehindCenterOfSection())
+                        if(m_Section.isTrainBehindBrakeTrigger())
                         {
                             SetSectionToDefaultState(m_Section);
                         }
                     }else if(m_Section.getTrainOnSection().getSpeed() < 0.f)
                     {
                         m_Section.setTransportsStandardBwdDependingOnBrake();
-                        if(m_Section.isTrainBeforeCenterOfSection())
+                        if(m_Section.isTrainBeforeBrakeTrigger())
                         {
                             SetSectionToDefaultState(m_Section);
                         }
