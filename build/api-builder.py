@@ -52,7 +52,16 @@ for file in pr_files:
 
         status = file['status']
         if status == 'added' or status == 'modified':
-            class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
+
+            try:
+                class_json = ClassDecorator.ClassDecorator(file['filename']).decorate()
+                if class_json is None:
+                    raise Exception("No json found")
+            except Exception as e:
+                print(e)
+                print("Failed to parse nlvm file")
+                continue
+
             #print(f"Generated data {json.dumps(class_json, indent=2)}")
 
             type_index = findIndexOfType(api_data['classes'], class_json[ClassDecorator.JSON_TAG_TYPENAME])

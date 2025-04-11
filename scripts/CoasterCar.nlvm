@@ -9,6 +9,8 @@ import scripts.utilities.*;
 import scripts.containers.*;
 import scripts.math.Mathf;
 
+/// <class>
+/// <desc>Type used for custom coaster cars; Allows customisation of restraint animations using the descriptor files, has g-force trackers placed for each camera which can be visualised and cameras can be cycled through like in-game counterparts.</desc>
 public class CoasterCar extends Behaviour implements ISetableCar
 {
     private TrainHandler m_Handler = null;
@@ -196,3 +198,4 @@ public class CoasterCar extends Behaviour implements ISetableCar
     public int GetTrainIndex() { return m_TrainIndex; }
     public int GetCarIndex() { return m_CarIndex; }
 }
+/// </class>
