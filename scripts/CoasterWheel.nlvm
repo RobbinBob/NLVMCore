@@ -3,6 +3,8 @@ package scripts;
 import nlvm.lang.String;
 import nlvm.lang.Object;
 
+/// <class>
+/// <desc>Descriptor for wheels containing basic information.</desc>
 public class CoasterWheel extends Object
 {
     public static final int WHEEL_FWD = 1;
@@ -12,6 +14,12 @@ public class CoasterWheel extends Object
     public float Radius;
     public int Direction;
 
+    /// <constructor>
+    /// <desc>Creates a new wheel descriptor.</desc>
+    /// <arg name="name">The SceneObjectElement name of the wheel.</arg>
+    /// <arg name="radius">The radius(meters) of the wheel.</arg>
+    /// <arg name="direction">The direction the wheel will rotate.</arg>
+    /// </constructor>
     public CoasterWheel(String name, float radius, int direction)
     {
         Name = name;
@@ -19,3 +27,4 @@ public class CoasterWheel extends Object
         Direction = direction;
     }
 }
+/// </class>

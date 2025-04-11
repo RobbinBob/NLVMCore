@@ -1,0 +1,124 @@
+package scripts.math;
+
+import nlvm.lang.Math;
+
+public final class Mathf
+{
+    public static final float PI = 3.141592f;
+    public static final float TAU = PI * 2.0f;
+
+    public static final float DegToRad = 0.0174533f;
+    public static final float RadToDeg = 57.2958f;
+
+
+    public static float Remap(float t, float minA, float maxA, float minB, float maxB)
+    {
+        return (t - minA) * (maxB - minB) / (maxA - minA) + minB;
+    }
+    public static float Random(float min, float max)
+    {
+        return Remap((float)Math.random(), 0.0f, 1.0f, min, max);
+    }
+    public static int Random(int min, int max)
+    {
+        return (int)Remap((float)Math.random(), 0.0f, 1.0f, min, max);
+    }
+    public static float Clamp01(float t)
+    {
+        return t <= 0.0f ? 0.0f : t >= 1.0f ? 1.0f : t;
+    }
+    public static int Clamp01(int t)
+    {
+        return t <= 0 ? 0 : t >= 1 ? 1 : t;
+    }
+    public static float Clamp(float t, float min, float max)
+    {
+        return t <= min ? min : t >= max ? max : t;
+    }
+    public static int Clamp(int t, int min, int max)
+    {
+        return t <= min ? min : t >= max ? max : t;
+    }
+
+
+    public static float Min(float a, float b)
+    {
+        return Math.min(a, b);
+    }
+    public static int Min(int a, int b)
+    {
+        return Math.min(a, b);
+    }
+    public static float Max(float a, float b)
+    {
+        return Math.max(a, b);
+    }
+    public static int Max(int a, int b)
+    {
+        return Math.max(a, b);
+    }
+
+
+    public static float Ceiling(float t)
+    {
+        return (float)Math.ceil(t);
+    }
+    public static float Floor(float t)
+    {
+        return (float)Math.floor(t);
+    }
+
+
+    public static float Abs(float t)
+    {
+        return Math.abs(t);
+    }
+    public static int Abs(int t)
+    {
+        return Math.abs(t);
+    }
+    public static float Acos(float t)
+    {
+        return (float)Math.acos(t);
+    }
+    public static float Asin(float t)
+    {
+        return (float)Math.asin(t);
+    }
+    public static float Atan(float t)
+    {
+        return (float)Math.atan(t);
+    }
+    public static float Atan2(float x, float y)
+    {
+        return (float)Math.atan2(x, y);
+    }
+    public static float Exp(float t)
+    {
+        return (float)Math.exp(t);
+    }
+    public static float Log(float t)
+    {
+        return (float)Math.log(t);
+    }
+    public static float Pow(float t, float exponent)
+    {
+        return (float)Math.pow(t, exponent);
+    }
+    public static float Sin(float t)
+    {
+        return (float)Math.sin(t);
+    }
+    public static float Cos(float t)
+    {
+        return (float)Math.cos(t);
+    }
+    public static float Tan(float t)
+    {
+        return (float)Math.tan(t);
+    }
+    public static float Sqrt(float t)
+    {
+        return (float)Math.sqrt(t);
+    }
+}

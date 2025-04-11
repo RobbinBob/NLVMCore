@@ -213,6 +213,361 @@
                     "return_desc": "No Description Supplied."
                 }
             ]
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster.SceneObject",
+                "com.nolimitscoaster.SceneObjectElement",
+                "com.nolimitscoaster.ResourcePath",
+                "com.nolimitscoaster.Tools",
+                "scripts.modifiers"
+            ],
+            "accessor": "public abstract",
+            "name": "AnimationModifier",
+            "full_name": "scripts.AnimationModifier",
+            "extends": "Behaviour",
+            "implements": [
+                "ICarModifier",
+                "IBogieModifier"
+            ],
+            "description": "Base type for simple animated train modifiers.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster",
+                "nlvm.math3d",
+                "nlvm.lang.Object",
+                "scripts.utilities"
+            ],
+            "accessor": "public",
+            "name": "CoasterBogie",
+            "full_name": "scripts.CoasterBogie",
+            "extends": "Behaviour",
+            "implements": [
+                "ISetableBogie"
+            ],
+            "description": "Type used for custom coaster bogies; Allows customisation of wheel rotation speeds based on the diameter,\\nThis implementation uses the common separated pitch/yaw bogies found on gerst,mack,vekoma.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster",
+                "nlvm.math3d",
+                "nlvm.lang.Object",
+                "nlvm.util.Vector",
+                "scripts.utilities",
+                "scripts.containers",
+                "scripts.math.Mathf"
+            ],
+            "accessor": "public",
+            "name": "CoasterCar",
+            "full_name": "scripts.CoasterCar",
+            "extends": "Behaviour",
+            "implements": [
+                "ISetableCar"
+            ],
+            "description": "Type used for custom coaster cars; Allows customisation of restraint animations using the descriptor files, has g-force trackers placed for each camera which can be visualised and cameras can be cycled through like in-game counterparts.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "nlvm.lang.String",
+                "nlvm.lang.Object"
+            ],
+            "accessor": "public",
+            "name": "CoasterWheel",
+            "full_name": "scripts.CoasterWheel",
+            "extends": "Object",
+            "description": "Descriptor for wheels containing basic information.",
+            "members": [],
+            "methods": [],
+            "constructors": [
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "The SceneObjectElement name of the wheel."
+                        },
+                        {
+                            "type": "float",
+                            "name": "radius",
+                            "description": "The radius(meters) of the wheel."
+                        },
+                        {
+                            "type": "int",
+                            "name": "direction",
+                            "description": "The direction the wheel will rotate."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new wheel descriptor."
+                }
+            ]
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster",
+                "scripts.utilities",
+                "nlvm.math3d",
+                "scripts.math"
+            ],
+            "accessor": "public final",
+            "name": "Debug",
+            "full_name": "scripts.Debug",
+            "extends": "Object",
+            "description": "Allows debugging of scripts.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "from",
+                            "description": "Point in world-space."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "to",
+                            "description": "Point in world-space."
+                        },
+                        {
+                            "type": "float",
+                            "name": "timespan",
+                            "description": "The time(seconds) this line will exist for."
+                        }
+                    ],
+                    "name": "DrawLine",
+                    "return": "void",
+                    "accessor": "public static",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Draw a line between two points."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "from",
+                            "description": "Point in world-space."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "to",
+                            "description": "Point in world-space."
+                        },
+                        {
+                            "type": "float",
+                            "name": "timespan",
+                            "description": "The time(seconds) this line will exist for."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector4f",
+                            "name": "color",
+                            "description": "The color of the line being drawn."
+                        }
+                    ],
+                    "name": "DrawLine",
+                    "return": "void",
+                    "accessor": "public static",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Draw a line between two points."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "from",
+                            "description": "Point in world-space."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "to",
+                            "description": "Point in world-space."
+                        },
+                        {
+                            "type": "float",
+                            "name": "timespan",
+                            "description": "The time(seconds) this line will exist for."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector4f",
+                            "name": "color",
+                            "description": "The color of the line being drawn."
+                        },
+                        {
+                            "type": "float",
+                            "name": "diameter",
+                            "description": "The thickness(meters) of the line."
+                        }
+                    ],
+                    "name": "DrawLine",
+                    "return": "void",
+                    "accessor": "public static",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Draw a line between two points."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "bool",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "double",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "long",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "char",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Behaviour",
+                            "name": "obj",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Print",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a time stamped output to the console."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "interface",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster.Coaster",
+                "com.nolimitscoaster.Train",
+                "nlvm.math3d.Vector3f"
+            ],
+            "accessor": "public",
+            "name": "ISetableBogie",
+            "full_name": "scripts.ISetableBogie",
+            "extends": "ISetable",
+            "description": "Exposes methods for custom bogies.",
+            "members": [],
+            "methods": [],
+            "constructors": []
         }
     ]
 }

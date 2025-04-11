@@ -1,0 +1,13 @@
+package scripts.delegates;
+
+/// <interface>
+/// <desc>Exposes the delegate receiver.</desc>
+public interface IFunc
+{
+    /// <method>
+    /// <desc>Invoked by the delegate.</desc>
+    /// <arg name="arg1">The invoking delegate reference.</arg>
+    /// </method>
+    public void OnCalled(Delegate invoker);
+}
+/// </interface>

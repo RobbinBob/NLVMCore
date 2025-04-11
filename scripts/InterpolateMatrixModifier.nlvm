@@ -1,0 +1,70 @@
+package scripts;
+
+import scripts.modifiers.*;
+import scripts.utilities.*;
+import com.nolimitscoaster.*;
+
+import nlvm.math3d.*;
+
+public class InterpolateMatrixModifier extends Object implements ICarModifier, IBogieModifier
+{
+    protected TrainWrapper m_TrainWrapper = null;
+    protected TrainHandler m_ActiveHandler = null;
+
+    protected Matrix4x4f[] m_CarStartMatrices = null;
+    protected Matrix4x4f[] m_BogieStartMatrices = null;
+    protected Matrix4x4f[] m_CarEndMatrices = null;
+    protected Matrix4x4f[] m_BogieEndMatrices = null;
+    
+    protected Timer m_Timer = null;
+
+    public InterpolateMatrixModifier(TrainHandler handler, TrainWrapper wrapper, float timespan)
+    {
+        m_TrainWrapper = wrapper;
+        m_ActiveHandler = handler;
+        m_Timer = new Timer(timespan);
+    }
+
+    public void SetStartMatrices(Matrix4x4f[] carStartMatrices, Matrix4x4f[] bogieStartMatrices)
+    {
+        m_CarStartMatrices = carStartMatrices;
+        m_BogieStartMatrices = bogieStartMatrices;
+    }
+    public void SetEndMatrices(Matrix4x4f[] carEndMatrices, Matrix4x4f[] bogieEndMatrices)
+    {
+        m_CarEndMatrices = carEndMatrices;
+        m_BogieEndMatrices = bogieEndMatrices;
+    }
+
+    public void Start()
+    {
+        m_Timer.Start();
+    }
+    public bool IsComplete()
+    {
+        return !m_Timer.WaitForComplete();
+    }
+
+    public void Run(CarModifierData carData)
+    {
+        Train train = carData.SetableCar.GetTrain();
+        int index = m_TrainWrapper.GetCarIndex(carData.SetableCar);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableCar index");
+
+        float time = (float)Tools.cubicRamp(m_Timer.GetTimePercent());
+
+        Matrix4x4f matrix = MatrixUtil.Lerp(time,  m_CarStartMatrices[index], m_CarEndMatrices[index]);
+        carData.SetableCar.SetMatrix(matrix);
+    }
+    public void Run(BogieModifierData bogieData)
+    {
+        Train train = bogieData.SetableBogie.GetTrain();
+        int index = m_TrainWrapper.GetBogieIndex(bogieData.SetableBogie);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableBogie index");
+
+        float time = (float)Tools.cubicRamp(m_Timer.GetTimePercent());
+
+        Matrix4x4f matrix = MatrixUtil.Lerp(time, m_BogieStartMatrices[index], m_BogieEndMatrices[index]);
+        bogieData.SetableBogie.SetMatrix(matrix);
+    }
+}

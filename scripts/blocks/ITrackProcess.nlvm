@@ -1,0 +1,11 @@
+package scripts.core.blocks;
+
+import com.nolimitscoaster.Section;
+
+public interface ITrackProcess 
+{
+    public Coaster GetCoaster();
+    public Section GetSection();
+
+    public void Process();
+}

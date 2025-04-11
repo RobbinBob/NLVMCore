@@ -5,8 +5,9 @@ import nlvm.math3d.*;
 import nlvm.lang.Object;
 
 import scripts.utilities.*;
-import scripts.core.*;
 
+/// <class>
+/// <desc>Type used for custom coaster bogies; Allows customisation of wheel rotation speeds based on the diameter,\nThis implementation uses the common separated pitch/yaw bogies found on gerst,mack,vekoma.</desc>
 public class CoasterBogie extends Behaviour implements ISetableBogie
 {
     private TrainHandler m_Handler = null;
@@ -46,18 +47,15 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     };
     private SceneObjectElement[] m_Wheels = null;
 
-    public bool onInit()
+    public bool Start()
     {
-        bool success = super.onInit();
-        if(!success) System.throwRuntimeException("Error occured in Behaviour class");
-
         m_Coaster = m_SceneObject.getCoasterParameter("coaster");
         m_CoasterName = m_Coaster.getName();
 
         m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 5.0f);
         if(m_Train == null) System.throwRuntimeException("Could not find train within 5 metres");
         m_TrainIndex = TrainUtil.GetTrainIndex(m_Train);
-        m_BogieIndex = m_SceneObject.getIntegerParameter("bogie_index").intValue();
+        m_BogieIndex = GetIntegerParameter("bogie_index");
 
         String handlerName = m_CoasterName + '_' + m_TrainIndex;
 
@@ -93,7 +91,9 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     {
         m_SceneObject.setMatrix(matrix);
     }
-    public void SetData(Object object) {}
+    public void SetData(Object object) 
+    {
+    }
 
         // IGetable
     public Object GetData()
@@ -146,3 +146,4 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
         }
     }
 }
+/// </class>

@@ -3,7 +3,7 @@ package scripts;
 import com.nolimitscoaster.Coaster;
 import com.nolimitscoaster.Train;
 
-public interface ISetableCar extends ISetable//, IGetable
+public interface ISetableCar extends ISetable// IGetable
 {
     public Coaster GetCoaster();
     public Train GetTrain();

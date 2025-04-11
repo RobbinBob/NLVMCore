@@ -1,0 +1,42 @@
+package scripts;
+
+import scripts.modifiers.*;
+import scripts.utilities.*;
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public class InterpolateTrainMatrixModifier extends InterpolateMatrixModifier implements ICarModifier, IBogieModifier
+{
+    public InterpolateTrainMatrixModifier(TrainHandler handler, TrainWrapper wrapper, float timespan)
+    {
+        super(handler, wrapper, timespan);
+    }
+
+    public void Run(CarModifierData carData)
+    {
+        Train train = carData.SetableCar.GetTrain();
+        int index = m_TrainWrapper.GetCarIndex(carData.SetableCar);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableCar index");
+
+        float time = (float)Tools.cubicRamp(m_Timer.GetTimePercent());
+
+        Matrix4x4f carMatrix = new Matrix4x4f();
+        train.getCarMatrix(carData.SetableCar.GetCarIndex(), carMatrix);
+        Matrix4x4f matrix = MatrixUtil.Lerp(time, m_CarStartMatrices[index], carMatrix);
+        carData.SetableCar.SetMatrix(matrix);
+    }
+
+    public void Run(BogieModifierData bogieData)
+    {
+        Train train = bogieData.SetableBogie.GetTrain();
+        int index = m_TrainWrapper.GetBogieIndex(bogieData.SetableBogie);
+        if(index == -1) System.throwRuntimeException("Fatal error fetching ISetableBogie index");
+
+        float time = (float)Tools.cubicRamp(m_Timer.GetTimePercent());
+
+        Matrix4x4f bogieMatrix = new Matrix4x4f();
+        train.getBogieMatrix(bogieData.SetableBogie.GetBogieIndex(), bogieMatrix);
+        Matrix4x4f matrix = MatrixUtil.Lerp(time, m_BogieStartMatrices[index], bogieMatrix);
+        bogieData.SetableBogie.SetMatrix(matrix);
+    }
+}

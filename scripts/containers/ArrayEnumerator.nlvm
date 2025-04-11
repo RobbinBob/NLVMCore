@@ -1,0 +1,26 @@
+package scripts.containers;
+
+public class ArrayEnumerator extends Object implements IEnumerator
+{
+    private Object[] m_Array = new Object[0];
+    private int m_Index = -1;
+
+    public ArrayEnumerator(IEnumerable enumerable)
+    {
+        m_Array = enumerable.ToArray();
+        m_Index = -1;
+    }
+
+    public bool MoveNext()
+    {
+        return ++m_Index < m_Array.length;
+    }
+    public void Reset()
+    {
+        m_Index = -1;
+    }
+    public Object Get()
+    {
+        return m_Array[m_Index];
+    }
+}

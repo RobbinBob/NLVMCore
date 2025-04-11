@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="DebugSymbols.glb"/>
+    <defaultinstancename>DebugSymbols</defaultinstancename>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <usercolor>
+      <label></label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <materialpath name="Material">Unlit.nl2mat</materialpath>
+  </sceneobject>
+</root>

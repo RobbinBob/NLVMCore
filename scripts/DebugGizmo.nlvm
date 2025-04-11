@@ -1,0 +1,42 @@
+package scripts;
+
+import com.nolimitscoaster.SceneObjectElement;
+
+public final class DebugGizmo extends Object
+{
+    public static final int GIZMO_STATE_INACTIVE = 0;
+    public static final int GIZMO_STATE_ACTIVE = 1;
+
+    private SceneObjectElement m_Element = null;
+    private int m_GizmoState = GIZMO_STATE_INACTIVE;
+    private float m_GizmoTime = 0.0f;
+
+    public DebugGizmo(SceneObjectElement element)
+    {
+        m_Element = element;
+    }
+
+
+    public SceneObjectElement GetElement()
+    {
+        return m_Element;
+    }
+
+    public int GetState()
+    {
+        return m_GizmoState;
+    }
+    public void SetState(int state)
+    {
+        m_GizmoState = state;
+    }
+
+    public float GetTimespan()
+    {
+        return m_GizmoTime;
+    }
+    public void SetTimespan(float timespan)
+    {
+        m_GizmoTime = timespan;
+    }
+}

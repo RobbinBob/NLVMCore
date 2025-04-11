@@ -1,14 +1,10 @@
 # Ignore nl2 files
 *.nl2park
 *.nl2park_backup
-*.nl2sco
-*.nl2mat
 
 # Ignore model files
 *.[Bb]lend
 *.[Oo]bj
-*.[Gg]lb
-*.[Gg]ltf
 *.[Dd]ae
 
 # Ingore misc
@@ -28,3 +24,5 @@
 Custom/
 ParticleTest/
 build/__pycache__/
+UnitTesting/
+SingleBlockAnimationModifier.nl2sco

@@ -1,0 +1,11 @@
+package scripts.containers;
+
+/// <interface>
+/// <desc>Represents basic iterative behaviour over a span.</desc>
+public interface IEnumerator 
+{
+    public bool MoveNext();
+    public void Reset();
+    public Object Get();
+}
+/// </interface>

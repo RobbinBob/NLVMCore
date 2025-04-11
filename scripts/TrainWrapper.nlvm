@@ -3,9 +3,7 @@ package scripts;
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
 
-import scripts.core.*;
-
-public final class TrainWrapper
+public final class TrainWrapper extends Object
 {
     private SceneObjectElement m_TrackingMatrixObject = null;
     private Animation m_TrackAnimation = null;

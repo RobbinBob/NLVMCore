@@ -1,0 +1,13 @@
+package scripts;
+
+public final class Json extends Object
+{
+    private Json[] m_Children = new Json[0];
+
+    public Json()
+    {
+    }
+
+
+
+}

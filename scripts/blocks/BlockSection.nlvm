@@ -1,0 +1,76 @@
+package scripts.core.blocks;
+
+import com.nolimitscoaster.Block;
+import com.nolimitscoaster.Section;
+
+public class BlockSection extends TrackSection
+{
+    protected Block m_Block = null;
+
+    public static final int E_BRAKE_OFF = 0;
+    public static final int E_BRAKE_ON = 1;
+    public static final int E_BRAKE_TRIM = 2;
+    private int m_BrakeState = E_TRANSPORT_OFF;
+
+    public BlockSection(Block block)
+    {
+        m_Block = block;
+        m_Section = block.getSection();
+    }
+    public BlockSection(Section section)
+    {
+        m_Section = section;
+        m_Block = section.getBlock();
+    }
+
+
+
+    public void SetBrakeState(int brakeState)
+    {
+        if (brakeState < 0 || brakeState > 2)
+            return;
+        
+        switch (brakeState)
+        {
+            case E_BRAKE_OFF:
+                m_Section.setBrakesOff();
+                break;
+            case E_BRAKE_ON:
+                m_Section.setBrakesOn();
+                break;
+            case E_BRAKE_TRIM:
+                m_Section.setBrakesTrim();
+                break;
+        }
+
+        m_BrakeState = brakeState;
+    }
+    public int GetBrakeState()
+    {
+        return m_BrakeState;
+    }
+
+
+
+    public int GetState()
+    {
+        if(block.getState() == Block.STATE_ERROR_OPERATION_MODE)
+            return block.getNormalModeState(Block.PROTOCOL_V1);
+        return block.getState();
+    }
+    public void SetState(int state)
+    {
+        m_Block.setState(state);
+    } 
+
+
+    public String GetName()
+    {
+        return m_Block.getName();
+    }
+
+    public Block GetBlock()
+    {
+        return m_Block;
+    }
+}

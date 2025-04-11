@@ -1,8 +1,0 @@
-package scripts.core.containers;
-
-public interface IEnumerator 
-{
-    public bool MoveNext();
-    public void Reset();
-    public Object Get();
-}

@@ -1,0 +1,139 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+import scripts.utilities.*;
+import nlvm.math3d.*;
+import scripts.math.*;
+
+/// <class>
+/// <desc>Allows debugging of scripts.</desc>
+public final class Debug extends Object
+{
+    private static Simulator m_Simulator = null;
+    private static Simulator GetSimulator()
+    {
+        if(m_Simulator == null)
+            m_Simulator = NoLimits.getSimulator();
+        return m_Simulator;
+    }
+
+    private static DebugGizmoHandler m_GizmoHandler = new DebugGizmoHandler();
+
+    /// <method>
+    /// <desc>Draw a line between two points.</desc>
+    /// <arg name="from">Point in world-space.</arg>
+    /// <arg name="to">Point in world-space.</arg>
+    /// <arg name="timespan">The time(seconds) this line will exist for.</arg>
+    /// </method>
+    public static void DrawLine(Vector3f from, Vector3f to, float timespan)
+    {
+        DrawLine(from, to, timespan, new Vector4f(1, 1, 1, 0), 0.05f);
+    }
+    /// <method>
+    /// <desc>Draw a line between two points.</desc>
+    /// <arg name="from">Point in world-space.</arg>
+    /// <arg name="to">Point in world-space.</arg>
+    /// <arg name="timespan">The time(seconds) this line will exist for.</arg>
+    /// <arg name="color">The color of the line being drawn.</arg>
+    /// </method>
+    public static void DrawLine(Vector3f from, Vector3f to, float timespan, Vector4f color)
+    {
+        DrawLine(from, to, timespan, color, 0.05f);
+    }
+    /// <method>
+    /// <desc>Draw a line between two points.</desc>
+    /// <arg name="from">Point in world-space.</arg>
+    /// <arg name="to">Point in world-space.</arg>
+    /// <arg name="timespan">The time(seconds) this line will exist for.</arg>
+    /// <arg name="color">The color of the line being drawn.</arg>
+    /// <arg name="diameter">The thickness(meters) of the line.</arg>
+    /// </method>
+    public static void DrawLine(Vector3f from, Vector3f to, float timespan, Vector4f color, float diameter)
+    {
+        Vector3f vec = new Vector3f(0, 1, 0);
+        vec.cross(from, to);
+        //vec.cross(vec, new Vector3f(1, 0, 0));
+
+        Matrix4x4f matrix = MatrixUtil.LookTo(from, to, vec);
+
+        Matrix4x4f scale = new Matrix4x4f();
+        scale.initXRot(Mathf.DegToRad * -90.0f);
+        matrix.multRight(scale);
+
+        scale.initScal(diameter, from.distance(to), diameter);
+        matrix.multRight(scale);
+
+        m_GizmoHandler.DrawLine(matrix, timespan, color);
+    }
+
+
+
+    private static String GetTimeDataSequence()
+    {
+        return "Elapsed Time: " + String.valueOf((float)GetSimulator().getCurAbsSimulationTimeSec()) + " | ";
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(String obj)
+    {
+        System.out.println(GetTimeDataSequence() + obj);
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(float obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(int obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(bool obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(double obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(long obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(char obj)
+    {
+        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(Object obj)
+    {
+        System.out.println(GetTimeDataSequence() + obj.toString());
+    }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    public static final void Print(Behaviour obj)
+    {
+        System.out.println(GetTimeDataSequence() + obj.toString());
+    }
+}
+/// </class>

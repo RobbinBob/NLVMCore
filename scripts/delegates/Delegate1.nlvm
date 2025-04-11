@@ -1,0 +1,46 @@
+package scripts.core.delegates;
+
+import scripts.core.container.*;
+
+public class Delegate1 extends Delegate
+{
+    public void Invoke(Object[] args)
+    {
+        ListEnumerator enumerator = m_Subscribers.GetEnumerator();
+        while(enumerator.MoveNext())
+            ((IFunc1)enumerator.Get()).OnCalled(this);
+    }
+
+    public bool Connect(Object listener)
+    {
+        if(listener == null)
+            return false;
+
+        if(listener instanceof IFunc1)
+        {   
+            IFunc1 listenerInterface = (IFunc1)listener;
+            if(m_Subscribers.Contains(listenerInterface))
+                return false;
+            m_Subscribers.Insert(listenerInterface);
+                return true;
+        }
+        else
+            return false;
+    }
+    public bool Disconnect(Object listener)
+    {
+        if(listener == null)
+            return false;
+
+        if(listener instanceof IFunc1)
+        {
+            IFunc1 listenerInterface = (IFunc1)listener;
+            if(!m_Subscribers.Contains(listenerInterface))
+                return false;
+            m_Subscribers.Remove(listenerInterface);
+            return true;
+        }
+        else
+            return false;
+    }
+}
