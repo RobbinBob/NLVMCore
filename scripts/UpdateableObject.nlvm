@@ -1,0 +1,31 @@
+package scripts;
+
+import com.nolimitscoaster.NoLimits;
+import com.nolimitscoaster.Simulator;
+import com.nolimitscoaster.FrameListener;
+
+public abstract class UpdateableObject extends Object implements FrameListener
+{
+    protected Simulator m_Simulator = null;
+
+    public UpdateableObject()
+    {
+        m_Simulator = NoLimits.getSimulator();
+    }
+
+    public final void onNextFrame()
+    {
+        Update(m_Simulator.getCurSimulationTickSec());
+    }
+
+    protected final void SetShouldUpdate(bool shouldUpdate)
+    {
+        if(shouldUpdate)
+            m_Simulator.addFrameListener(this);
+        else
+            m_Simulator.removeFrameListener(this);
+    }
+
+
+    public abstract void Update(float tick);
+}

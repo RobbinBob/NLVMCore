@@ -93,7 +93,23 @@ public final class Parser extends Object
 
 
 
-    
+    private static int GetClosingBrace(String text, int openingPos)
+    {
+        char[] chars = text.toCharArray();
+        int counter = 0;
+        for(int i = openingPos; i < chars.length; ++i)
+        {
+            if(chars[i] == '{')
+                counter++;
+            else if(chars[i] == '}')
+                counter--;
+            
+            if(counter == 0)
+                return i;
+        }
+        return StringUtil.NPOS;
+    }
+
     public static Json JsonParse(String text)
     {
         int openBraceCount = StringUtil.Count(text, '{');
@@ -102,7 +118,16 @@ public final class Parser extends Object
         if (openBraceCount != closeBraceCount)
             InvalidFormatException.Throw("The supplied JSON file contains errors");
 
-        
+        Json root = new Json();
+
+        int openPos = 0;
+        int closePos = GetClosingBrace(text, openPos);
+        if(closePos == StringUtil.NPOS)
+            Exception.Throw("Could not find closing brace");
+
+        String sub = text.substring(openPos + 1, closePos);
+        Debug.Print(sub);
+
 
 
 

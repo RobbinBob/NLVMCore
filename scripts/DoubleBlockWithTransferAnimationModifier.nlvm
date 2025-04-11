@@ -2,7 +2,6 @@ package scripts;
 
 import scripts.modifiers.*;
 import scripts.utilities.*;
-import scripts.math.*;
 
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
@@ -43,6 +42,8 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
     private static final int DIRECTION_BWD_FWD = 3;
     private int m_Direction = DIRECTION_FWD_BWD;
 
+    private bool m_UseLaunchOnExit = false;
+
 
     private InterpolateTrainMatrixModifier m_InterpolateModifier = null;
 
@@ -72,6 +73,9 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
 
         m_NextBlock = GetBlockParameter("next_block");
         m_Direction = GetIntegerParameter("train_direction");
+
+        m_UseLaunchOnExit = GetBoolParameter("use_launch_on_exit");
+
         return true;
     }
 
@@ -119,7 +123,7 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
 
                         // Loop over the bogie matrices ans store their offsets
                     for(int i = 0; i < bogieOffsetMatrices.length; ++i)
-                        bogieOffsetMatrices[i] = ((SceneObject)cars[i].GetData()).getMatrix();
+                        bogieOffsetMatrices[i] = ((SceneObject)bogies[i].GetData()).getMatrix();
                     MatrixUtil.GetOffsetMatrixAndStore(bogieOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
                 
                     m_TrainWrapper.SetTrain(train);
@@ -223,9 +227,26 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
                     if(m_NextBlock.getState() == STATE_EMPTY)
                     {
                         m_ExitSection.setBrakesOff();
-                        m_ExitSection.setTransportsStandardFwdOn();
                         m_NextBlock.setState(STATE_APPROACHING);
                         m_ExitBlock.setState(STATE_LEAVING);
+
+                        switch(m_Direction)
+                        {
+                            case DIRECTION_FWD_FWD:
+                            case DIRECTION_BWD_FWD:
+                                if(!m_UseLaunchOnExit)
+                                    m_ExitSection.setTransportsStandardFwdOn();
+                                else
+                                    m_ExitSection.setTransportsLaunchFwdOn();
+                                break;
+                            case DIRECTION_BWD_BWD:
+                            case DIRECTION_FWD_BWD:
+                                if(!m_UseLaunchOnExit)
+                                    m_ExitSection.setTransportsStandardBwdOn();
+                                else
+                                    m_ExitSection.setTransportsLaunchBwdOn();
+                                break;
+                        }
                     }
                     else if(m_ExitBlock.getState() == STATE_LEAVING)
                     {

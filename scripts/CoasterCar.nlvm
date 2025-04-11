@@ -22,6 +22,8 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
     private Restraint[] m_Restraints = null;
 
+    private ElementGForceTracker[] m_GForceTrackers = null;
+
     public bool Start()
     {
         m_Coaster = GetCoasterParameter("coaster");
@@ -55,12 +57,22 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
 
             // Get the cameras
+        List cameras = new List();
         for(int i = 0; i < m_SceneObject.getElementCount(); ++i)
         {
             SceneObjectElement element = m_SceneObject.getElementAt(i);
             if(StringUtil.Contains(element.getName(), "Camera"))
+            {
                 element.setVisible(false);
+                cameras.Insert(element);
+            }
         }
+
+            // Create g-froce trackers for the cameras
+        m_GForceTrackers = new ElementGForceTracker[cameras.Count()];
+        for(int i = 0; i < m_GForceTrackers.length; ++i)
+            m_GForceTrackers[i] = new ElementGForceTracker((SceneObjectElement)cameras.At(i));
+            
 
 
         m_HandlerManager = TrainHandlerManager.GetInstance();
@@ -81,7 +93,7 @@ public class CoasterCar extends Behaviour implements ISetableCar
     }
 
 
-    float previousRestraintState = 0.0f;
+    private float previousRestraintState = 0.0f;
     public void Update(float tick)
     {
         float restraintState = m_Train.getHarnessState();

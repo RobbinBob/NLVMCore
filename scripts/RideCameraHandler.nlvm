@@ -1,6 +1,5 @@
 package scripts;
 
-import scripts.*;
 import scripts.utilities.StringUtil;
 
 import com.nolimitscoaster.*;
@@ -8,7 +7,7 @@ import nlvm.lang.*;
 import nlvm.math3d.*;
 import nlvm.util.*;
 
-public class RideCameraHandler implements FrameListener
+public class RideCameraHandler extends Object implements FrameListener
 {
     private static RideCameraHandler m_Instance = null;
     private Simulator m_Simulator = null;

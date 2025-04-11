@@ -1,0 +1,76 @@
+package scripts;
+
+import nlvm.math3d.*;
+import scripts.math.*;
+import scripts.containers.*;
+
+public class GForceTracker extends UpdateableObject
+{
+    private Matrix4x4 m_TrackingMatrix = null;
+    private Vector3f m_OldPosition = new Vector3f();
+    private Vector3f m_NewVelocity = new Vector3f();
+    private Vector3f m_OldVelocity = new Vector3f();
+    private Vector3f m_MathVec = new Vector3f();
+
+    private Vector3f m_GForces = new Vector3f();
+    private Vector3f m_AverageGForce = new Vector3f();
+
+    private static final int MAX_AVERAGE = 25;
+    private List m_AverageForces = new List(MAX_AVERAGE);
+
+    private static final Vector3f GRAVITY = new Vector3f(0, 9.81f, 0);
+
+    public GForceTracker(Matrix4x4 track)
+    {
+        m_TrackingMatrix = track;
+        SetShouldUpdate(true);
+    }
+
+    public void Update(float tick)
+    {
+        m_TrackingMatrix.GetPosition(m_MathVec); // New position
+
+            // Velocity
+        m_MathVec.sub(m_OldPosition);
+        m_MathVec.div(tick);
+        m_NewVelocity.set(m_MathVec);
+
+            // Acceleration
+        m_MathVec.sub(m_OldVelocity);
+        m_MathVec.div(tick);
+        m_MathVec.add(GRAVITY);
+
+            // G-force
+        m_MathVec.div(9.81f);
+        m_GForces.set(m_MathVec);
+
+        m_AverageForces.Insert(m_GForces.dup());
+        while(m_AverageForces.Count() > MAX_AVERAGE)
+            m_AverageForces.PopFront();
+
+        m_AverageGForce.set(0, 0, 0);
+        IEnumerator forceEnumerator = m_AverageForces.GetEnumerator();
+        while(forceEnumerator.MoveNext())
+            m_AverageGForce.add((Vector3f)forceEnumerator.Get());
+        m_AverageGForce.div(m_AverageForces.Count());
+
+            // Store old positions
+        m_TrackingMatrix.GetPosition(m_OldPosition);
+        m_OldVelocity.set(m_NewVelocity);
+    }
+
+
+    public void GetForce(Vector3f outForce)
+    {
+        outForce.set(m_GForces);
+    }
+    public void GetAverageForce(Vector3f outForce)
+    {
+        outForce.set(m_AverageGForce);
+    }
+
+    public final Matrix4x4 ExposeMatrix()
+    {
+        return m_TrackingMatrix;
+    }
+}

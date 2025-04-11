@@ -15,6 +15,9 @@ import scripts.math.*;
 
 public class TrainHandler extends Object
 {
+        // TODO - make this dynamic with the registered train
+    public static final BOGIES_PER_CAR = 1;
+
     private Vector m_Cars = null;
     private Vector m_Bogies = null;
 
@@ -220,7 +223,7 @@ public class TrainHandler extends Object
     public void HandleBogie(ISetableBogie bogie)
     {
         m_TrainHandled.getBogieMatrix(bogie.GetBogieIndex(), m_BogieMatrix);
-        m_TrainHandled.getCarMatrix(bogie.GetBogieIndex(), m_CarMatrix);
+        m_TrainHandled.getCarMatrix(bogie.GetBogieIndex() / BOGIES_PER_CAR, m_CarMatrix);
 
         BogieModifierData data = new BogieModifierData();
         data.SetableBogie = bogie;

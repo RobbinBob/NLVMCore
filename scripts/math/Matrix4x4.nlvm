@@ -1,0 +1,197 @@
+package scripts.math;
+
+import nlvm.math3d.*;
+
+public final class Matrix4x4 extends Object
+{
+    private Matrix4x4f m_NativeMatrix = null;
+
+    public static final int A1 = Matrix4x4f.a1;
+    public static final int A2 = Matrix4x4f.a2;
+    public static final int A3 = Matrix4x4f.a3;
+    public static final int A4 = Matrix4x4f.a4;
+
+    public static final int B1 = Matrix4x4f.b1;
+    public static final int B2 = Matrix4x4f.b2;
+    public static final int B3 = Matrix4x4f.b3;
+    public static final int B1 = Matrix4x4f.b1;
+
+    public static final int C1 = Matrix4x4f.c1;
+    public static final int C2 = Matrix4x4f.c2;
+    public static final int C3 = Matrix4x4f.c3;
+    public static final int C4 = Matrix4x4f.c4;
+
+    public static final int D1 = Matrix4x4f.d1;
+    public static final int D2 = Matrix4x4f.d2;
+    public static final int D3 = Matrix4x4f.d3;
+    public static final int D4 = Matrix4x4f.d4;
+
+
+    public Matrix4x4()
+    {
+        m_NativeMatrix = new Matrix4x4f();
+        m_NativeMatrix.initIdentity();
+    }
+    public Matrix4x4(Matrix4x4 copy)
+    {
+        m_NativeMatrix = new Matrix4x4f();
+        Set(copy);
+    }
+    public Matrix4x4(float a1, float a2, float a3, float a4,
+                    float b1, float b2, float b3, float b4,
+                    float c1, float c2, float c3, float c4,
+                    float d1, float d2, float d3, float d4)
+    {
+        m_NativeMatrix = new Matrix4x4f();
+        float[] elems = m_NativeMatrix.elems();
+        elems[A1] = a1;
+        elems[A2] = a2;
+        elems[A3] = a3;
+        elems[A4] = a4;
+
+        elems[B1] = b1;
+        elems[B2] = b2;
+        elems[B3] = b3;
+        elems[B4] = b4;
+
+        elems[C1] = c1;
+        elems[C2] = c2;
+        elems[C3] = c3;
+        elems[C4] = c4;
+
+        elems[D1] = d1;
+        elems[D2] = d2;
+        elems[D3] = d3;
+        elems[D4] = d4;
+    }
+
+
+    public static Matrix4x4 AsTranslation(float x, float y, float z)
+    {
+        Matrix4x4 matrix = new Matrix4x4();
+        matrix.m_NativeMatrix.initTrans(x, y, z);
+        return matrix;
+    }
+    public static Matrix4x4 AsRotation(float x, float y, float z)
+    {
+        Matrix4x4 matrix = new Matrix4x4();
+
+        Matrix4x4f rotation = new Matrix4x4f();
+        rotation.initXRot(x);
+        matrix.m_NativeMatrix.multRight(rotation);
+
+        rotation.initYRot(y);
+        matrix.m_NativeMatrix.multRight(rotation);
+        
+        rotation.initZRot(z);
+        matrix.m_NativeMatrix.multRight(rotation);
+
+        return matrix;
+    }
+    public static Matrix4x4 AsScale(float x, float y, float z)
+    {
+        Matrix4x4 matrix = new Matrix4x4();
+        matrix.m_NativeMatrix.initScal(x, y, z);
+        return matrix;
+    }
+    
+
+    public void GetPosition(Vector3f outPosition)
+    {
+        m_NativeMatrix.getTrans(outPosition);
+    }
+    public void SetPosition(Vector3f position)
+    {
+        m_NativeMatrix.setElemAt(3, 0, position.x);
+        m_NativeMatrix.setElemAt(3, 1, position.y);
+        m_NativeMatrix.setElemAt(3, 2, position.z);
+    }
+
+
+    public void LeftMultiply(Matrix4x4 left)
+    {
+        m_NativeMatrix.multLeft(left.m_NativeMatrix);
+    }
+    public void RightMultiply(Matrix4x4 right)
+    {
+        m_NativeMatrix.multRight(right.m_NativeMatrix);
+    }
+
+    public void TransformVector3Zero(Vector3f vector)
+    {
+        Vector4f v = new Vector4f(vector.x, vector.y, vector.z, 0);
+        m_NativeMatrix.multVector(v, v);
+        vector.set(v.x, v.y, v.z);
+    }
+    public void TransformVector3One(Vector3f vector)
+    {
+        Vector4f v = new Vector4f(vector.x, vector.y, vector.z, 1);
+        m_NativeMatrix.multVector(v, v);
+        vector.set(v.x, v.y, v.z);
+    }
+
+
+    public void Invert()
+    {
+        m_NativeMatrix.invert();
+    }
+
+    public void Set(Matrix4x4 copy)
+    {
+        float[] inComp = m_NativeMatrix.elems();
+        float[] copyComp = copy.m_NativeMatrix.elems();
+
+        for(int i = 0; i < 16; ++i)
+            inComp[i] = copyComp[i];
+    }
+    public void Set(Matrix4x4f copy)
+    {
+        float[] inComp = m_NativeMatrix.elems();
+        float[] copyComp = copy.elems();
+
+        for(int i = 0; i < 16; ++i)
+            inComp[i] = copyComp[i];
+    }
+    public void Set(int collumn, int row, float value)
+    {
+        m_NativeMatrix.setElemAt(collumn, row, value);
+    }
+    public void Set(int index, float value)
+    {
+        m_NativeMatrix.elems()[index] = value;
+    }
+
+    public static Matrix4x4f Lerp(float t, Matrix4x4 in, Matrix4x4 out)
+    {
+        float[] inComp = in.elems();
+        float[] outComp = out.elems();
+
+        Matrix4x4f matrix = new Matrix4x4f();
+        float[] comp = matrix.elems();
+
+        for(int i = 0; i < 16; ++i)
+            comp[i] = Tools.lerp(t, inComp[i], outComp[i]);
+        
+        return matrix;
+    }
+
+    public static Matrix4x4 FromNative(Matrix4x4f nativeMatrix)
+    {
+        Matrix4x4 matrix = new Matrix4x4();
+        float[] inComp = matrix.m_NativeMatrix.elems();
+        float[] copyComp = nativeMatrix.elems();
+
+        for(int i = 0; i < 16; ++i)
+            inComp[i] = copyComp[i];
+
+        return matrix;
+    }
+    public void GetNative(Matrix4x4f outMatrix)
+    {
+        float[] outComp = out.elems();
+        float[] copyComp = m_NativeMatrix.elems();
+
+        for(int i = 0; i < 16; ++i)
+            outComp[i] = copyComp[i];
+    }
+}

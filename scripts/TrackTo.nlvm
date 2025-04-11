@@ -1,10 +1,10 @@
 
-package scripts.core;
+package scripts;
 
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
 
-public class TrackTo implements FrameListener
+public class TrackTo extends Object implements FrameListener
 {
     private static Simulator m_Simulator = null;
 

@@ -1,11 +1,11 @@
 package scripts.containers;
 
-public class ListEnumerator extends Object implements IEnumerator
+public class ArrayEnumerator extends Object implements IEnumerator
 {
     private Object[] m_Array = new Object[0];
     private int m_Index = -1;
 
-    public ListEnumerator(IEnumerable enumerable)
+    public ArrayEnumerator(IEnumerable enumerable)
     {
         m_Array = enumerable.ToArray();
         m_Index = -1;

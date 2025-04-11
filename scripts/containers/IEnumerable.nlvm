@@ -1,7 +1,10 @@
 package scripts.containers;
 
+/// <interface>
+/// <desc>Represents an iterable type.</desc>
 public interface IEnumerable 
 {
     public Object[] ToArray();
     public IEnumerator GetEnumerator();
 }
+/// </interface>
