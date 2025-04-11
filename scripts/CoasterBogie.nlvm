@@ -7,6 +7,7 @@ import nlvm.lang.Object;
 import scripts.utilities.*;
 
 /// <class>
+/// <desc>Type used for custom coaster bogies; Allows customisation of wheel rotation speeds based on the diameter,\nThis implementation uses the common separated pitch/yaw bogies found on gerst,mack,vekoma.</desc>
 public class CoasterBogie extends Behaviour implements ISetableBogie
 {
     private TrainHandler m_Handler = null;
@@ -90,7 +91,9 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     {
         m_SceneObject.setMatrix(matrix);
     }
-    public void SetData(Object object) {}
+    public void SetData(Object object) 
+    {
+    }
 
         // IGetable
     public Object GetData()
