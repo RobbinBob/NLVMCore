@@ -568,6 +568,359 @@
             "members": [],
             "methods": [],
             "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts.containers",
+            "libraries": [],
+            "accessor": "public",
+            "name": "ArrayEnumerator",
+            "full_name": "scripts.containers.ArrayEnumerator",
+            "extends": "Object",
+            "implements": [
+                "IEnumerator"
+            ],
+            "description": "A simple iterator for arrays.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts.containers",
+            "libraries": [
+                "nlvm.util.Vector"
+            ],
+            "accessor": "public final",
+            "name": "List",
+            "full_name": "scripts.containers.List",
+            "extends": "Object",
+            "implements": [
+                "IEnumerable"
+            ],
+            "description": "A simple List container with enumerator capabilities.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Count",
+                    "return": "int",
+                    "accessor": "public",
+                    "return_desc": "The current amount of items in the List.",
+                    "description": "The Lists current occupancy."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Contains",
+                    "return": "bool",
+                    "accessor": "public",
+                    "return_desc": "True if the supplied object was found, otherwise false.",
+                    "description": "Checks whether a given object is contained in the List."
+                },
+                {
+                    "args": [],
+                    "name": "Clear",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Clears the List and sets its size to zero."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Insert",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Inserts an object to the back of the List."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "InsertAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Inserts an object at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Remove",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Removes an object from the List."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "RemoveAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Removes an object at a specified element."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "SetAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets an object at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "At",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns an object at a specified index."
+                },
+                {
+                    "args": [],
+                    "name": "PopBack",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The element removed from the List.",
+                    "description": "Removes the very last element from the List and returns it."
+                },
+                {
+                    "args": [],
+                    "name": "PopFront",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The element removed from the List.",
+                    "description": "Removes the very first element from the List and returns it."
+                },
+                {
+                    "args": [],
+                    "name": "ToArray",
+                    "return": "Object[]",
+                    "accessor": "public",
+                    "return_desc": "The underlying array of this List.",
+                    "description": "Returns the List as an array."
+                },
+                {
+                    "args": [],
+                    "name": "GetEnumerator",
+                    "return": "IEnumerator",
+                    "accessor": "public",
+                    "return_desc": "The ArrayEnumerator that can be used to iterate over the List.",
+                    "description": "Returns the List's enumerator interface."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [],
+                    "accessor": "public",
+                    "description": "Creates a new List."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "capacity",
+                            "description": "The initial capacity the List will consume."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new List with an initial capacity."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "capacity",
+                            "description": "The initial capcity the List will consume."
+                        },
+                        {
+                            "type": "int",
+                            "name": "capacityIncrement",
+                            "description": "The size it will grow by when reaching capcity."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new List with an initial capacity and sizer."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "IEnumerable",
+                            "name": "enumerable",
+                            "description": "An enumerable container that will be used to populate the List."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new List and populates it with an enumerable."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Object[]",
+                            "name": "array",
+                            "description": "An array to populate the List with."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new List and populates it with an array."
+                }
+            ]
+        },
+        {
+            "type": "class",
+            "package": "scripts.modifiers",
+            "libraries": [
+                "scripts.ISetableBogie",
+                "nlvm.math3d"
+            ],
+            "accessor": "public",
+            "name": "BogieModifierData",
+            "full_name": "scripts.modifiers.BogieModifierData",
+            "extends": "Object",
+            "description": "A struct-like class which contains data for a bogie.",
+            "members": [
+                {
+                    "name": "SetableBogie",
+                    "type": "ISetableBogie",
+                    "accessor": "public",
+                    "description": "A reference to the ISetableBogie instance this is for."
+                },
+                {
+                    "name": "CarMatrix",
+                    "type": "Matrix4x4f",
+                    "accessor": "public",
+                    "description": "A reference to the underlying car matrix this bogie is attached to."
+                },
+                {
+                    "name": "BogieMatrix",
+                    "type": "Matrix4x4f",
+                    "accessor": "public",
+                    "description": "A reference to the underlying bogie matrix."
+                },
+                {
+                    "name": "TrainDistance",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "The current distance(meters) the train has travelled."
+                },
+                {
+                    "name": "BogieOffset",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "The offset(meters) from the underlying cars track position (not implemented)."
+                },
+                {
+                    "name": "WheelRotation",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "The wheel rotation(radians)."
+                }
+            ],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "interface",
+            "package": "scripts.modifiers",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IBogieModifier\n",
+            "full_name": "scripts.modifiers.IBogieModifier\n",
+            "description": "Exposes methods for manipulating a custom coaster bogies.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [
+                        {
+                            "type": "BogieModifierData",
+                            "name": "bogieData",
+                            "description": "Contains data about the current bogie being manipulated."
+                        }
+                    ],
+                    "name": "Run",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called to update the bogies data."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "interface",
+            "package": "scripts.modifiers",
+            "libraries": [],
+            "accessor": "public",
+            "name": "ICarModifier\n",
+            "full_name": "scripts.modifiers.ICarModifier\n",
+            "description": "Exposes methods for manipulating ",
+            "members": [],
+            "methods": [
+                {
+                    "args": [
+                        {
+                            "type": "CarModifierData",
+                            "name": "carData",
+                            "description": "Contains data about the current car being maipulated."
+                        }
+                    ],
+                    "name": "Run",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called to update the cars data."
+                }
+            ],
+            "constructors": []
         }
     ]
 }

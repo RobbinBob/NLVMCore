@@ -3,10 +3,24 @@ package scripts.modifiers;
 import scripts.ISetableCar;
 import nlvm.math3d.*;
 
+/// <class>
+/// <desc>A struct-like class which contains data for a car.</desc>
 public class CarModifierData 
 {
+    /// <member>
+    /// <desc>A reference to the ISetableCar instance this is for.</desc>
+    /// </member>
     public ISetableCar SetableCar;
+    /// <member>
+    /// <desc>A reference to the underlying car matrix.</desc>
+    /// </member>
     public Matrix4x4f CarMatrix;
+    /// <member>
+    /// <desc>The current distance(meters) the train has travelled.</desc>
+    /// </member>
     public float TrainDistance;
+    /// <member>
+    /// <desc>The offset(meters) from the underlying cars track position (not implemented).</desc>
+    /// </member>
     public float CarOffset;
 }
