@@ -1,0 +1,13 @@
+package scripts.containers;
+
+/// <interface>
+/// <desc>Exposes methods to query the size of a container.</desc>
+public interface IQuerySize
+{
+    /// <method>
+    /// <desc>The containers occupancy.</desc>
+    /// <return>The current amount of items in the container.</return>
+    /// </method>
+    public int Count();
+}
+/// </interface>

@@ -25,6 +25,7 @@ public final class DebugGizmoHandler extends Object implements FrameListener
 
         m_Simulator = NoLimits.getSimulator();
         SceneObject symbols = m_Simulator.getSceneObject(GIZMO_SYMBOL_NAME);
+        symbols.setMatrix(new Matrix4x4f());
 
         SceneObjectElement[] lineElements = GetElementsWithName(symbols, GIZMO_SYMBOL_LINE);
         for(int i = 0; i < lineElements.length; ++i)

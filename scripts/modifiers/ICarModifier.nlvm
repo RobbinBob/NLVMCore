@@ -6,7 +6,7 @@ public interface ICarModifier
 {
     /// <method>
     /// <desc>Called to update the cars data.</desc>
-    /// <arg name="carData">Contains data about the current car being maipulated.</arg>
+    /// <arg name="carData">Contains data about the current car being manipulated.</arg>
     /// </method>
     public void Run(CarModifierData carData);
 }

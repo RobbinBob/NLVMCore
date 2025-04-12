@@ -4,7 +4,13 @@ package scripts.containers;
 /// <desc>Represents an iterable type.</desc>
 public interface IEnumerable 
 {
+    /// <method>
+    /// <desc>Returns the enumerable as a native array.</desc>
+    /// </method>
     public Object[] ToArray();
+    /// <method>
+    /// <desc>Returns the enumerable's enumerator interface.</desc>
+    /// </method>
     public IEnumerator GetEnumerator();
 }
 /// </interface>

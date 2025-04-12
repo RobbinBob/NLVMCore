@@ -1,0 +1,49 @@
+package scripts.containers;
+
+/// <class>
+/// <desc>Struct-like type that simplifies reverse indexing of IIndexable types.</desc>
+public final class Index extends Object
+{
+    /// <member>
+    /// <desc>The index to search for (Read Only).</desc>
+    /// </member>
+    public int Index;
+    /// <member>
+    /// <desc>If the index should be read from the back of the container.</desc>
+    /// </member>
+    public bool Reverse = false;
+
+    private Index(int index, bool shouldReverse)
+    {
+        Index = index;
+        Reverse = shouldReverse;
+    }
+
+    /// <method>
+    /// <desc>Gets the correct index based on the container size.</desc>
+    /// <return>The true index to search for.</return>
+    /// <arg name="size">The size of the container this Index will be used on.</arg>
+    /// </method>
+    public int Get(int size)
+    {
+        if(Reverse)
+            return size - Index;
+        else
+            return Index;
+    }
+
+    /// <method>
+    /// <desc>Creates an index search forwards.</desc>
+    /// </method>
+    public static Index Front(int index)
+    {
+        return new Index(index, false);
+    }
+    /// <method>
+    /// <desc>Creates an index search backwards.</desc>
+    /// </method>
+    public static Index Back(int index)
+    {
+        return new Index(index, true);
+    }
+}

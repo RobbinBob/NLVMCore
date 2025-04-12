@@ -1,13 +1,472 @@
 package scripts;
 
-public final class Json extends Object
-{
-    private Json[] m_Children = new Json[0];
+import scripts.containers.*;
+import scripts.utilities.*;
 
-    public Json()
+public final class Json extends Object implements IEnumerable, IIndexable, IQuerySize, IEnum
+{
+    /// <member>
+    /// <desc>Enum constant for json holding an Object (Read Only).</desc>
+    /// </member>
+    public static final int TYPE_OBJECT = 0;
+    /// <member>
+    /// <desc>Enum constant for json holding an Array (Read Only).</desc>
+    /// </member>
+    public static final int TYPE_ARRAY = 1;
+    /// <member>
+    /// <desc>Enum constant for json holding an String (Read Only).</desc>
+    /// </member>
+    public static final int TYPE_STRING = 2;
+    /// <member>
+    /// <desc>Enum constant for json holding an Number (Read Only).</desc>
+    /// </member>
+    public static final int TYPE_NUMBER = 3;
+    /// <member>
+    /// <desc>Enum constant for json holding an Bool (Read Only).</desc>
+    /// </member>
+    public static final int TYPE_BOOL = 4;
+
+    private List m_Children = null;
+
+    private String m_ValueAsString = "";
+    private bool m_ValueAsBool = false;
+    private float m_ValueAsNumber = 0.0f;
+
+    private String m_Name = "";
+    private int m_Type = TYPE_OBJECT;
+
+    private Json(String name)
     {
+        m_Name = name;
+        m_Children = new List();
+    }
+
+    /// <method>
+    /// <desc>Attempts to fetch the string value stored in this object.</desc>
+    /// <return>The string value, will throw exception if unable to find a string.</return>
+    /// </method>
+    public String GetString()
+    {
+        if(m_Type != TYPE_STRING)
+            Exception.Throw("Mismatched type");
+        return new String(m_ValueAsString);
+    }
+    /// <method>
+    /// <desc>Attempts to fetch the bool value stored in this object.</desc>
+    /// <return>The bool value, will throw exception if unable to find a bool.</return>
+    /// </method>
+    public bool GetBool()
+    {
+        if(m_Type != TYPE_BOOL)
+            Exception.Throw("Mismatched type");
+        return m_ValueAsBool;
+    }
+    /// <method>
+    /// <desc>Attempts to fetch the float value stored in this object.</desc>
+    /// <return>The float value, will throw exception if unable to find a float.</return>
+    /// </method>
+    public float GetFloat()
+    {
+        if(m_Type != TYPE_NUMBER)
+            Exception.Throw("Mismatched type");
+        return m_ValueAsNumber;
+    }
+
+
+    /// <method>
+    /// <desc>Attempts to retrieve a json entry using a key.</desc>
+    /// <return>The json object found at the key entry.</return>
+    /// <arg name="key">The key used to search.</arg>
+    /// </method>
+    public Json Get(String key)
+    {
+        IEnumerator enumerator = m_Children.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            Json child = (Json)enumerator.Get();
+            if(child.m_Name.equals(key))
+                return child;
+        }
+    
+        return null;
     }
 
 
 
+
+    /// <method>
+    /// <desc>The containers occupancy.</desc>
+    /// <return>The current amount of items in the container.</return>
+    /// </method>
+    public int Count()
+    {
+        return m_Children.Count();
+    }
+
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(int index)
+    {
+        return m_Children.At(index);
+    }
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(Index index)
+    {
+        return m_Children.At(index);
+    }
+
+    /// <method>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, int index)
+    {
+        if(!(object instanceof Json))
+            Exception.Throw("Object needs to be of type Json");
+        m_Children.SetAt(object, index);
+    }
+    /// <method>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, Index index)
+    {
+        if(!(object instanceof Json))
+            Exception.Throw("Object needs to be of type Json");
+        m_Children.SetAt(object, index);
+    }
+
+    /// <method>
+    /// <desc>Returns the enumerable as a native array.</desc>
+    /// </method>
+    public Object[] ToArray()
+    {
+        return m_Children.ToArray();
+    }
+    /// <method>
+    /// <desc>Returns the enumerable's enumerator interface.</desc>
+    /// </method>
+    public IEnumerator GetEnumerator()
+    {
+        return m_Children.GetEnumerator();
+    }
+
+
+    /// <method>
+    /// <desc>Attempts to parse a string into a json tree.</desc>
+    /// </method>
+    public static Json Parse(String text)
+    {
+        Json head = new Json("root");
+        InternalParse(head, text);
+        return head;
+    }
+
+    /// <method>
+    /// <desc>Gets the string representation of this object.</desc>
+    /// </method>
+    public String toString()
+    {
+        return "\n| Name: " + m_Name + "\n| Type: " + GetEnumAsString(m_Type) + "\n| Nodes: " + m_Children.Count();
+    }
+
+    /// <method>
+    /// <desc>Parses the enum integer into a String representation.</desc>
+    /// <return>The string representation of the enum.</return>
+    /// </method>
+    public String GetEnumAsString(int enum)
+    {
+        switch(enum)
+        {
+            case TYPE_OBJECT:
+                return "Object";
+            case TYPE_ARRAY:
+                return "Array";
+            case TYPE_STRING:
+                return "String";
+            case TYPE_NUMBER:
+                return "Number";
+            case TYPE_BOOL:
+                return "Bool";
+        }
+        return IEnum.ENUM_INVALID;
+    }
+
+
+    private static int GetClosingBrace(String text, int openingPos)
+    {
+        char[] chars = text.toCharArray();
+        int counter = 0;
+        for(int i = openingPos; i < chars.length; ++i)
+        {
+            if(chars[i] == '{')
+                counter++;
+            else if(chars[i] == '}')
+                counter--;
+            
+            if(counter == 0)
+                return i;
+        }
+        return StringUtil.NPOS;
+    }
+    private static int GetClosingBracket(String text, int openingPos)
+    {
+        char[] chars = text.toCharArray();
+        int counter = 0;
+        for(int i = openingPos; i < chars.length; ++i)
+        {
+            if(chars[i] == '[')
+                counter++;
+            else if(chars[i] == ']')
+                counter--;
+            
+            if(counter == 0)
+                return i;
+        }
+        return StringUtil.NPOS;
+    }
+    private static String GetKey(String text)
+    {
+        String[] splits = StringUtil.SplitString(text, '"');
+        return StringUtil.RemoveWhiteSpace(splits[1]);
+    }
+    private static int GetValueType(String text)
+    {
+        int type = -1;
+            for(int i = 0; i < text.length(); ++i)
+            {
+                char c = text.charAt(i);
+                if(c == '{')
+                {
+                    type = Json.TYPE_OBJECT;
+                    break;
+                }
+                if(c == '[')
+                {
+                    type = Json.TYPE_ARRAY;
+                    break;
+                }
+                if(c == '"')
+                {
+                    type = Json.TYPE_STRING;
+                    break;
+                }
+                if(StringUtil.IsCharLetter(c))
+                {
+                    type = Json.TYPE_BOOL;
+                    break;
+                }
+                if(StringUtil.IsCharNumber(c))
+                {
+                    type = Json.TYPE_NUMBER;
+                    break;
+                }
+            }
+        return type;
+    }
+
+
+    private static List CombineSplits(String[] splits)
+    {
+            // Recombine some of the splits that contain brackets by counting the amount of open/close brackets in each split
+        List combinedStr = new List();
+        int bracketCount = 0;
+        int oldBracketCount = 0;
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < splits.length; ++i)
+        {
+            int openBracketCount = StringUtil.Count(splits[i], '[');
+            int closeBracketCount = StringUtil.Count(splits[i], ']');
+            if(openBracketCount - closeBracketCount != 0)
+            {
+                if(openBracketCount > 0)
+                    bracketCount += openBracketCount;
+                else if(closeBracketCount > 0)
+                    bracketCount -= closeBracketCount;
+            }
+
+            openBracketCount = StringUtil.Count(splits[i], '{');
+            closeBracketCount = StringUtil.Count(splits[i], '}');
+            if(openBracketCount - closeBracketCount != 0)
+            {
+                if(openBracketCount > 0)
+                    bracketCount += openBracketCount;
+                else if(closeBracketCount > 0)
+                    bracketCount -= closeBracketCount;
+            }
+
+            if(bracketCount > 0)
+            {
+                if(builder.length() > 0)
+                    builder.append(',');
+                builder.append(splits[i]);
+            }
+            else
+            {
+                    // Just ended the builder as weve found the closing brace
+                if(oldBracketCount > 0)
+                {
+                    if(builder.length() > 0)
+                        builder.append(',');
+                    builder.append(splits[i]);
+                    combinedStr.Insert(builder.toString());
+                    builder = new StringBuilder();
+                }
+                else
+                {
+                    combinedStr.Insert(splits[i]);
+                }
+            }
+
+            oldBracketCount = bracketCount;
+        }
+        return combinedStr;
+    }
+
+    private static void ParseAsObject(Json parent, String text)
+    {
+        int openBraceCount = StringUtil.Count(text, '{');
+        int closeBraceCount = StringUtil.Count(text, '}');
+
+        if (openBraceCount != closeBraceCount)
+            InvalidFormatException.Throw("The supplied JSON file contains errors");
+        
+        openBraceCount = StringUtil.Count(text, '[');
+        closeBraceCount = StringUtil.Count(text, ']');
+
+        if (openBraceCount != closeBraceCount)
+            InvalidFormatException.Throw("The supplied JSON file contains errors");
+
+
+        int openPos = StringUtil.Find(text, '{');
+        int closePos = GetClosingBrace(text, openPos);
+        if(closePos == StringUtil.NPOS)
+            Exception.Throw("Could not find closing brace");
+
+        String sub = text.substring(openPos + 1, closePos);
+        String[] splits = StringUtil.SplitString(sub, ',');
+
+        List combinedStr = CombineSplits(splits);
+
+            // Find child elements and parse them accordingly
+        IEnumerator enumerator = combinedStr.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            String elemStr = (String)enumerator.Get();
+            String key = GetKey(elemStr);
+
+            int colon = StringUtil.Find(elemStr, ':');
+            String content = elemStr.substring(colon + 1);
+            int type = GetValueType(content);
+
+            Json child = new Json(key);
+            child.m_Type = type;
+
+            switch(type)
+            {
+                case Json.TYPE_STRING:
+                    {
+                        child.m_ValueAsString = StringUtil.SplitString(content, '"')[1];
+                        Debug.Print(child.m_ValueAsString);
+                        break;
+                    }
+                case Json.TYPE_BOOL:
+                    {
+                        child.m_ValueAsBool = StringUtil.RemoveWhiteSpace(content).equals("true");
+                        Debug.Print(child.m_ValueAsBool);
+                        break;
+                    }
+                case Json.TYPE_NUMBER:
+                    {
+                        child.m_ValueAsNumber = Float.parseFloat(content);
+                        Debug.Print(child.m_ValueAsNumber);
+                        break;
+                    }
+                case Json.TYPE_OBJECT:
+                case Json.TYPE_ARRAY:
+                    {
+                        InternalParse(child, content);
+                        break;
+                    }
+            }
+            parent.m_Children.Insert(child);
+        }
+    }
+    private static void ParseAsArray(Json parent, String text)
+    {
+        int openPos = StringUtil.Find(text, '[');
+        int closePos = GetClosingBracket(text, openPos);
+        if(closePos == StringUtil.NPOS)
+            Exception.Throw("Could not find closing brace");
+        
+        String sub = text.substring(openPos + 1, closePos);
+        String[] splits = StringUtil.SplitString(sub, ',');
+
+        List combinedStr = CombineSplits(splits);
+        IEnumerator enumerator = combinedStr.GetEnumerator();
+        int index = 0;
+        while(enumerator.MoveNext())
+        {
+            String elemStr = (String)enumerator.Get();
+            int type = GetValueType(elemStr);
+
+            Json child = new Json(String.valueOf(index));
+            child.m_Type = type;
+            switch(type)
+            {
+                case Json.TYPE_STRING:
+                    {
+                        child.m_ValueAsString = StringUtil.SplitString(elemStr, '"')[1];
+                        Debug.Print(child.m_ValueAsString);
+                        break;
+                    }
+                case Json.TYPE_BOOL:
+                    {
+                        child.m_ValueAsBool = StringUtil.RemoveWhiteSpace(elemStr).equals("true");
+                        Debug.Print(child.m_ValueAsBool);
+                        break;
+                    }
+                case Json.TYPE_NUMBER:
+                    {
+                        child.m_ValueAsNumber = Float.parseFloat(elemStr);
+                        Debug.Print(child.m_ValueAsNumber);
+                        break;
+                    }
+                case Json.TYPE_OBJECT:
+                case Json.TYPE_ARRAY:
+                    {
+                        InternalParse(child, elemStr);
+                        break;
+                    }
+            }
+            parent.m_Children.Insert(child);
+        }
+    }
+
+
+    private static void InternalParse(Json parent, String text)
+    {
+        for(int i = 0; i < text.length(); ++i)
+        {
+            if(text.charAt(i) == '{')
+            {
+                ParseAsObject(parent, text);
+                break;
+            }
+            if(text.charAt(i) == '[')
+            {
+                ParseAsArray(parent, text);
+                break;
+            }
+        }
+    }
 }

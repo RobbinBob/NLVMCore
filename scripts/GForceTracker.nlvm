@@ -45,6 +45,8 @@ public class GForceTracker extends UpdateableObject
         m_GForces.set(m_MathVec);
 
         m_AverageForces.Insert(m_GForces.dup());
+        while(m_AverageForces.Count() < MAX_AVERAGE)
+            m_AverageForces.Insert(m_GForces.dup());
         while(m_AverageForces.Count() > MAX_AVERAGE)
             m_AverageForces.PopFront();
 

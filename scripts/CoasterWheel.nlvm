@@ -7,11 +7,26 @@ import nlvm.lang.Object;
 /// <desc>Descriptor for wheels containing basic information.</desc>
 public class CoasterWheel extends Object
 {
+    /// <member>
+    /// <desc>Enum for forward wheel rotation (Read Only).</desc>
+    /// </member>
     public static final int WHEEL_FWD = 1;
+    /// <member>
+    /// <desc>Enum for backward wheel rotation (Read Only).</desc>
+    /// </member>
     public static final int WHEEL_BWD = -1;
 
+    /// <member>
+    /// <desc>Name of the wheel element.</desc>
+    /// </member>
     public String Name;
+    /// <member>
+    /// <desc>Radius(meters) of the wheel.</desc>
+    /// </member>
     public float Radius;
+    /// <member>
+    /// <desc>Enum for the wheels rotation direction.</desc>
+    /// </member>
     public int Direction;
 
     /// <constructor>
