@@ -4,6 +4,7 @@ import com.nolimitscoaster.*;
 import scripts.utilities.*;
 import nlvm.math3d.*;
 import scripts.math.*;
+import scripts.containers.*;
 
 /// <class>
 /// <desc>Allows debugging of scripts.</desc>
@@ -126,14 +127,50 @@ public final class Debug extends Object
     /// </method>
     public static final void Print(Object obj)
     {
-        System.out.println(GetTimeDataSequence() + obj.toString());
+        if(obj == null)
+            System.out.println(GetTimeDataSequence() + " null");
+        else
+            System.out.println(GetTimeDataSequence() + obj.toString());
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
-    public static final void Print(Behaviour obj)
+    public static final void Print(Object[] obj)
     {
-        System.out.println(GetTimeDataSequence() + obj.toString());
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < obj.length; ++i)
+        {
+            if(i > 0)
+                builder.append(',');
+            
+            builder.append("\n" + i + " : ");
+            builder.append(obj[i].toString());
+        }
+
+
+        System.out.println(GetTimeDataSequence() + builder.toString());
     }
+    /// <method>
+    /// <desc>Creates a time stamped output to the console.</desc>
+    /// </method>
+    /*
+    public static final void Print(IEnumerable obj)
+    {
+        StringBuilder builder = new StringBuilder();
+        IEnumerator enumerator = obj.GetEnumerator();
+        int i = 0;
+        while(enumerator.MoveNext())
+        {
+            if(i > 0)
+                builder.append(',');
+
+            builder.append("\n" + i + " : ");
+            builder.append(enumerator.Get().toString());
+            i++;
+        }
+
+        System.out.println(GetTimeDataSequence() + builder.toString());
+    }
+    */
 }
 /// </class>

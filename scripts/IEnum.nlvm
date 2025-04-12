@@ -1,0 +1,18 @@
+package scripts;
+
+/// <interface>
+/// <desc>.</desc>
+public interface IEnum
+{
+    /// <member>
+    /// <desc>Constant used for when a enum parse fails (Read Only).</desc>
+    /// </member>
+    public static final String ENUM_INVALID = "Invalid";
+
+    /// <method>
+    /// <desc>Parses the enum integer into a String representation.</desc>
+    /// <return>The string representation of the enum.</return>
+    /// </method>
+    public String GetEnumAsString(int enum);
+}
+/// </interface>

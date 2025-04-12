@@ -1,0 +1,33 @@
+package scripts.containers;
+
+/// <interface>
+/// <desc>Exposes methods to index an type.</desc>
+public interface IIndexable
+{
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(int index);
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(Index index);
+
+    /// <method>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, int index);
+    /// <method>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, Index index);
+}
+/// </interface>

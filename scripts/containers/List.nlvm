@@ -4,7 +4,7 @@ import nlvm.util.Vector;
 
 /// <class>
 /// <desc>A simple List container with enumerator capabilities.</desc>
-public final class List extends Object implements IEnumerable
+public final class List extends Object implements IEnumerable, IQuerySize, IIndexable
 {
     private Vector m_Vector = null;
 
@@ -109,18 +109,40 @@ public final class List extends Object implements IEnumerable
     }
 
     /// <method>
-    /// <desc>Sets an object at a specified index.</desc>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
     /// </method>
     public void SetAt(Object object, int index)
     {
         m_Vector.setElementAt(object, index);
     }
     /// <method>
-    /// <desc>Returns an object at a specified index.</desc>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, Index index)
+    {
+        m_Vector.setElementAt(object, index.Get(Count()));
+    }
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
     /// </method>
     public Object At(int index)
     {
         return m_Vector.elementAt(index);
+    }
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(Index index)
+    {
+        return m_Vector.elementAt(index.Get(Count()));
     }
 
     /// <method>

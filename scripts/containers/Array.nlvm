@@ -1,0 +1,105 @@
+package scripts.containers;
+
+/// <class>
+/// <desc>A simple fixed size array.</desc>
+public final class Array extends Object implements IEnumerable, IQuerySize, IIndexable
+{
+    private Object[] m_Array = null;
+
+    /// <constructor>
+    /// <desc>Creates a new array of size.</desc>
+    /// </constructor>
+    public Array(int size)
+    {
+        m_Array = new Object[size];
+    }
+    /// <constructor>
+    /// <desc>Creates a new array and populates it.</desc>
+    /// <arg name="enumerable">The enumerable container to populate the Array with.</arg>
+    /// </constructor>
+    public Array(IEnumerable enumerable)
+    {
+        Object[] array = enumerable.ToArray();
+        m_Array = new Object[array.length];
+        for(int i = 0; i < m_Array.length; ++i)
+            m_Array[i] = array[i];
+    }
+    /// <constructor>
+    /// <desc>Cerates a new array and populates it.</desc>
+    /// <arg name="array">The array to populate the Array with.</arg>
+    /// </constructor>
+    public Array(Object[] array)
+    {
+        m_Array = new Object[array.length];
+        for(int i = 0; i < m_Array.length; ++i)
+            m_Array[i] = array[i];
+    }
+
+    /// <method>
+    /// <desc>The containers occupancy.</desc>
+    /// <return>The current amount of items in the container.</return>
+    /// </method>
+    public int Count()
+    {
+        return m_Array.length;
+    }
+
+
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(int index)
+    {
+        return m_Array[index];
+    }
+    /// <method>
+    /// <desc>Gets the item at a specified index.</desc>
+    /// <return>The object at a given index.</return>
+    /// <arg name="index">The index to fetch from.</arg>
+    /// </method>
+    public Object At(Index index)
+    {
+        return m_Array[index.Get(Count())];
+    }
+    
+    
+    /// <method>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, int index)
+    {
+        m_Array[index] = object;
+    }
+    /// <method>
+    /// <desc>Sets the item at a specified index.</desc>
+    /// <arg name="object">The value to set at the given index.</arg>
+    /// <arg name="index">The index that will be written to.</arg>
+    /// </method>
+    public void SetAt(Object object, Index index)
+    {
+        m_Array[index.Get(Count())] = object;
+    }
+
+    /// <method>
+    /// <desc>Returns the enumerable as a native array.</desc>
+    /// </method>
+    public Object[] ToArray()
+    {
+        Object[] array = new Object[m_Array.length];
+        for(int i = 0; i < array.length; ++i)
+            array[i] = m_Array[i];
+        return array;
+    }
+    /// <method>
+    /// <desc>Returns the enumerable's enumerator interface.</desc>
+    /// </method>
+    public IEnumerator GetEnumerator()
+    {
+        return new ArrayEnumerator(this);
+    }
+}
+/// </class>
