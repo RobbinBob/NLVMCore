@@ -2,23 +2,40 @@ package scripts.containers;
 
 import nlvm.util.Vector;
 
+/// <class>
+/// <desc>A simple List container with enumerator capabilities.</desc>
 public final class List extends Object implements IEnumerable
 {
     private Vector m_Vector = null;
 
-
+    /// <constructor>
+    /// <desc>Creates a new List.</desc>
+    /// </constructor>
     public List() 
     {
         m_Vector = new Vector();
     }
+    /// <constructor>
+    /// <desc>Creates a new List with an initial capacity.</desc>
+    /// <arg name="capacity">The initial capacity the List will consume.</arg>
+    /// </constructor>
     public List(int capacity)
     {
         m_Vector = new Vector(capacity);
     }
+    /// <constructor>
+    /// <desc>Creates a new List with an initial capacity and sizer.</desc>
+    /// <arg name="capacity">The initial capcity the List will consume.</arg>
+    /// <arg name="capacityIncrement">The size it will grow by when reaching capcity.</arg>
+    /// </constructor>
     public List(int capacity, int capacityIncrement)
     {
         m_Vector = new Vector(capacity, capacityIncrement);
     }
+    /// <constructor>
+    /// <desc>Creates a new List and populates it with an enumerable.</desc>
+    /// <arg name="enumerable">An enumerable container that will be used to populate the List.</arg>
+    /// </constructor>
     public List(IEnumerable enumerable)
     {
         Object[] arr = enumerable.ToArray();
@@ -26,6 +43,10 @@ public final class List extends Object implements IEnumerable
         for(int i = 0; i < arr.length; ++i)
             m_Vector.addElement(arr[i]);
     }
+    /// <constructor>
+    /// <desc>Creates a new List and populates it with an array.</desc>
+    /// <arg name="array">An array to populate the List with.</arg>
+    /// </constructor>
     public List(Object[] array)
     {
         m_Vector = new Vector(array.length);
@@ -33,49 +54,79 @@ public final class List extends Object implements IEnumerable
             m_Vector.addElement(array[i]);
     }
 
-
+    /// <method>
+    /// <desc>The Lists current occupancy.</desc>
+    /// <return>The current amount of items in the List.</return>
+    /// </method>
     public int Count()
     {
         return m_Vector.size();
     }
+    /// <method>
+    /// <desc>Checks whether a given object is contained in the List.</desc>
+    /// <return>True if the supplied object was found, otherwise false.</return>
+    /// </method>
     public bool Contains(Object object)
     {
         return m_Vector.contains(object);
     }
+    /// <method>
+    /// <desc>Clears the List and sets its size to zero.</desc>
+    /// </method>
     public void Clear()
     {
         m_Vector.clear();
     }
 
-
+    /// <method>
+    /// <desc>Inserts an object to the back of the List.</desc>
+    /// </method>
     public void Insert(Object object)
     {
         m_Vector.addElement(object);
     }
+    /// <method>
+    /// <desc>Inserts an object at a specified index.</desc>
+    /// </method>
     public void InsertAt(Object object, int index)
     {
         m_Vector.insertElementAt(object, index);
     }
 
+    /// <method>
+    /// <desc>Removes an object from the List.</desc>
+    /// </method>
     public void Remove(Object object)
     {
         m_Vector.removeElement(object);
     }
+    /// <method>
+    /// <desc>Removes an object at a specified element.</desc>
+    /// </method>
     public void RemoveAt(int index)
     {
         m_Vector.removeElementAt(index);
     }
 
+    /// <method>
+    /// <desc>Sets an object at a specified index.</desc>
+    /// </method>
     public void SetAt(Object object, int index)
     {
         m_Vector.setElementAt(object, index);
     }
+    /// <method>
+    /// <desc>Returns an object at a specified index.</desc>
+    /// </method>
     public Object At(int index)
     {
         return m_Vector.elementAt(index);
     }
 
-
+    /// <method>
+    /// <desc>Removes the very last element from the List and returns it.</desc>
+    /// <return>The element removed from the List.</return>
+    /// </method>
     public Object PopBack()
     {
         int backIndex = m_Vector.size() - 1;
@@ -83,6 +134,10 @@ public final class List extends Object implements IEnumerable
         m_Vector.removeElementAt(backIndex);
         return object;
     }
+    /// <method>
+    /// <desc>Removes the very first element from the List and returns it.</desc>
+    /// <return>The element removed from the List.</return>
+    /// </method>
     public Object PopFront()
     {
         Object object = m_Vector.elementAt(0);
@@ -90,7 +145,10 @@ public final class List extends Object implements IEnumerable
         return object;
     }
 
-
+    /// <method>
+    /// <desc>Returns the List as an array.</desc>
+    /// <return>The underlying array of this List.</return>
+    /// </method>
     public Object[] ToArray()
     {
         Object[] arr = new Object[m_Vector.size()];
@@ -98,8 +156,13 @@ public final class List extends Object implements IEnumerable
             arr[i] = m_Vector.elementAt(i);
         return arr;
     }
+    /// <method>
+    /// <desc>Returns the List's enumerator interface.</desc>
+    /// <return>The ArrayEnumerator that can be used to iterate over the List.</return>
+    /// </method>
     public IEnumerator GetEnumerator()
     {
         return new ArrayEnumerator(this);
     }
 }
+/// </class>

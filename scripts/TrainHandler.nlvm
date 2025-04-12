@@ -16,7 +16,7 @@ import scripts.math.*;
 public class TrainHandler extends Object
 {
         // TODO - make this dynamic with the registered train
-    public static final BOGIES_PER_CAR = 1;
+    public static final int BOGIES_PER_CAR = 1;
 
     private Vector m_Cars = null;
     private Vector m_Bogies = null;

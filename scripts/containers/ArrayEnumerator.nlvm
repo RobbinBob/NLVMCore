@@ -1,5 +1,7 @@
 package scripts.containers;
 
+/// <class>
+/// <desc>A simple iterator for arrays.</desc>
 public class ArrayEnumerator extends Object implements IEnumerator
 {
     private Object[] m_Array = new Object[0];
@@ -24,3 +26,4 @@ public class ArrayEnumerator extends Object implements IEnumerator
         return m_Array[m_Index];
     }
 }
+/// </class>

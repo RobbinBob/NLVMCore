@@ -1,6 +1,13 @@
 package scripts.modifiers;
 
+/// <interface>
+/// <desc>Exposes methods for manipulating </desc>
 public interface ICarModifier
 {
+    /// <method>
+    /// <desc>Called to update the cars data.</desc>
+    /// <arg name="carData">Contains data about the current car being maipulated.</arg>
+    /// </method>
     public void Run(CarModifierData carData);
 }
+/// </interface>

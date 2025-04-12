@@ -1,6 +1,13 @@
 package scripts.modifiers;
 
+/// <interface>
+/// <desc>Exposes methods for manipulating a custom coaster bogies.</desc>
 public interface IBogieModifier
 {
+    /// <method>
+    /// <desc>Called to update the bogies data.</desc>
+    /// <arg name="bogieData">Contains data about the current bogie being manipulated.</arg>
+    /// </method>
     public void Run(BogieModifierData bogieData);
 }
+/// </interface>

@@ -2,57 +2,118 @@ package scripts.math;
 
 import nlvm.lang.Math;
 
+/// <class>
+/// <desc>Math library.</desc>
 public final class Mathf
 {
+    /// <member>
+    /// <desc>The PI constant.</desc>
+    /// </member>
     public static final float PI = 3.141592f;
+    /// <member>
+    /// <desc>The Tau constant.</desc>
+    /// </member>
     public static final float TAU = PI * 2.0f;
 
+    /// <member>
+    /// <desc>Constant for converting degrees to radians.</desc>
+    /// </member>
     public static final float DegToRad = 0.0174533f;
+    /// <member>
+    /// <desc>Constant for converting radians to degrees.</desc>
+    /// </member>
     public static final float RadToDeg = 57.2958f;
 
-
+    /// <method>
+    /// <desc>Remap a float from one range to another.</desc>
+    /// <arg name="t">The value within the range.</arg>
+    /// <arg name="minA">The minimum of the initial range.</arg>
+    /// <arg name="maxA">The maximum of the initial range.</arg>
+    /// <arg name="minB">The minimum of the range converting to.</arg>
+    /// <arg name="maxB">The maximum of the range converting to.</arg>
+    /// <return>The input value mapped to the new range.</return>
+    /// </method>
     public static float Remap(float t, float minA, float maxA, float minB, float maxB)
     {
         return (t - minA) * (maxB - minB) / (maxA - minA) + minB;
     }
+    /// <method>
+    /// <desc>Creates a pseudo-random number.</desc>
+    /// <arg name="min">The minimum of the random range.</arg>
+    /// <arg name="max">The maximum of the random range.</arg>
+    /// <return>The generated random number.</return>
+    /// </method>
     public static float Random(float min, float max)
     {
         return Remap((float)Math.random(), 0.0f, 1.0f, min, max);
     }
+    /// <method>
+    /// <desc>Creates a pseudo-random number.</desc>
+    /// <arg name="min">The minimum of the random range.</arg>
+    /// <arg name="max">The maximum of the random range.</arg>
+    /// <return>The generated random number.</return>
+    /// </method>
     public static int Random(int min, int max)
     {
         return (int)Remap((float)Math.random(), 0.0f, 1.0f, min, max);
     }
+    /// <method>
+    /// <desc>Clamps the value between 0-1.</desc>
+    /// <return>The clamped value.</return>
+    /// </method>
     public static float Clamp01(float t)
     {
         return t <= 0.0f ? 0.0f : t >= 1.0f ? 1.0f : t;
     }
+    /// <method>
+    /// <desc>Clamps the value between 0-1.</desc>
+    /// <return>The clamped value.</return>
+    /// </method>
     public static int Clamp01(int t)
     {
         return t <= 0 ? 0 : t >= 1 ? 1 : t;
     }
+    /// <method>
+    /// <desc>Clamps the value between a range.</desc>
+    /// <return>The clamped value.</return>
+    /// </method>
     public static float Clamp(float t, float min, float max)
     {
         return t <= min ? min : t >= max ? max : t;
     }
+    /// <method>
+    /// <desc>Clamps the value between a range.</desc>
+    /// <return>The clamped value.</return>
+    /// </method>
     public static int Clamp(int t, int min, int max)
     {
         return t <= min ? min : t >= max ? max : t;
     }
 
-
+    /// <method>
+    /// <desc>Gets the minimum of two values.</desc>
+    /// </method>
     public static float Min(float a, float b)
     {
         return Math.min(a, b);
     }
+    /// <method>
+    /// <desc>Gets the minimum of two values.</desc>
+    /// </method>
     public static int Min(int a, int b)
     {
         return Math.min(a, b);
     }
+    /// <method>
+    /// <desc>Gets the maximum of two values.</desc>
+    /// </method>
     public static float Max(float a, float b)
     {
         return Math.max(a, b);
     }
+    /// <method>
+    /// <desc>Gets the maximum of two values.</desc>
+    /// </method>
     public static int Max(int a, int b)
     {
         return Math.max(a, b);
@@ -122,3 +183,4 @@ public final class Mathf
         return (float)Math.sqrt(t);
     }
 }
+/// </class>
