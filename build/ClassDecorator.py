@@ -8,6 +8,7 @@ SCRIPT_IMPORT = 'import'
 SCRIPT_SCOPE_PUBLIC = 'public'
 SCRIPT_SCOPE_PROTECTED = 'protected'
 SCRIPT_SCOPE_PRIVATE = 'private'
+SCRIPT_SCOPE_STATIC = 'static'
 SCRIPT_TYPE_CLASS = 'class'
 SCRIPT_TYPE_INTERFACE = 'interface'
 SCRIPT_EXTENDS = 'extends'
@@ -154,7 +155,7 @@ class ClassDecorator:
         def validateRootElement(root: ET.Element):
             return root.tag in {XML_TYPE_TAG_CLASS, XML_TYPE_TAG_INTERFACE}
         def validateScope(scope: str):
-            return scope in {SCRIPT_SCOPE_PUBLIC, SCRIPT_SCOPE_PROTECTED, SCRIPT_SCOPE_PRIVATE}
+            return scope in {SCRIPT_SCOPE_PUBLIC, SCRIPT_SCOPE_PROTECTED, SCRIPT_SCOPE_PRIVATE, SCRIPT_SCOPE_STATIC}
         def createTypeDeclaration(declaration: ET.Element, json: list[any]):
             declarationElements = declaration.text.split(SPACE)
             if not validateScope(declarationElements[0]):
