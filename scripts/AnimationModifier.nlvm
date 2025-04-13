@@ -58,32 +58,20 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
         ResourcePath animationFile = GetResourcePathParameter(PARAM_ANIMATION_FILE);
         String animationString = Tools.loadTextFileFromResource(animationFile);
 
-            // Decode the animation file to fetch the key frame indexes
-        Pair[] pairs = Parser.MiniParse(animationString);
-        MutableInteger mutInteger = new MutableInteger();
-        bool success = false;
-        if(pairs.length == 2)
+
+
+        Json jsonAnim = Json.Parse(animationString);
+        m_AnimationMode = jsonAnim.Get("mode").equals("single") ? ANIMATION_SINGLE : ANIMATION_DOUBLE;
+
+        Json mainAnim = jsonAnim.Get("main_animation");
+        m_AnimationStart = (int)mainAnim.Get("start_frame").GetFloat();
+        m_AnimationEnd = (int)mainAnim.Get("end_frame").GetFloat();
+        if(m_AnimationMode == ANIMATION_DOUBLE)
         {
-            m_AnimationMode = ANIMATION_SINGLE;
-            success = pairs[0].TryGetInteger(mutInteger);
-            m_AnimationStart = mutInteger.GetValue();
-            success = pairs[1].TryGetInteger(mutInteger);
-            m_AnimationEnd = mutInteger.GetValue();
+            Json returnAnim = jsonAnim.Get("reset_animation");
+            m_ReturnAnimationStart = (int)returnAnim.Get("start_frame").GetFloat();
+            m_ReturnAnimationEnd = (int)returnAnim.Get("end_frame").GetFloat();
         }
-        else if(pairs.length == 4)
-        {
-            m_AnimationMode = ANIMATION_DOUBLE;
-            success = pairs[0].TryGetInteger(mutInteger);
-            m_AnimationStart = mutInteger.GetValue();
-            success = pairs[1].TryGetInteger(mutInteger);
-            m_AnimationEnd = mutInteger.GetValue();
-            success = pairs[2].TryGetInteger(mutInteger);
-            m_ReturnAnimationStart = mutInteger.GetValue();
-            success = pairs[3].TryGetInteger(mutInteger);
-            m_ReturnAnimationEnd = mutInteger.GetValue();
-        }
-        else
-            Exception.Throw("Animation clip provided has an invalid format");
 
         return true;
     }
