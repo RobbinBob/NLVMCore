@@ -3,6 +3,8 @@ package scripts;
 import scripts.containers.*;
 import scripts.utilities.*;
 
+/// <class>
+/// <desc>Json parser and traverser.</desc>
 public final class Json extends Object implements IEnumerable, IIndexable, IQuerySize, IEnum
 {
     /// <member>
@@ -470,3 +472,4 @@ public final class Json extends Object implements IEnumerable, IIndexable, IQuer
         }
     }
 }
+/// </class>
