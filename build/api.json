@@ -596,7 +596,9 @@
             "full_name": "scripts.containers.List",
             "extends": "Object",
             "implements": [
-                "IEnumerable"
+                "IEnumerable",
+                "IQuerySize",
+                "IIndexable"
             ],
             "description": "A simple List container with enumerator capabilities.",
             "members": [],
@@ -697,33 +699,66 @@
                         {
                             "type": "nlvm.lang.Object",
                             "name": "object",
-                            "description": "No Description Supplied."
+                            "description": "The value to set at the given index."
                         },
                         {
                             "type": "int",
                             "name": "index",
-                            "description": "No Description Supplied."
+                            "description": "The index that will be written to."
                         }
                     ],
                     "name": "SetAt",
                     "return": "void",
                     "accessor": "public",
                     "return_desc": "No Description Supplied.",
-                    "description": "Sets an object at a specified index."
+                    "description": "Sets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The value to set at the given index."
+                        },
+                        {
+                            "type": "Index",
+                            "name": "index",
+                            "description": "The index that will be written to."
+                        }
+                    ],
+                    "name": "SetAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the item at a specified index."
                 },
                 {
                     "args": [
                         {
                             "type": "int",
                             "name": "index",
-                            "description": "No Description Supplied."
+                            "description": "The index to fetch from."
                         }
                     ],
                     "name": "At",
                     "return": "nlvm.lang.Object",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Returns an object at a specified index."
+                    "return_desc": "The object at a given index.",
+                    "description": "Gets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Index",
+                            "name": "index",
+                            "description": "The index to fetch from."
+                        }
+                    ],
+                    "name": "At",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The object at a given index.",
+                    "description": "Gets the item at a specified index."
                 },
                 {
                     "args": [],
@@ -910,7 +945,7 @@
                         {
                             "type": "CarModifierData",
                             "name": "carData",
-                            "description": "Contains data about the current car being maipulated."
+                            "description": "Contains data about the current car being manipulated."
                         }
                     ],
                     "name": "Run",
@@ -918,6 +953,278 @@
                     "accessor": "public",
                     "return_desc": "No Description Supplied.",
                     "description": "Called to update the cars data."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts.containers",
+            "libraries": [],
+            "accessor": "public final",
+            "name": "Array",
+            "full_name": "scripts.containers.Array",
+            "extends": "Object",
+            "implements": [
+                "IEnumerable",
+                "IQuerySize",
+                "IIndexable"
+            ],
+            "description": "A simple fixed size array.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Count",
+                    "return": "int",
+                    "accessor": "public",
+                    "return_desc": "The current amount of items in the container.",
+                    "description": "The containers occupancy."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "The index to fetch from."
+                        }
+                    ],
+                    "name": "At",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The object at a given index.",
+                    "description": "Gets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Index",
+                            "name": "index",
+                            "description": "The index to fetch from."
+                        }
+                    ],
+                    "name": "At",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The object at a given index.",
+                    "description": "Gets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The value to set at the given index."
+                        },
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "The index that will be written to."
+                        }
+                    ],
+                    "name": "SetAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The value to set at the given index."
+                        },
+                        {
+                            "type": "Index",
+                            "name": "index",
+                            "description": "The index that will be written to."
+                        }
+                    ],
+                    "name": "SetAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the item at a specified index."
+                },
+                {
+                    "args": [],
+                    "name": "ToArray",
+                    "return": "Object[]",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns the enumerable as a native array."
+                },
+                {
+                    "args": [],
+                    "name": "GetEnumerator",
+                    "return": "IEnumerator",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns the enumerable's enumerator interface."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "size",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new array of size."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "IEnumerable",
+                            "name": "enumerable",
+                            "description": "The enumerable container to populate the Array with."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new array and populates it."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Object[]",
+                            "name": "array",
+                            "description": "The array to populate the Array with."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Cerates a new array and populates it."
+                }
+            ]
+        },
+        {
+            "type": "interface",
+            "package": "scripts.containers",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IEnumerable",
+            "full_name": "scripts.containers.IEnumerable",
+            "description": "Represents an iterable type.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "ToArray",
+                    "return": "Object[]",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns the enumerable as a native array."
+                },
+                {
+                    "args": [],
+                    "name": "GetEnumerator",
+                    "return": "IEnumerator",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns the enumerable's enumerator interface."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "interface",
+            "package": "scripts.containers",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IIndexable\n",
+            "full_name": "scripts.containers.IIndexable\n",
+            "description": "Exposes methods to index an type.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "The index to fetch from."
+                        }
+                    ],
+                    "name": "At",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The object at a given index.",
+                    "description": "Gets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Index",
+                            "name": "index",
+                            "description": "The index to fetch from."
+                        }
+                    ],
+                    "name": "At",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The object at a given index.",
+                    "description": "Gets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The value to set at the given index."
+                        },
+                        {
+                            "type": "int",
+                            "name": "index",
+                            "description": "The index that will be written to."
+                        }
+                    ],
+                    "name": "SetAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the item at a specified index."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The value to set at the given index."
+                        },
+                        {
+                            "type": "Index",
+                            "name": "index",
+                            "description": "The index that will be written to."
+                        }
+                    ],
+                    "name": "SetAt",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the item at a specified index."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "interface",
+            "package": "scripts.containers",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IQuerySize\n",
+            "full_name": "scripts.containers.IQuerySize\n",
+            "description": "Exposes methods to query the size of a container.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Count",
+                    "return": "int",
+                    "accessor": "public",
+                    "return_desc": "The current amount of items in the container.",
+                    "description": "The containers occupancy."
                 }
             ],
             "constructors": []
