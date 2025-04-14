@@ -8,6 +8,7 @@ import nlvm.math3d.Matrix4x4f;
 import com.nolimitscoaster.NoLimits;
 import com.nolimitscoaster.Train;
 import com.nolimitscoaster.Coaster;
+import com.nolimitscoaster.SceneObject;
 
 import scripts.utilities.*;
 import scripts.modifiers.*;
@@ -274,6 +275,23 @@ public class TrainHandler extends Object
         }
         return bogies;
     }
+
+
+    public Matrix4x4f[] GetCarMatrices()
+    {
+        Matrix4x4f[] matrices = new Matrix4x4f[m_Cars.size()];
+        for(int i = 0; i < matrices.length; ++i)
+            matrices[i] = ((SceneObject)((ISetableCar)m_Cars.elementAt(i)).GetData()).getMatrix().dup();
+        return matrices;
+    }
+    public Matrix4x4f[] GetBogieMatrices()
+    {
+        Matrix4x4f[] matrices = new Matrix4x4f[m_Bogies.size()];
+        for(int i = 0; i < matrices.length; ++i)
+            matrices[i] = ((SceneObject)((ISetableBogie)m_Bogies.elementAt(i)).GetData()).getMatrix().dup();
+        return matrices;    
+    }
+
 
     public int hashCode()
     {

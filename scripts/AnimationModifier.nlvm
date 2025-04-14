@@ -1,16 +1,20 @@
 package scripts;
 
-import com.nolimitscoaster.SceneObject;
-import com.nolimitscoaster.SceneObjectElement;
-import com.nolimitscoaster.ResourcePath;
-import com.nolimitscoaster.Tools;
-
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
 import scripts.modifiers.*;
+import scripts.utilities.*;
 
 /// <class>
 /// <desc>Base type for simple animated train modifiers.</desc>
 public abstract class AnimationModifier extends Behaviour implements ICarModifier, IBogieModifier
 {
+    protected ICarModifier m_PreviousCarModifier = null;
+    protected IBogieModifier m_PreviousBogieModifier = null;
+
+    protected TrainWrapper m_TrainWrapper = new TrainWrapper();
+    protected TrainHandler m_ActiveHandler = null;
+
     public static final String ANIMATED_ROOT_ELEMENT = "root";
 
     public static final String PARAM_SCENEOBJECT_NAME = "sceneobject_name";
@@ -61,7 +65,7 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
 
 
         Json jsonAnim = Json.Parse(animationString);
-        m_AnimationMode = jsonAnim.Get("mode").equals("single") ? ANIMATION_SINGLE : ANIMATION_DOUBLE;
+        m_AnimationMode = jsonAnim.Get("mode").GetString().equals("single") ? ANIMATION_SINGLE : ANIMATION_DOUBLE;
 
         Json mainAnim = jsonAnim.Get("main_animation");
         m_AnimationStart = (int)mainAnim.Get("start_frame").GetFloat();
@@ -75,6 +79,43 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
 
         return true;
     }
+
+    protected void SetupTrainWrapper(Train train)
+    {
+        Matrix4x4f[] carOffsetMatrices = CreateAnimationMatrixOffsetForCars();
+        Matrix4x4f[] bogieOffsetMatrices = CreateAnimationMatrixOffsetForBogies();
+
+        m_TrainWrapper.SetTrain(train);
+        m_TrainWrapper.SetCarOffsetMatrixArray(carOffsetMatrices);
+        m_TrainWrapper.SetBogieOffsetMatrixArray(bogieOffsetMatrices);
+        m_TrainWrapper.SetCarAndBogieInterfaces(m_ActiveHandler.GetCars(), m_ActiveHandler.GetBogies());
+        m_TrainWrapper.SetAnimationAndRoot(m_Animation, m_AnimatedRoot);
+    }
+
+
+    protected final void StoreActiveModifiers()
+    {
+        m_PreviousCarModifier = m_ActiveHandler.GetCarModifier();
+        m_PreviousBogieModifier = m_ActiveHandler.GetBogieModifier();
+    }
+    protected final void ApplyStoredModifiers()
+    {
+        SetActiveModifiers(m_PreviousCarModifier, m_PreviousBogieModifier);
+    }
+    protected final void SetActiveModifiers(ICarModifier car, IBogieModifier bogie)
+    {
+        m_ActiveHandler.SetCarModifier(car);
+        m_ActiveHandler.SetBogieModifier(bogie);
+    }
+    protected final void SetAsActiveModifiers()
+    {
+        SetActiveModifiers(this, this);
+    }
+    protected final TrainHandler GetOccupyingTrainHandler(Train train)
+    {
+        return TrainHandlerManager.GetInstance().GetHandler(train);
+    }
+
 
 
     protected final bool IsPlayingFwdAnimation()
@@ -177,6 +218,21 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
             return false;
         int frame = m_Animation.GetCurrentFrame();
         return frame == m_AnimationStart || frame == m_ReturnAnimationEnd;
+    }
+
+    protected final Matrix4x4f[] CreateAnimationMatrixOffsetForCars()
+    {
+            // Create the offset matrix required to attach to the animated root element
+        Matrix4x4f[] carMatrices = m_ActiveHandler.GetCarMatrices(); // Returns copies
+        MatrixUtil.GetOffsetMatrixAndStore(carMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+        return carMatrices;
+    }
+    protected final Matrix4x4f[] CreateAnimationMatrixOffsetForBogies()
+    {
+            // Create the offset matrix required to attach to the animated root element
+        Matrix4x4f[] bogieMatrices = m_ActiveHandler.GetBogieMatrices(); // Returns copies
+        MatrixUtil.GetOffsetMatrixAndStore(bogieMatrices, m_AnimatedRoot.getAbsoluteMatrix());
+        return bogieMatrices;
     }
 }
 /// </class>

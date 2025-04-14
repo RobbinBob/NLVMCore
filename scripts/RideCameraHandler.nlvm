@@ -7,10 +7,9 @@ import nlvm.lang.*;
 import nlvm.math3d.*;
 import nlvm.util.*;
 
-public class RideCameraHandler extends Object implements FrameListener
+public class RideCameraHandler extends UpdateableObject
 {
     private static RideCameraHandler m_Instance = null;
-    private Simulator m_Simulator = null;
 
     private int m_Seat = 0;
     private bool m_ChangeSeatButton = false;
@@ -26,8 +25,8 @@ public class RideCameraHandler extends Object implements FrameListener
     private TrainHandlerManager m_TrainManager = null; 
     private TrainHandler m_ActiveHandler = null;
 
-
     private Vector m_RegisteredTrains;
+    private Simulator m_Simulator = null;
 
     protected RideCameraHandler() 
     {
@@ -36,7 +35,7 @@ public class RideCameraHandler extends Object implements FrameListener
         m_TrainManager = TrainHandlerManager.GetInstance();
         m_RegisteredTrains = new Vector(12);
 
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
     }
     public static RideCameraHandler GetInstance()
     {
@@ -62,12 +61,8 @@ public class RideCameraHandler extends Object implements FrameListener
         m_RegisteredTrains.addElement(handler);
     }
 
-
-
-    public void onNextFrame()
+    public void Update(float tick)
     {
-        float tick = m_Simulator.getCurSimulationTickSec();
-
             // Skip checking nearest cameras if were inside one already
         if(m_ERV.isActive())
         {
@@ -133,15 +128,19 @@ public class RideCameraHandler extends Object implements FrameListener
                 m_ChangeTrainButton = false;
             }
 
-
-
             m_ERV.setCameraMatrix(m_ERVElement.getAbsoluteMatrix());
-            return;
         }
         else
         {
             m_ActiveHandler = null;
         }
+    }
+
+    public void LateUpdate(float tick)
+    {
+            // Skip checking nearest cameras if were inside one already
+        if(m_ERV.isActive())
+            return;
 
 
         SceneObjectElement closestElement = null;

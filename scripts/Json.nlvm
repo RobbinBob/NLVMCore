@@ -378,19 +378,16 @@ public final class Json extends Object implements IEnumerable, IIndexable, IQuer
                 case Json.TYPE_STRING:
                     {
                         child.m_ValueAsString = StringUtil.SplitString(content, '"')[1];
-                        Debug.Print(child.m_ValueAsString);
                         break;
                     }
                 case Json.TYPE_BOOL:
                     {
                         child.m_ValueAsBool = StringUtil.RemoveWhiteSpace(content).equals("true");
-                        Debug.Print(child.m_ValueAsBool);
                         break;
                     }
                 case Json.TYPE_NUMBER:
                     {
                         child.m_ValueAsNumber = Float.parseFloat(content);
-                        Debug.Print(child.m_ValueAsNumber);
                         break;
                     }
                 case Json.TYPE_OBJECT:
@@ -428,19 +425,16 @@ public final class Json extends Object implements IEnumerable, IIndexable, IQuer
                 case Json.TYPE_STRING:
                     {
                         child.m_ValueAsString = StringUtil.SplitString(elemStr, '"')[1];
-                        Debug.Print(child.m_ValueAsString);
                         break;
                     }
                 case Json.TYPE_BOOL:
                     {
                         child.m_ValueAsBool = StringUtil.RemoveWhiteSpace(elemStr).equals("true");
-                        Debug.Print(child.m_ValueAsBool);
                         break;
                     }
                 case Json.TYPE_NUMBER:
                     {
                         child.m_ValueAsNumber = Float.parseFloat(elemStr);
-                        Debug.Print(child.m_ValueAsNumber);
                         break;
                     }
                 case Json.TYPE_OBJECT:

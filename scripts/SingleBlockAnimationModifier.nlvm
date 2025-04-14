@@ -2,8 +2,6 @@ package scripts;
 
 import scripts.modifiers.*;
 import scripts.utilities.*;
-import scripts.core.*;
-import scripts.utilities.parser.*;
 
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;

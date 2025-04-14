@@ -34,6 +34,6 @@ public class ElementGForceTracker extends GForceTracker
         m_ExposedMatrix.GetPosition(m_Position);
         Vector3f a = new Vector3f(m_Position);
         a.add(m_Forces);
-        Debug.DrawLine(m_Position, a, tick * 1.5f, new Vector4f(Mathf.Abs(m_Forces.x), Mathf.Abs(m_Forces.y), Mathf.Abs(m_Forces.z), 1.0f));
+        Debug.DrawLine(m_Position, a, tick / 2.0f, new Vector4f(Mathf.Abs(m_Forces.x), Mathf.Abs(m_Forces.y), Mathf.Abs(m_Forces.z), 1.0f));
     }
 }
