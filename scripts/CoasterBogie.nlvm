@@ -30,7 +30,7 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     private int m_WheelTextureIndex = 0;
 
         // My new way of abstracting bullshit out even more
-    private static final CoasterWheel[] m_WheelTable = {
+    private CoasterWheel[] m_WheelTable = {
         new CoasterWheel("Bogie L Wheel1", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
         new CoasterWheel("Bogie L Wheel2", WHEEL_RADIUS_RUNNING, CoasterWheel.WHEEL_BWD),
         new CoasterWheel("Bogie L Wheel3", WHEEL_RADIUS_GUIDE, CoasterWheel.WHEEL_FWD),

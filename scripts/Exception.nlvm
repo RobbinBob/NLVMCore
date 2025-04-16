@@ -7,7 +7,7 @@ public abstract class Exception extends Object
         System.throwRuntimeException("Exception | Message: " + message);
     }
 
-    protected static String CreateThrowMessage(String typeName, String message)
+    protected static final String CreateThrowMessage(String typeName, String message)
     {
         return typeName + " | Message: " + message;
     }
