@@ -2,7 +2,14 @@ package scripts;
 
 import nlvm.lang.Object;
 
+/// <interface>
+/// <desc>sExposes methods to get information about an Object.</desc>
 public interface IGetable
 {
+    /// <method>
+    /// <desc>Returns data associated with the Object.</desc>
+    /// <return>Base type which needs to be cast after calling.</return>
+    /// </method>
     public Object GetData();
 }
+/// </interface>

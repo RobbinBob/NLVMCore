@@ -3,6 +3,8 @@ package scripts;
 import nlvm.lang.System;
 import nlvm.lang.String;
 
+/// <class>
+/// <desc>Exception for when files have invalid formats and cannot be read.</desc>
 public class InvalidFormatException extends Exception
 {
     public static void Throw()
@@ -14,3 +16,4 @@ public class InvalidFormatException extends Exception
         System.throwRuntimeException(CreateThrowMessage("InvalidFormatException", message));
     }
 }
+/// </class>

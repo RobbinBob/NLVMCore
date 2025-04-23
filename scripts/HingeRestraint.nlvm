@@ -1,6 +1,7 @@
 package scripts;
 
 import com.nolimitscoaster.SceneObjectElement;
+import com.nolimitscoaster.Tools;
 import nlvm.math3d.Vector3f;
 
 /// <class>
@@ -27,7 +28,7 @@ public class HingeRestraint extends Restraint
 
     protected void Update(float activation)
     {
-        m_CurrentAngle.lerp(activation, m_ClosedAngle, m_OpenAngle);
+        m_CurrentAngle.lerp((float)Tools.cubicRamp(activation), m_ClosedAngle, m_OpenAngle);
         m_RestraintElement.setRotation(m_CurrentAngle);
     }
 }

@@ -1,14 +1,26 @@
 package scripts;
 
+/// <class>
+/// <desc>Base type for exception handling protocols.</desc>
 public abstract class Exception extends Object
 {
+    /// <method>
+    /// <desc>Throws an exception at runtime with a message.</desc>
+    /// <arg name="message">The optional message this can print along with the exception.</arg>
+    /// </method>
     public static void Throw(String message)
     {
-        System.throwRuntimeException("Exception | Message: " + message);
+        System.throwRuntimeException(CreateThrowMessage("Exception", message));
     }
 
+    /// <method>
+    /// <desc>Creates a formatted exception message.</desc>
+    /// <arg name="typeName">The exception type-name that will be displayed as throwing the exception.</arg>
+    /// <arg name="message">The optional message to print with the exception.</arg>
+    /// </method>
     protected static final String CreateThrowMessage(String typeName, String message)
     {
         return typeName + " | Message: " + message;
     }
 }
+/// </class>

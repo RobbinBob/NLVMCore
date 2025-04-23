@@ -6,9 +6,8 @@ import nlvm.util.*;
 import scripts.containers.*;
 import scripts.utilities.*;
 
-public final class DebugGizmoHandler extends Object implements FrameListener
+public final class DebugGizmoHandler extends UpdateableObject
 {
-    private Simulator m_Simulator = null;
     private static final String GIZMO_SYMBOL_NAME = "DebugSymbols";
     private static final String GIZMO_SYMBOL_LINE = "Line";
     private static final List m_GizmoPool = new List(500);
@@ -23,8 +22,7 @@ public final class DebugGizmoHandler extends Object implements FrameListener
         if(m_IsInstanced)
             Exception.Throw("Attempting to instantiate DebugGizmoHandler more than once, this is not allowed");
 
-        m_Simulator = NoLimits.getSimulator();
-        SceneObject symbols = m_Simulator.getSceneObject(GIZMO_SYMBOL_NAME);
+        SceneObject symbols = NoLimits.getSimulator().getSceneObject(GIZMO_SYMBOL_NAME);
         symbols.setMatrix(new Matrix4x4f());
 
         SceneObjectElement[] lineElements = GetElementsWithName(symbols, GIZMO_SYMBOL_LINE);
@@ -76,17 +74,18 @@ public final class DebugGizmoHandler extends Object implements FrameListener
     }
     private void Register()
     {
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
         m_IsActive = true;
     }
 
-    public void onNextFrame()
+    public void Update(float tick)
     {
-        float tick = m_Simulator.getCurSimulationTickSec();
-
             // Stop receiving updates if we dont have gizmos to handle
         if(m_ActiveGizmos.Count() <= 0)
-            m_Simulator.removeFrameListener(this);
+        {
+            SetShouldUpdate(false);
+            m_IsActive = false;
+        }
 
         m_RemoveGizmos.Clear();
         IEnumerator enumerator = m_ActiveGizmos.GetEnumerator();
