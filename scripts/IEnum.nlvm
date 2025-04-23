@@ -1,6 +1,6 @@
-import scripts.containers.*;
-
 package scripts;
+
+import scripts.containers.*;
 
 /// <interface>
 /// <desc>Exposes methods for an Object that uses enum style integers.</desc>
@@ -10,73 +10,6 @@ public interface IEnum
     /// <desc>Constant used for when a enum parse fails (Read Only).</desc>
     /// </member>
     public static final String ENUM_INVALID = "Invalid";
-
-    /// <method>
-    /// <desc>Splits the flagged enum into its individual counterparts.</desc>
-    /// <return>An array of all enum values found within the flag.</return>
-    /// <arg name="enum">The interface type to use for splitting the flag.</arg>
-    /// <arg name="flag">The flag enum that will be split.</arg>
-    /// </method>
-    public static final int[] SplitFlag(IEnum enum, int flag)
-    {
-        if(!enum.IsFlag())
-            Excetption.Throw("Unable to parse flag as this type is not marked as a flag enum");
-
-        int largestFlagSection = 1;
-        while(flag > largestFlagSection)
-            largestFlagSection *= 2;
-
-        List flags = new List(1);
-        int itterations = 0;
-        while(flag > 0 || itterations > 500)
-        {
-            if(flag - largestFlagSection >= 0)
-                flags.Insert(new Integer(largestFlagSection));
-
-            itterations++;
-            argestFlagSection /= 2;
-        }
-
-        if(itterations >= 500)
-            Exception.Throw("Exceeded maximum itterations when parsing flag");
-
-        int[] flagArray = new int[flags.Count()];
-        IEnumerator enumerator = flags.GetEnumerator();
-        int i = 0;
-        while(enumerator.MoveNext())
-            flagArray[i++] = ((Integer)enumerator.Get()).intValue();
-
-        return flagArray;
-    }
-
-    /// <method>
-    /// <desc>Checks to see if an enum/flag is present in another flag.</desc>
-    /// <return>True if the enum/flag was present, otherwise False.</return>
-    /// <arg name="enum">The interface type to use for reading the flag/enum.</arg>
-    /// <arg name="flag">The flag enum that will be compared to.</arg>
-    /// <arg name="value">The flag/enum to compare.</arg>
-    /// </method>
-    public static final bool Contains(IEnum enum, int flag, int value)
-    {
-        int[] splitFlags = SplitFlag(enum, flag);
-        int[] splitCompare = SplitFlag(enum, value);
-
-        int matches = 0;
-        for(int i = 0; i < splitFlags.length; ++i)
-        {
-            int compareTo = splitFlags[i];
-            for(int j = 0; j < splitCompare.length; ++j)
-            {
-                if(splitCompare[j] == compareTo)
-                {
-                    matches++;
-                    break;
-                }
-            }
-        }
-
-        return matches == splitCompare.length;
-    }
 
     /// <method>
     /// <desc>Parses the enum integer into a String representation.</desc>

@@ -26,7 +26,7 @@ public class HingeRestraint extends Restraint
         m_OpenAngle = openAngle;
     }
 
-    protected void Update(float activation)
+    protected void OnRestraintUpdate(float activation)
     {
         m_CurrentAngle.lerp((float)Tools.cubicRamp(activation), m_ClosedAngle, m_OpenAngle);
         m_RestraintElement.setRotation(m_CurrentAngle);

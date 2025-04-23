@@ -202,7 +202,14 @@ public final class Json extends Object implements IEnumerable, IIndexable, IQuer
         }
         return IEnum.ENUM_INVALID;
     }
-
+    /// <method>
+    /// <desc>Gets whether the IEnum is a flag or regular enum.</desc>
+    /// <return>True if enum is flag, otherwise False.</return>
+    /// </method>
+    public bool IsFlag()
+    {
+        return false;
+    }
 
     private static int GetClosingBrace(String text, int openingPos)
     {
