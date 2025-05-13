@@ -8,6 +8,7 @@ Emission.RGB = Entity0;</shadercore>
       <linearshading/>
       <rgbgen mode="constlighting"/>
     </renderpass>
+    <option noeditorrender="true"/>
     <option nonsolid="true"/>
     <option nofog="true"/>
     <option noshadowcast="true"/>

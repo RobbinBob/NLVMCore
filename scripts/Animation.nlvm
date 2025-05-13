@@ -7,10 +7,8 @@ import scripts.math.Mathf;
 
 /// <class>
 /// <desc>A class that allows easy manipulation of SceneObject's with key-frame animations.</desc>
-public final class Animation extends Object implements FrameListener
+public final class Animation extends UpdateableObject
 {
-    private static Simulator m_Simulator = null;
-
     private SceneObject m_SceneObject = null;
     private float m_AnimationLength = 0.0f;
     private float m_CurrentAnimationTime = 0.0f;
@@ -39,7 +37,6 @@ public final class Animation extends Object implements FrameListener
 
         m_AnimationLength = (float)m_SceneObject.getMaxKeyFrameAnimationTime();
         if(m_AnimationLength <= 0) InvalidAnimationException.Throw("Could not find animation on argument sceneObject");
-        if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
         m_CanLoop = false;
     }
     /// <constructor>
@@ -54,7 +51,6 @@ public final class Animation extends Object implements FrameListener
 
         m_AnimationLength = (float)m_SceneObject.getMaxKeyFrameAnimationTime();
         if(m_AnimationLength <= 0) InvalidAnimationException.Throw("Could not find animation on argument sceneObject");
-        if(m_Simulator == null) m_Simulator = NoLimits.getSimulator();
         m_CanLoop = canLoop;
     }
 
@@ -64,7 +60,7 @@ public final class Animation extends Object implements FrameListener
     /// </method>
     public void Play()
     {
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
         m_CurrentAnimationTime = 0.0f;
         m_AnimationStartTime = 0.f;
         m_AnimationEndTime = m_AnimationLength;
@@ -80,7 +76,7 @@ public final class Animation extends Object implements FrameListener
         startTime /= FRAME_RATE;
 
         if(startTime >= m_AnimationLength || startTime < 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;
         m_AnimationEndTime = m_AnimationLength;
@@ -99,7 +95,7 @@ public final class Animation extends Object implements FrameListener
 
         if(startTime > m_AnimationLength || startTime < 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
         if(stopTime > m_AnimationLength || stopTime < startTime) InvalidAnimationException.Throw("Argument 'stopTime' is out of range, argument needs to be within range " + startTime + " to " + m_AnimationLength);
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;
         m_AnimationEndTime = stopTime;
@@ -112,7 +108,7 @@ public final class Animation extends Object implements FrameListener
     /// </method>
     public void PlayBackward()
     {
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
         m_CurrentAnimationTime = m_AnimationLength;
         m_AnimationStartTime = m_AnimationLength;
         m_AnimationEndTime = 0.f;
@@ -128,7 +124,7 @@ public final class Animation extends Object implements FrameListener
         startTime /= FRAME_RATE;
 
         if(startTime > m_AnimationLength || startTime <= 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
-        m_Simulator.addFrameListener(this);
+        SetShouldUpdate(true);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;
         m_AnimationEndTime = 0.f;
@@ -162,7 +158,7 @@ public final class Animation extends Object implements FrameListener
     /// </method>
     public void Stop()
     {
-        m_Simulator.removeFrameListener(this);
+        SetShouldUpdate(false);
         m_Play = false;
     }
 
@@ -309,17 +305,16 @@ public final class Animation extends Object implements FrameListener
     }
 
 
-    public void onNextFrame()
+    public void Update(float tick)
     {
         if(!m_Play) return;
-        float delta = m_Simulator.getCurSimulationTickSec();
 
         if(m_PlayForward)
         {
-            PlayForwardInternal(delta);
+            PlayForwardInternal(tick);
         }else
         {
-            PlayBackwardInternal(delta);
+            PlayBackwardInternal(tick);
         }
 
         m_SceneObject.setKeyFrameAnimationTime(m_CurrentAnimationTime);

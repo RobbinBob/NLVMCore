@@ -1,6 +1,7 @@
 package scripts;
 
 import nlvm.lang.*;
+import nlvm.math3d.Vector3f;
 
 public class CoasterCarDescriptor extends Object
 {
@@ -8,6 +9,11 @@ public class CoasterCarDescriptor extends Object
     public int Cameras = 0;
     public float RestraintOpenDuration = 1.0f;
     public float RestraintCloseDuration = 1.0f;
+
+    public Vector3f RearJointOffset = new Vector3f(0, 0, 0);
+    public Vector3f FrontJointOffset = new Vector3f(0, 0, 0);
+    public float CarLength = 0.0f;
+    public float[] BogieOffsets = new float[0];
 
     public CoasterCarDescriptor() { }
 }

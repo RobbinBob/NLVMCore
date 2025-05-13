@@ -3,6 +3,8 @@ package scripts;
 import nlvm.lang.System;
 import nlvm.lang.String;
 
+/// <class>
+/// <desc>Exception for invalid animations that cannot be used.</desc>
 public class InvalidAnimationException extends Exception
 {
     public static void Throw()
@@ -14,3 +16,4 @@ public class InvalidAnimationException extends Exception
         System.throwRuntimeException(CreateThrowMessage("InvalidAnimationException", message));
     }
 }
+/// </class>

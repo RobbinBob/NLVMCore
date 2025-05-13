@@ -2,10 +2,15 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
+import scripts.containers.*;
+
 /// <class>
 /// <desc>Base class to derrive any SceneObject attached scripts.</desc>
 public abstract class Behaviour extends Script
 {
+    private static final List m_Updateables = new List();
+    private static Behaviour m_Caller = null;
+
     /// <member>
     /// <desc>Reference to the SceneObject this Behaviour is attached to.</desc>
     /// </member>
@@ -24,6 +29,9 @@ public abstract class Behaviour extends Script
         if(m_SceneObject == null)
             NullReferenceException.Throw("Unable to find SceneObject, is this Behaviour attached to one?");
 
+        if(m_Caller == null)
+            m_Caller = this;
+
         m_Name = m_SceneObject.getName();
         return Start();
     }
@@ -31,15 +39,45 @@ public abstract class Behaviour extends Script
     {
         m_PreviousTick = tick;
         Update(tick);
+
+        if(m_Caller != this)
+            return;
+            // Loop over the updateables and call their updates
+        IEnumerator enumerator = m_Updateables.GetEnumerator();
+        while(enumerator.MoveNext())
+            ((IUpdateable)enumerator.Get()).Update(tick);
     }
     public final void onLateUpdate()
     {
         LateUpdate(m_PreviousTick);
+
+
+        if(m_Caller != this)
+            return;
+            // Loop over the updateables and call their late updates
+        IEnumerator enumerator = m_Updateables.GetEnumerator();
+        while(enumerator.MoveNext())
+            ((IUpdateable)enumerator.Get()).LateUpdate(m_PreviousTick);
     }
     public final void onExit()
     {
         Destroy();
     }
+
+
+    public static final void RegisterUpdateable(IUpdateable updateable)
+    {
+        if(m_Updateables.Contains(updateable))
+            return;
+        m_Updateables.Insert(updateable);
+    }
+    public static final void RemoveUppdateable(IUpdateable updateable)
+    {
+        if(!m_Updateables.Contains(updateable))
+            return;
+        m_Updateables.Remove(updateable);
+    }
+
 
     /// <method>
     /// <desc>Called once to initialize the object.</desc>

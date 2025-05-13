@@ -2,6 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.Coaster;
 import com.nolimitscoaster.Train;
+import nlvm.math3d.Vector3f;
 
 public interface ISetableCar extends ISetable// IGetable
 {
@@ -9,6 +10,8 @@ public interface ISetableCar extends ISetable// IGetable
     public Train GetTrain();
     public int GetTrainIndex();
     public int GetCarIndex();
+
+    public CoasterCarDescriptor GetDescriptor();
 
         // Cant extend multiple interfaces in this awful language
     public Object GetData();

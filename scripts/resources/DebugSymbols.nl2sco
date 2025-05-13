@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <sceneobject>
-    <model path="DebugSymbols.glb"/>
+    <model path="DebugSymbols.glb">
+      <clip distance="250"/>
+    </model>
     <defaultinstancename>DebugSymbols</defaultinstancename>
     <param allowrot="false"/>
     <param allowscale="false"/>

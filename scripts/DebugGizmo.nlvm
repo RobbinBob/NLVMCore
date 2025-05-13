@@ -7,13 +7,18 @@ public final class DebugGizmo extends Object
     public static final int GIZMO_STATE_INACTIVE = 0;
     public static final int GIZMO_STATE_ACTIVE = 1;
 
+    public static final int GIZMO_LINE = 0;
+    public static final int GIZMO_SPHERE = 1;
+    private int m_GizmoType = GIZMO_LINE;
+
     private SceneObjectElement m_Element = null;
     private int m_GizmoState = GIZMO_STATE_INACTIVE;
     private float m_GizmoTime = 0.0f;
 
-    public DebugGizmo(SceneObjectElement element)
+    public DebugGizmo(SceneObjectElement element, int type)
     {
         m_Element = element;
+        m_GizmoType = type;
     }
 
 
@@ -38,5 +43,10 @@ public final class DebugGizmo extends Object
     public void SetTimespan(float timespan)
     {
         m_GizmoTime = timespan;
+    }
+
+    public int GetType()
+    {
+        return m_GizmoType;
     }
 }

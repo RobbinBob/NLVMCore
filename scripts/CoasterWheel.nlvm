@@ -2,6 +2,7 @@ package scripts;
 
 import nlvm.lang.String;
 import nlvm.lang.Object;
+import nlvm.math3d.Vector3f;
 
 /// <class>
 /// <desc>Descriptor for wheels containing basic information.</desc>
@@ -28,6 +29,10 @@ public class CoasterWheel extends Object
     /// <desc>Enum for the wheels rotation direction.</desc>
     /// </member>
     public int Direction;
+    /// <member>
+    /// <desc>The axis of rotation of the wheel.</desc>
+    /// </member>
+    public Vector3f Axis = null;
 
     /// <constructor>
     /// <desc>Creates a new wheel descriptor.</desc>
@@ -35,11 +40,12 @@ public class CoasterWheel extends Object
     /// <arg name="radius">The radius(meters) of the wheel.</arg>
     /// <arg name="direction">The direction the wheel will rotate.</arg>
     /// </constructor>
-    public CoasterWheel(String name, float radius, int direction)
+    public CoasterWheel(String name, float radius, int direction, Vector3f axis)
     {
         Name = name;
         Radius = radius;
         Direction = direction;
+        Axis = axis.dup();
     }
 }
 /// </class>

@@ -26,6 +26,8 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
     private ElementGForceTracker[] m_GForceTrackers = null;
 
+    private CoasterCarDescriptor m_Descriptor = null;
+
     public bool Start()
     {
         m_Coaster = GetCoasterParameter("coaster");
@@ -43,18 +45,18 @@ public class CoasterCar extends Behaviour implements ISetableCar
         ResourcePath descriptorFile = GetResourcePathParameter("car_descriptor");
         String descriptorText = Tools.loadTextFileFromResource(descriptorFile);
         if(descriptorText.length() <= 0)
-            System.throwRuntimeException("Car descriptor file is empty!");
+            InvalidFormatException.Throw("Car descriptor file is empty!");
 
-        CoasterCarDescriptor descriptor = MakeCoasterCarDescriptorFromFile(descriptorText);
+        m_Descriptor = MakeCoasterCarDescriptorFromFile(descriptorText);
 
             // Setup restraints
-        m_Restraints = new Restraint[descriptor.Restraints];
+        m_Restraints = new Restraint[m_Descriptor.Restraints];
         SceneObjectElement[] restraintElements = GetElementsWithName(m_SceneObject, "Restraint");
-        for(int i = 0; i < descriptor.Restraints; ++i)
+        for(int i = 0; i < m_Descriptor.Restraints; ++i)
         {
             m_Restraints[i] = new HingeRestraint(restraintElements[i], new Vector3f(0, 0, 0), new Vector3f(90 * Mathf.DegToRad, 0, 0));
-            m_Restraints[i].OpeningTime = descriptor.RestraintOpenDuration;
-            m_Restraints[i].ClosingTime = descriptor.RestraintCloseDuration;
+            m_Restraints[i].OpeningTime = m_Descriptor.RestraintOpenDuration;
+            m_Restraints[i].ClosingTime = m_Descriptor.RestraintCloseDuration;
         }
 
 
@@ -84,7 +86,7 @@ public class CoasterCar extends Behaviour implements ISetableCar
             m_Handler = new TrainHandler(handlerName);
             m_HandlerManager.RegisterHandler(m_Handler);
             m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
-            m_Handler.SetCarSeats(descriptor.Cameras);
+            m_Handler.SetCarSeats(m_Descriptor.Cameras);
 
             RideCameraHandler.GetInstance().RegisterTrainHandler(m_Handler);
         }
@@ -116,48 +118,59 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
     protected CoasterCarDescriptor MakeCoasterCarDescriptorFromFile(String resource)
     {
-        List pairs = new List(Parser.MiniParse(resource));
-        if(pairs.Count() == 0)
-            System.throwRuntimeException("CoasterCarDescriptor provided has invalid format");
-
         CoasterCarDescriptor descriptor = new CoasterCarDescriptor();
 
-        while(pairs.Count() > 0)
+        Json head = Json.Parse(resource);
+        if(!head.HasKey("mode"))
+            Exception.Throw("Car descriptor file missing mode, must include mode 'trailer'");
+    
+            // Implement mode checking later 
+
+        if(head.HasKey("cameras"))
+            descriptor.Cameras = head.Get("cameras").GetInt();
+
+        if(head.HasKey("restraints"))
         {
-            Pair pair = (Pair)pairs.PopBack();
-            if(pair.Id.equals("RESTRAINTS"))
-            {
-                MutableInteger mutInteger = new MutableInteger();
-                bool success = pair.TryGetInteger(mutInteger);
-                if(!success)
-                    System.throwRuntimeException("Failed to get Integer value from pair with Id 'RESTRAINTS'");
-                descriptor.Restraints = mutInteger.GetValue();
-            } 
-            else if (pair.Id.equals("CAMERAS")) 
-            {
-                MutableInteger mutInteger = new MutableInteger();
-                bool success = pair.TryGetInteger(mutInteger);
-                if(!success)
-                    System.throwRuntimeException("Failed to get Integer value from pair with Id 'CAMERAS'");
-                descriptor.Cameras = mutInteger.GetValue();
-            }
-            else if (pair.Id.equals("RESTRAINT_OPEN_DURATION"))
-            {
-                MutableDouble mutDouble = new MutableDouble();
-                bool success = pair.TryGetDouble(mutDouble);
-                if(!success)
-                    System.throwRuntimeException("Failed to get Double value from pair with Id 'RESTRAINT_OPEN_DURATION'");
-                descriptor.RestraintOpenDuration = (float)mutDouble.GetValue();
-            }
-            else if (pair.Id.equals("RESTRAINT_CLOSE_DURATION"))
-            {
-                MutableDouble mutDouble = new MutableDouble();
-                bool success = pair.TryGetDouble(mutDouble);
-                if(!success)
-                    System.throwRuntimeException("Failed to get Double value from pair with Id 'RESTRAINT_CLOSE_DURATION'");
-                descriptor.RestraintCloseDuration = (float)mutDouble.GetValue();
-            }
+            Json restraints = head.Get("restraints");
+            descriptor.Restraints = restraints.Get("count").GetInt();
+
+            if(restraints.HasKey("open_duration"))
+                descriptor.RestraintOpenDuration = restraints.Get("open_duration").GetFloat();       
+            if(restraints.HasKey("close_duration"))
+                descriptor.RestraintCloseDuration = restraints.Get("close_duration").GetFloat();
         }
+
+        if(head.HasKey("rear_joint_offset"))
+        {
+            Json joint = head.Get("rear_joint_offset");
+            descriptor.RearJointOffset.set(((Json)joint.At(0)).GetFloat(), ((Json)joint.At(1)).GetFloat(), ((Json)joint.At(2)).GetFloat());
+        }
+        if(head.HasKey("front_joint_offset"))
+        {
+            Json joint = head.Get("front_joint_offset");
+            descriptor.FrontJointOffset.set(((Json)joint.At(0)).GetFloat(), ((Json)joint.At(1)).GetFloat(), ((Json)joint.At(2)).GetFloat());
+        }
+        descriptor.CarLength = Mathf.Abs(descriptor.FrontJointOffset.z - descriptor.RearJointOffset.z);
+
+        if(head.HasKey("bogie_offsets") && head.Get("bogie_offsets").Count() > 0)
+        {
+            Json bogies = head.Get("bogie_offsets");
+            float[] offsets = new float[bogies.Count()];
+
+            IEnumerator enumerator = bogies.GetEnumerator();
+            int index = 0;
+            while(enumerator.MoveNext())
+            {
+                Json bogie = (Json)enumerator.Get();
+                offsets[index++] = bogie.GetFloat();
+            }
+            descriptor.BogieOffsets = offsets;
+        }
+        else
+        {
+            Exception.Throw("This car has no bogies? If this is intended then im a little confused");
+        }
+
         return descriptor;
     }
 
@@ -176,6 +189,10 @@ public class CoasterCar extends Behaviour implements ISetableCar
     }
 
 
+    public CoasterCarDescriptor GetDescriptor()
+    {
+        return m_Descriptor;
+    }
 
 
         // ISetable

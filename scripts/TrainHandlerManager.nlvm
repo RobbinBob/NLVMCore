@@ -5,7 +5,7 @@ import com.nolimitscoaster.*;
 
 import scripts.modifiers.*;
 
-public class TrainHandlerManager extends Object implements FrameListener
+public class TrainHandlerManager extends UpdateableObject
 {
     private static final int UPDATE_TICK = 0;
 
@@ -14,8 +14,6 @@ public class TrainHandlerManager extends Object implements FrameListener
 
     private static GenericCarModifier m_DefaultCarModifier = null;
     private static GenericBogieModifier m_DefaultBogieModifier = null;
-
-    private static Simulator m_Simulator = null;
 
     protected TrainHandlerManager()
     {
@@ -29,8 +27,7 @@ public class TrainHandlerManager extends Object implements FrameListener
         if(m_Handler == null)
         {
             m_Handler = new TrainHandlerManager();
-            m_Simulator = NoLimits.getSimulator();
-            m_Simulator.addFrameListener(m_Handler);
+            m_Handler.SetShouldUpdate(true);
         }
         return m_Handler;
     }
@@ -84,8 +81,7 @@ public class TrainHandlerManager extends Object implements FrameListener
     }
 
     private int curFrame = 0;
-
-    public void onNextFrame()
+    public void Update(float tick)
     {
         curFrame++;
         if(curFrame < UPDATE_TICK) 
@@ -93,11 +89,10 @@ public class TrainHandlerManager extends Object implements FrameListener
         curFrame = 0;
         
 
-        float tickstep = m_Simulator.getCurSimulationTickSec();
         for(int i = 0; i < m_RegisteredHandlers.size(); i++)
         {
             TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
-            handler.UpdateTrainPosition(tickstep);
+            handler.UpdateTrainPosition(tick);
             handler.HandleCars();
             handler.HandleBogies();
         }

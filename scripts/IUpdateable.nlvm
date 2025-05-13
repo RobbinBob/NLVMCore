@@ -1,0 +1,7 @@
+package scripts;
+
+public interface IUpdateable
+{
+    public void Update(float tick);
+    public void LateUpdate(float tick);
+}

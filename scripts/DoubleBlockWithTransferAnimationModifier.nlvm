@@ -44,16 +44,8 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
 
     private bool m_UseLaunchOnExit = false;
 
-
     private InterpolateTrainMatrixModifier m_InterpolateModifier = null;
-
-
-    private TrainWrapper m_TrainWrapper = new TrainWrapper();
-    private TrainHandler m_ActiveHandler = null;
     private BlockUtil m_BlockHandler = null;
-
-    private ICarModifier m_PreviousCarModifier = null;
-    private IBogieModifier m_PreviousBogieModifier = null;
 
     public bool Start()
     {
@@ -103,37 +95,18 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
                         break;
 
                     Train train = m_EnterSection.getTrainOnSection();
-                    m_ActiveHandler = TrainHandlerManager.GetInstance().GetHandler(train);
+                    m_ActiveHandler = GetOccupyingTrainHandler(train);
                     if(m_ActiveHandler == null)
                         NullReferenceException.Throw("Could not find TrainHandle for the train occupying this section");
 
-                        // Fetch the previous modifier so we can re-apply after this modifier is done
-                    m_PreviousCarModifier = m_ActiveHandler.GetCarModifier();
-                    m_PreviousBogieModifier = m_ActiveHandler.GetBogieModifier();
+                        // Store the previous modifier so we can re-apply after this modifier is done
+                    StoreActiveModifiers();
 
-                    ISetableCar[] cars = m_ActiveHandler.GetCars();
-                    ISetableBogie[] bogies = m_ActiveHandler.GetBogies();
-                    Matrix4x4f[] carOffsetMatrices = new Matrix4x4f[cars.length];
-                    Matrix4x4f[] bogieOffsetMatrices = new Matrix4x4f[bogies.length];
+                        // Helper function that does a lot of calculations to make the train attach correctly
+                    SetupTrainWrapper(train);
 
-                        // Loop over the car matrices and store their offsets
-                    for(int i = 0; i < carOffsetMatrices.length; ++i)
-                        carOffsetMatrices[i] = ((SceneObject)cars[i].GetData()).getMatrix();
-                    MatrixUtil.GetOffsetMatrixAndStore(carOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
-
-                        // Loop over the bogie matrices ans store their offsets
-                    for(int i = 0; i < bogieOffsetMatrices.length; ++i)
-                        bogieOffsetMatrices[i] = ((SceneObject)bogies[i].GetData()).getMatrix();
-                    MatrixUtil.GetOffsetMatrixAndStore(bogieOffsetMatrices, m_AnimatedRoot.getAbsoluteMatrix());
-                
-                    m_TrainWrapper.SetTrain(train);
-                    m_TrainWrapper.SetCarOffsetMatrixArray(carOffsetMatrices);
-                    m_TrainWrapper.SetBogieOffsetMatrixArray(bogieOffsetMatrices);
-                    m_TrainWrapper.SetCarAndBogieInterfaces(cars, bogies);
-                    m_TrainWrapper.SetAnimationAndRoot(m_Animation, m_AnimatedRoot);
-
-                    m_ActiveHandler.SetCarModifier(this);
-                    m_ActiveHandler.SetBogieModifier(this);
+                        // Set the active modifiers to be this instance so we can control how the cars/bogies move
+                    SetAsActiveModifiers();
 
                     m_BlockHandler = BlockUtil.WaitForTrainAndPark(m_TransferBlock);
                     switch(m_Direction)
@@ -186,28 +159,10 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
                     if(!m_BlockHandler.IsCommandComplete() || !IsFwdAnimationComplete())
                         return;
 
-                    //m_AnimationState = ANIMATION_STATE_END;
                     m_InterpolateModifier = new InterpolateTrainMatrixModifier(m_ActiveHandler, m_TrainWrapper, 0.5f);
-                    ISetableCar[] cars = m_ActiveHandler.GetCars();
-                    ISetableBogie[] bogies = m_ActiveHandler.GetBogies();
-                    Matrix4x4f[] carOffsetMatrices = new Matrix4x4f[cars.length];
-                    Matrix4x4f[] bogieOffsetMatrices = new Matrix4x4f[bogies.length];
-                        // Loop over the car matrices and store their offsets
-                    for(int i = 0; i < carOffsetMatrices.length; ++i)
-                    {
-                        carOffsetMatrices[i] = ((SceneObject)cars[i].GetData()).getMatrix();
-                    }
-                        // Loop over the bogie matrices ans store their offsets
-                    for(int i = 0; i < bogieOffsetMatrices.length; ++i)
-                    {
-                        bogieOffsetMatrices[i] = ((SceneObject)bogies[i].GetData()).getMatrix();
-                    }
-
-                    m_InterpolateModifier.SetStartMatrices(carOffsetMatrices, bogieOffsetMatrices);
-
-                    m_ActiveHandler.SetCarModifier(m_InterpolateModifier);
-                    m_ActiveHandler.SetBogieModifier(m_InterpolateModifier);
-
+                    m_InterpolateModifier.SetStartMatrices(m_ActiveHandler.GetCarMatrices(), m_ActiveHandler.GetBogieMatrices());
+                        // Give over our control to the interpolator to move the cars/bogies into position
+                    SetActiveModifiers(m_InterpolateModifier, m_InterpolateModifier);
                     m_InterpolateModifier.Start();
 
                     m_AnimationState = ANIMATION_STATE_END;
@@ -218,8 +173,8 @@ public final class DoubleBlockWithTransferAnimationModifier extends AnimationMod
                 {
                     if(m_InterpolateModifier != null && m_InterpolateModifier.IsComplete())
                     {
-                        m_ActiveHandler.SetCarModifier(m_PreviousCarModifier);
-                        m_ActiveHandler.SetBogieModifier(m_PreviousBogieModifier);
+                            // Applies the old modifiers to the train, giving up our control ready for it to leave the block
+                        ApplyStoredModifiers();
                         m_InterpolateModifier = null;
                     }
 

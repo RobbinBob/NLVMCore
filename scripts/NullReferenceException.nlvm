@@ -2,6 +2,8 @@ package scripts;
 import nlvm.lang.System;
 import nlvm.lang.String;
 
+/// <class>
+/// <desc>Exception for null objects.</desc>
 public class NullReferenceException extends Exception
 {
     public static void Throw()
@@ -13,3 +15,4 @@ public class NullReferenceException extends Exception
         System.throwRuntimeException("NullReferenceException | Message: " + message);
     }
 }
+/// </class>

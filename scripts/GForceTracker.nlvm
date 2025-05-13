@@ -44,6 +44,7 @@ public class GForceTracker extends UpdateableObject
         m_MathVec.div(9.81f);
         m_GForces.set(m_MathVec);
 
+            // Averages the forces to reduce jitters
         m_AverageForces.Insert(m_GForces.dup());
         while(m_AverageForces.Count() < MAX_AVERAGE)
             m_AverageForces.Insert(m_GForces.dup());

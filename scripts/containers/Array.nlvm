@@ -25,7 +25,7 @@ public final class Array extends Object implements IEnumerable, IQuerySize, IInd
             m_Array[i] = array[i];
     }
     /// <constructor>
-    /// <desc>Cerates a new array and populates it.</desc>
+    /// <desc>Creates a new array and populates it.</desc>
     /// <arg name="array">The array to populate the Array with.</arg>
     /// </constructor>
     public Array(Object[] array)

@@ -8,7 +8,7 @@ import nlvm.math3d.*;
 
 public class InterpolateMatrixModifier extends Object implements ICarModifier, IBogieModifier
 {
-    protected TrainWrapper m_TrainWrapper = null;
+    protected TrainWrapper m_TrainWrapper = new TrainWrapper();
     protected TrainHandler m_ActiveHandler = null;
 
     protected Matrix4x4f[] m_CarStartMatrices = null;
