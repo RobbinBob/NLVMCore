@@ -20,6 +20,86 @@ public final class Debug extends Object
 
     private static DebugGizmoHandler m_GizmoHandler = new DebugGizmoHandler();
 
+
+    /// <method>
+    /// <desc>Draw a Matrix.</desc>
+    /// <arg name="matrix">The matrix to be drawn.</arg>
+    /// <arg name="timespan">The time(seconds) the matrix will exist for.</arg>
+    /// </method>
+    public static void DrawMatrix(Matrix4x4 matrix, float timespan)
+    {
+        DrawMatrix(matrix, timespan, 1.0f);
+    }
+    /// <method>
+    /// <desc>Draw a Matrix.</desc>
+    /// <arg name="matrix">The matrix to be drawn.</arg>
+    /// <arg name="timespan">The time(seconds) the matrix will exist for.</arg>
+    /// </method>
+    public static void DrawMatrix(Matrix4x4 matrix, float timespan, float size)
+    {
+        Vector3f pos = matrix.GetPosition();
+        float scale = Mathf.Abs(size);
+
+        Vector3f mathV = pos.dup();
+        Vector3f axisV = matrix.GetRight();
+        axisV.mul(scale);
+        mathV.add(axisV);
+        DrawLine(pos, mathV.dup(), timespan, new Vector4f(1, 0, 0, 0));
+
+        mathV.set(pos);
+        matrix.GetUp(axisV);
+        axisV.mul(scale);
+        mathV.add(axisV);
+        DrawLine(pos, mathV.dup(), timespan, new Vector4f(0, 1, 0, 0));
+
+        mathV.set(pos);
+        matrix.GetForward(axisV);
+        axisV.mul(scale);
+        mathV.add(axisV);
+        DrawLine(pos, mathV.dup(), timespan, new Vector4f(0, 0, 1, 0));
+
+        DrawSphere(pos, timespan, new Vector4f(0.7f, 0.7f, 0.7f, 0.0f));
+    }
+
+    /// <method>
+    /// <desc>Draw a sphere at a point in space.</desc>
+    /// <arg name="position">The world-space position to place the sphere.</arg>
+    /// <arg name="timespan">The time(seconds) this sphere will exist for.</arg>
+    /// </method>
+    public static void DrawSphere(Vector3f position, float timespan)
+    {
+        DrawSphere(position, timespan, new Vector4f(1, 1, 1, 0), 0.1f);
+    }
+    /// <method>
+    /// <desc>Draw a sphere at a point in space.</desc>
+    /// <arg name="position">The world-space position to place the sphere.</arg>
+    /// <arg name="timespan">The time(seconds) this sphere will exist for.</arg>
+    /// <arg name="color">The color of the sphere being drawn.</arg>
+    /// </method>
+    public static void DrawSphere(Vector3f position, float timespan, Vector4f color)
+    {
+        DrawSphere(position, timespan, color, 0.1f);
+    }
+    /// <method>
+    /// <desc>Draw a sphere at a point in space.</desc>
+    /// <arg name="position">The world-space position to place the sphere.</arg>
+    /// <arg name="timespan">The time(seconds) this sphere will exist for.</arg>
+    /// <arg name="color">The color of the sphere being drawn.</arg>
+    /// <arg name="diameter">The diameter(meters) of the sphere.</arg>
+    /// </method>
+    public static void DrawSphere(Vector3f position, float timespan, Vector4f color, float diameter)
+    {
+        Matrix4x4f matrix = new Matrix4x4f();
+        matrix.initTrans(position);
+
+        Matrix4x4f scale = new Matrix4x4f();
+        scale.initScal(diameter, diameter, diameter);
+        matrix.multRight(scale);
+
+        m_GizmoHandler.DrawSphere(matrix, timespan, color);
+    }
+
+
     /// <method>
     /// <desc>Draw a line between two points.</desc>
     /// <arg name="from">Point in world-space.</arg>

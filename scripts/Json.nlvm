@@ -73,6 +73,16 @@ public final class Json extends Object implements IEnumerable, IIndexable, IQuer
             Exception.Throw("Mismatched type");
         return m_ValueAsNumber;
     }
+    /// <method>
+    /// <desc>Attempts to fetch the integer value stored in this object, performs truncation if value has a decimal.</desc>
+    /// <return>The integer value, will throw exception if unable to find a integer.</return>
+    /// </method>
+    public int GetInt()
+    {
+        if(m_Type != TYPE_NUMBER)
+            Exception.Throw("Mismatched type");
+        return (int)m_ValueAsNumber;
+    }
 
 
     /// <method>
@@ -93,7 +103,23 @@ public final class Json extends Object implements IEnumerable, IIndexable, IQuer
         return null;
     }
 
+    /// <method>
+    /// <desc>Checks whether the json object has a specific key.</desc>
+    /// <return>True if the key is found, otherwise False.</return>
+    /// <arg name="key">The key used to search.</arg>
+    /// </method>
+    public bool HasKey(String key)
+    {
+        IEnumerator enumerator = m_Children.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            Json child = (Json)enumerator.Get();
+            if(child.m_Name.equals(key))
+                return true;
+        }
 
+        return false;
+    }
 
 
     /// <method>

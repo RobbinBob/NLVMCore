@@ -3,12 +3,14 @@ package scripts;
 import nlvm.util.Vector;
 import nlvm.lang.Object;
 import nlvm.lang.Integer;
-import nlvm.math3d.Matrix4x4f;
+import nlvm.math3d.*;
 
 import com.nolimitscoaster.NoLimits;
 import com.nolimitscoaster.Train;
 import com.nolimitscoaster.Coaster;
 import com.nolimitscoaster.SceneObject;
+import com.nolimitscoaster.TrackPos;
+import com.nolimitscoaster.Tools;
 
 import scripts.utilities.*;
 import scripts.modifiers.*;
@@ -28,6 +30,7 @@ public class TrainHandler extends Object
     private IBogieModifier m_BogieModifier = null;
 
     private Train m_TrainHandled = null;
+    private TrackPos m_TrackPos = null;
 
     private Matrix4x4f m_CarMatrix = new Matrix4x4f();
     private Matrix4x4f m_BogieMatrix = new Matrix4x4f();
@@ -44,6 +47,7 @@ public class TrainHandler extends Object
         m_Bogies = new Vector();
         m_Name = name;
         m_TrainHandled = GetTrainFromString(name);
+        GetTrackPosForTrain(m_TrainHandled);
     }
     public TrainHandler(String name, int cars)
     {
@@ -51,6 +55,7 @@ public class TrainHandler extends Object
         m_Bogies = new Vector(cars);
         m_Name = name;
         m_TrainHandled = GetTrainFromString(name);
+        GetTrackPosForTrain(m_TrainHandled);
     }
     public TrainHandler(String name, int cars, int bogies)
     {
@@ -58,6 +63,7 @@ public class TrainHandler extends Object
         m_Bogies = new Vector(bogies);
         m_Name = name;
         m_TrainHandled = GetTrainFromString(name);
+        GetTrackPosForTrain(m_TrainHandled);
     }
     public TrainHandler(String name, int cars, int bogies, int carSeats)
     {
@@ -66,6 +72,7 @@ public class TrainHandler extends Object
         m_Name = name;
         m_TrainHandled = GetTrainFromString(name);
         m_SeatsPerCar = carSeats;
+        GetTrackPosForTrain(m_TrainHandled);
     }
 
     private void SortByCarIndex()
@@ -132,6 +139,13 @@ public class TrainHandler extends Object
     }
 
 
+    private void GetTrackPosForTrain(Train train)
+    {
+        Vector3f pos = new Vector3f();
+        train.getCarOrientationAndPosition(0, null, null, null, pos);
+        m_TrackPos = train.getCoaster().findNearestTrack(pos, 5.0f);
+    }
+
 
         // Register/Unregister ISetableCar
     public bool RegisterCar(ISetableCar car)
@@ -184,19 +198,38 @@ public class TrainHandler extends Object
 
     public void UpdateTrainPosition(float tick)
     {
-        float scaledSpeed = (float)m_TrainHandled.getSpeed() * tick;
+        float speed = (float)m_TrainHandled.getSpeed();
+        float scaledSpeed = speed * tick;
+
+        float distanceDelta = (m_Distance + scaledSpeed) - m_Distance;
+        m_TrackPos = m_TrackPos.getTrackPosOnCenterRailsWithOffset(distanceDelta);
 
         m_Distance += scaledSpeed;
+            // Not actually that useful since each wheel rotates at different speeds than PI * delta
         m_WrappedDistance += scaledSpeed;
-        while(m_WrappedDistance > Mathf.TAU) m_WrappedDistance -= Mathf.TAU;
+        while(m_WrappedDistance > Mathf.TAU) 
+            m_WrappedDistance -= Mathf.TAU;
     }
 
     public void HandleCars()
     {
+        float cumulativeOffset = 0.0f;
+        Matrix4x4 previousCarMatrix = new Matrix4x4();
+
+        /*
+
+        - Get initial car position along the track
+        - Get the bogie positions along the track using the cars position
+        - Use the bogies as the pivot point for the car
+
+        */
+
+
         for(int i = 0; i < m_Cars.size(); i++)
         {
+                // Get the current car, add its offset to the next
             ISetableCar car = (ISetableCar)m_Cars.elementAt(i);
-            if(car == null) System.throwRuntimeException("ISetableCar could not be cast from Object or was null");
+            CoasterCarDescriptor descriptor = car.GetDescriptor();
             HandleCar(car);
         }
     }

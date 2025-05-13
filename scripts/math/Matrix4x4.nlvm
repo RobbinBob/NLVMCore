@@ -8,6 +8,7 @@ import com.nolimitscoaster.Tools;
 public final class Matrix4x4 extends Object
 {
     private Matrix4x4f m_NativeMatrix = null;
+    private float[] m_NativeComponents = null;
 
     /// <member>
     /// <desc>Collumn 1, Row 1.</desc>
@@ -84,6 +85,7 @@ public final class Matrix4x4 extends Object
     {
         m_NativeMatrix = new Matrix4x4f();
         m_NativeMatrix.initIdentity();
+        m_NativeComponents = m_NativeMatrix.elems();
     }
     /// <constructor>
     /// <desc>Creates a new Matrix4x4 instance as a copy.</desc>
@@ -93,6 +95,7 @@ public final class Matrix4x4 extends Object
     {
         m_NativeMatrix = new Matrix4x4f();
         Set(copy);
+        m_NativeComponents = m_NativeMatrix.elems();
     }
     /// <constructor>
     /// <desc>Creates a new Matrix4x4 instance.</desc>
@@ -120,6 +123,8 @@ public final class Matrix4x4 extends Object
         elems[D2] = d2;
         elems[D3] = d3;
         elems[D4] = d4;
+
+        m_NativeComponents = m_NativeMatrix.elems();
     }
 
     /// <method>
@@ -131,6 +136,13 @@ public final class Matrix4x4 extends Object
         matrix.m_NativeMatrix.initTrans(x, y, z);
         return matrix;
     }
+    public static Matrix4x4 AsTranslation(Vector3f translation)
+    {
+        Matrix4x4 matrix = new Matrix4x4();
+        matrix.m_NativeMatrix.initTrans(translation);
+        return matrix;
+    }
+
     /// <method>
     /// <desc>Creates a new rotation Matrix4x4.</desc>
     /// </method>
@@ -167,6 +179,10 @@ public final class Matrix4x4 extends Object
     public void GetPosition(Vector3f outPosition)
     {
         m_NativeMatrix.getTrans(outPosition);
+    }
+    public Vector3f GetPosition()
+    {
+        return m_NativeMatrix.getTrans();
     }
     /// <method>
     /// <desc>Sets this Matrix4x4's position.</desc>
@@ -258,6 +274,55 @@ public final class Matrix4x4 extends Object
         float[] elems = m_NativeMatrix.elems();//[index] = value;
         elems[index] = value;
     }
+
+
+    public void GetRight(Vector3f outRight)
+    {
+        outRight.set(m_NativeComponents[A1], m_NativeComponents[B1], m_NativeComponents[C1]);
+    }
+    public Vector3f GetRight()
+    {
+        return new Vector3f(m_NativeComponents[A1], m_NativeComponents[B1], m_NativeComponents[C1]);
+    }
+
+    public void GetUp(Vector3f outUp)
+    {
+        outUp.set(m_NativeComponents[A2], m_NativeComponents[B2], m_NativeComponents[C2]);
+    }
+    public Vector3f GetUp()
+    {
+        return new Vector3f(m_NativeComponents[A2], m_NativeComponents[B2], m_NativeComponents[C2]);
+    }
+
+    public void GetForward(Vector3f outForward)
+    {
+        outForward.set(m_NativeComponents[A3], m_NativeComponents[B3], m_NativeComponents[C3]);
+        outForward.mul(-1);
+    }
+    public Vector3f GetForward()
+    {
+        return new Vector3f(m_NativeComponents[A3], m_NativeComponents[B3], m_NativeComponents[C3]);
+    }
+
+    public void SetRight(Vector3f right)
+    {
+        m_NativeComponents[A1] = right.x;
+        m_NativeComponents[B1] = right.y;
+        m_NativeComponents[C1] = right.z;
+    }
+    public void SetUp(Vector3f up)
+    {
+        m_NativeComponents[A2] = up.x;
+        m_NativeComponents[B2] = up.y;
+        m_NativeComponents[C2] = up.z;
+    }
+    public void SetForward(Vector3f forward)
+    {
+        m_NativeComponents[A3] = forward.x;
+        m_NativeComponents[B3] = forward.y;
+        m_NativeComponents[C3] = forward.z;
+    }
+
 
     /// <method>
     /// <desc>Interpolate between two matrices.</desc>

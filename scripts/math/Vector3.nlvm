@@ -1,0 +1,8 @@
+package scripts.math;
+
+import nlvm.math3d.*;
+
+public final class Vector3 extends Object
+{
+    
+}

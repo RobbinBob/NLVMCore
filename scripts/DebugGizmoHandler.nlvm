@@ -10,7 +10,11 @@ public final class DebugGizmoHandler extends UpdateableObject
 {
     private static final String GIZMO_SYMBOL_NAME = "DebugSymbols";
     private static final String GIZMO_SYMBOL_LINE = "Line";
-    private static final List m_GizmoPool = new List(500);
+    private static final String GIZMO_SYMBOL_SPHERE = "Sphere";
+
+    private static final List m_SpherePool = new List(1000);
+    private static final List m_LinePool = new List(1000);
+
     private static final List m_ActiveGizmos = new List(25);
     private static final List m_RemoveGizmos = new List();
     private bool m_IsActive = false;
@@ -28,18 +32,31 @@ public final class DebugGizmoHandler extends UpdateableObject
         SceneObjectElement[] lineElements = GetElementsWithName(symbols, GIZMO_SYMBOL_LINE);
         for(int i = 0; i < lineElements.length; ++i)
         {
-            DebugGizmo gizmo = new DebugGizmo(lineElements[i]);
-            m_GizmoPool.Insert(gizmo);
+            DebugGizmo gizmo = new DebugGizmo(lineElements[i], DebugGizmo.GIZMO_LINE);
+            m_LinePool.Insert(gizmo);
             lineElements[i].setVisible(false);
         }
         Debug.Print("Found " + lineElements.length + " line elements");
+
+        SceneObjectElement[] sphereElements = GetElementsWithName(symbols, GIZMO_SYMBOL_SPHERE);
+        for(int i = 0; i < sphereElements.length; ++i)
+        {
+            DebugGizmo gizmo = new DebugGizmo(sphereElements[i], DebugGizmo.GIZMO_SPHERE);
+            m_SpherePool.Insert(gizmo);
+            sphereElements[i].setVisible(false);
+        }
+        Debug.Print("Found " + sphereElements.length + " sphere elements");
+
         m_IsInstanced = true;
     }
 
 
     public void DrawLine(Matrix4x4f matrix, float timespan, Vector4f color)
     {
-        DebugGizmo gizmo = (DebugGizmo)m_GizmoPool.PopBack();
+        if(m_SpherePool.Count() < 1)
+            return;
+            
+        DebugGizmo gizmo = (DebugGizmo)m_LinePool.PopBack();
         gizmo.SetTimespan(timespan);
         SceneObjectElement element = gizmo.GetElement();
 
@@ -49,6 +66,24 @@ public final class DebugGizmoHandler extends UpdateableObject
         m_ActiveGizmos.Insert(gizmo);
 
             // Re-enables the updates if it was previously off
+        if(!m_IsActive)
+            Register();
+    }
+
+    public void DrawSphere(Matrix4x4f matrix, float timespan, Vector4f color)
+    {
+        if(m_SpherePool.Count() < 1)
+            return;
+
+        DebugGizmo gizmo = (DebugGizmo)m_SpherePool.PopBack();
+        gizmo.SetTimespan(timespan);
+        SceneObjectElement element = gizmo.GetElement();
+
+        element.setMatrix(matrix);
+        element.setEntityColor(0, color);
+        element.setVisible(true);
+        m_ActiveGizmos.Insert(gizmo);
+
         if(!m_IsActive)
             Register();
     }
@@ -107,7 +142,16 @@ public final class DebugGizmoHandler extends UpdateableObject
         {
             DebugGizmo gizmo = (DebugGizmo)enumerator.Get();
             m_ActiveGizmos.Remove(gizmo);
-            m_GizmoPool.Insert(gizmo);
+
+            switch(gizmo.GetType())
+            {
+                case DebugGizmo.GIZMO_LINE:
+                    m_LinePool.Insert(gizmo);
+                    break;
+                case DebugGizmo.GIZMO_SPHERE:
+                    m_SpherePool.Insert(gizmo);
+                    break;
+            }
         }
     }
 }
