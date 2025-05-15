@@ -9,6 +9,7 @@ SCRIPT_SCOPE_PUBLIC = 'public'
 SCRIPT_SCOPE_PROTECTED = 'protected'
 SCRIPT_SCOPE_PRIVATE = 'private'
 SCRIPT_SCOPE_STATIC = 'static'
+SCRIPT_SCOPE_FINAL = 'final'
 SCRIPT_TYPE_CLASS = 'class'
 SCRIPT_TYPE_INTERFACE = 'interface'
 SCRIPT_EXTENDS = 'extends'
@@ -155,7 +156,13 @@ class ClassDecorator:
         def validateRootElement(root: ET.Element):
             return root.tag in {XML_TYPE_TAG_CLASS, XML_TYPE_TAG_INTERFACE}
         def validateScope(scope: str):
-            return scope in {SCRIPT_SCOPE_PUBLIC, SCRIPT_SCOPE_PROTECTED, SCRIPT_SCOPE_PRIVATE, SCRIPT_SCOPE_STATIC}
+            scopes = scope.split(' ')
+            matches = 0
+            for s in scopes:
+                s_wcr = s.strip()
+                if s_wcr in {SCRIPT_SCOPE_PUBLIC, SCRIPT_SCOPE_PROTECTED, SCRIPT_SCOPE_PRIVATE, SCRIPT_SCOPE_STATIC, SCRIPT_SCOPE_FINAL}:
+                    matches += 1
+            return matches == len(scopes)
         def createTypeDeclaration(declaration: ET.Element, json: list[any]):
             declarationElements = declaration.text.split(SPACE)
             if not validateScope(declarationElements[0]):
@@ -326,9 +333,12 @@ class ClassDecorator:
 
             try:
                 root = ET.fromstring(xml)
+
+                if 'ignore_api' in root.attrib and root.attrib['ignore_api'] == 'true':
+                    return {'ignore_api': 'true'}
+                    
             except ET.ParseError as pe:
-                print(pe)
-                print(f"XML: {xml}")
+                print(f"Error {pe}, XML: {xml}")
                 return None
             
 

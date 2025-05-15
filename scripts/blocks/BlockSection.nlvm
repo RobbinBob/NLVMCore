@@ -3,6 +3,8 @@ package scripts.core.blocks;
 import com.nolimitscoaster.Block;
 import com.nolimitscoaster.Section;
 
+/// <class ignore_api="true">
+/// <desc>.</desc>
 public class BlockSection extends TrackSection
 {
     protected Block m_Block = null;
@@ -74,3 +76,4 @@ public class BlockSection extends TrackSection
         return m_Block;
     }
 }
+/// </class>

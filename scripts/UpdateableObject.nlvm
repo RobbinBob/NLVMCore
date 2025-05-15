@@ -1,9 +1,15 @@
 package scripts;
 
+/// <class>
+/// <desc>Base type for recieving update events without extending Behaviour.</desc>
 public abstract class UpdateableObject extends Object implements IUpdateable
 {
     private float m_Tick = 0.0f;
 
+    /// <method>
+    /// <desc>Sets if this object should recieve update events.</desc>
+    /// <arg name="shouldUpdate">True to recieve update events, False to cancel them.</arg>
+    /// </method>
     protected final void SetShouldUpdate(bool shouldUpdate)
     {
         if(shouldUpdate)
@@ -11,11 +17,5 @@ public abstract class UpdateableObject extends Object implements IUpdateable
         else
             Behaviour.RemoveUppdateable(this);
     }
-
-    public void LateUpdate(float tick) 
-    { 
-    }
-    public void Update(float tick)
-    {
-    }
 }
+/// </class>

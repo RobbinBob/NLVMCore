@@ -1,7 +1,18 @@
 package scripts;
 
+/// <interface>
+/// <desc>Exposes methods callbacks for recieving updates.</desc>
 public interface IUpdateable
 {
+    /// <method>
+    /// <desc>Called each frame.</desc>
+    /// <arg name="tick">The time(seconds) the previous frame took to process.</arg>
+    /// </method>
     public void Update(float tick);
+    /// <method>
+    /// <desc>Called each frame after all Updates have been called.</desc>
+    /// <arg name="tick">The time(seconds) the previous frame took to process.</arg>
+    /// </method>
     public void LateUpdate(float tick);
 }
+/// </interface>

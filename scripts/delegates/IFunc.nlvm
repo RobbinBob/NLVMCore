@@ -1,6 +1,6 @@
 package scripts.delegates;
 
-/// <interface>
+/// <interface ignore_api="true">
 /// <desc>Exposes the delegate receiver.</desc>
 public interface IFunc
 {

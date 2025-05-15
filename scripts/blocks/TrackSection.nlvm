@@ -3,6 +3,8 @@ package scripts.core.blocks;
 import com.nolimitscoaster.Block;
 import com.nolimitscoaster.Section;
 
+/// <class ignore_api="true">
+/// <desc>.</desc>
 public abstract class TrackSection extends Object implements ITrackProcess
 {
     protected Section m_Section = null;
@@ -73,3 +75,4 @@ public abstract class TrackSection extends Object implements ITrackProcess
         return m_Section;
     }
 }
+/// </class>

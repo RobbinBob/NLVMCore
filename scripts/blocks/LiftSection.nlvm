@@ -3,6 +3,8 @@ package scripts.core.blocks;
 import com.nolimitscoaster.Block;
 import com.nolimitscoaster.Section;
 
+/// <class ignore_api="true">
+/// <desc>.</desc>
 public class LiftSection extends BlockSection
 {
     public static final int E_LIFT_OFF = 0;
@@ -64,3 +66,4 @@ public class LiftSection extends BlockSection
         return m_Section.getLiftCurrentSpeed();
     }
 }
+/// </class>

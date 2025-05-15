@@ -6,6 +6,8 @@ import nlvm.util.*;
 import scripts.containers.*;
 import scripts.utilities.*;
 
+/// <class ignore_api="true">
+/// <desc>.</desc>
 public final class DebugGizmoHandler extends UpdateableObject
 {
     private static final String GIZMO_SYMBOL_NAME = "DebugSymbols";
@@ -154,4 +156,6 @@ public final class DebugGizmoHandler extends UpdateableObject
             }
         }
     }
+    public void LateUpdate(float tick) { }
 }
+/// </class>
