@@ -3520,6 +3520,553 @@
                 }
             ],
             "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster",
+                "scripts.containers"
+            ],
+            "accessor": "public abstract",
+            "name": "Behaviour",
+            "full_name": "scripts.Behaviour",
+            "extends": "Script",
+            "description": "Base class to derrive any SceneObject attached scripts.",
+            "members": [
+                {
+                    "name": "m_SceneObject",
+                    "type": "SceneObject",
+                    "accessor": "protected",
+                    "description": "Reference to the SceneObject this Behaviour is attached to."
+                },
+                {
+                    "name": "m_Name",
+                    "type": "String",
+                    "accessor": "protected",
+                    "description": "The name of the SceneObject."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Start",
+                    "return": "bool",
+                    "accessor": "public abstract",
+                    "return_desc": "Pass True to allow it to continue excecution, otherwise False to cancel.",
+                    "description": "Called once to initialize the object."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "tick",
+                            "description": "The time-step the previous frame took to execute."
+                        }
+                    ],
+                    "name": "Update",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called each frame the Behaviour is active."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "tick",
+                            "description": "The time-step the previous frame took to execute."
+                        }
+                    ],
+                    "name": "LateUpdate",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called each frame after Update is called."
+                },
+                {
+                    "args": [],
+                    "name": "Destroy",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called before this Behaviour is destroyed."
+                },
+                {
+                    "args": [],
+                    "name": "toString",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "A String representation of this Behaviour."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetFloatParameter",
+                    "return": "float",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a float parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetDoubleParameter",
+                    "return": "double",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a double parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetIntegerParameter",
+                    "return": "int",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a int parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetStringParameter",
+                    "return": "nlvm.lang.String",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a String parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetBoolParameter",
+                    "return": "bool",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a bool parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetCoasterParameter",
+                    "return": "com.nolimitscoaster.Coaster",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a Coaster parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetTriggerParameter",
+                    "return": "com.nolimitscoaster.TrackTrigger",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a TrackTrigger parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetBlockParameter",
+                    "return": "com.nolimitscoaster.Block",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a Block parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetSectionParameter",
+                    "return": "com.nolimitscoaster.Section",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a Section parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetSpecialTrackParameter",
+                    "return": "com.nolimitscoaster.SpecialTrack",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a SpecialTrack parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetResourcePathParameter",
+                    "return": "com.nolimitscoaster.ResourcePath",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a ResourcePath parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "The id of the SceneObject to fetch."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetSceneObject",
+                    "return": "com.nolimitscoaster.SceneObject",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to fetch a SceneObject with a given name."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [],
+            "accessor": "public final",
+            "name": "Enum",
+            "full_name": "scripts.Enum",
+            "extends": "Object",
+            "description": "Represents a value type.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [
+                        {
+                            "type": "IEnum",
+                            "name": "enum",
+                            "description": "The interface type to use for splitting the flag."
+                        },
+                        {
+                            "type": "int",
+                            "name": "flag",
+                            "description": "The flag enum that will be split."
+                        }
+                    ],
+                    "name": "SplitFlag",
+                    "return": "int[]",
+                    "accessor": "public static final",
+                    "return_desc": "An array of all enum values found within the flag.",
+                    "description": "Splits the flagged enum into its individual counterparts."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "IEnum",
+                            "name": "enum",
+                            "description": "The interface type to use for reading the flag/enum."
+                        },
+                        {
+                            "type": "int",
+                            "name": "flag",
+                            "description": "The flag enum that will be compared to."
+                        },
+                        {
+                            "type": "int",
+                            "name": "value",
+                            "description": "The flag/enum to compare."
+                        }
+                    ],
+                    "name": "Contains",
+                    "return": "bool",
+                    "accessor": "public static final",
+                    "return_desc": "True if the enum/flag was present, otherwise False.",
+                    "description": "Checks to see if an enum/flag is present in another flag."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [],
+            "accessor": "public abstract",
+            "name": "Exception",
+            "full_name": "scripts.Exception",
+            "extends": "Object",
+            "description": "Base type for exception handling protocols.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "message",
+                            "description": "The optional message this can print along with the exception."
+                        }
+                    ],
+                    "name": "Throw",
+                    "return": "void",
+                    "accessor": "public static",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Throws an exception at runtime with a message."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "typeName",
+                            "description": "The exception type-name that will be displayed as throwing the exception."
+                        },
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "message",
+                            "description": "The optional message to print with the exception."
+                        }
+                    ],
+                    "name": "CreateThrowMessage",
+                    "return": "nlvm.lang.String",
+                    "accessor": "protected static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Creates a formatted exception message."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster.SceneObjectElement",
+                "com.nolimitscoaster.Tools",
+                "nlvm.math3d.Vector3f"
+            ],
+            "accessor": "public",
+            "name": "HingeRestraint",
+            "full_name": "scripts.HingeRestraint",
+            "extends": "Restraint",
+            "description": "Represents a simple hindged rotating restraint.",
+            "members": [],
+            "methods": [],
+            "constructors": [
+                {
+                    "args": [
+                        {
+                            "type": "com.nolimitscoaster.SceneObjectElement",
+                            "name": "restraintElement",
+                            "description": "The SceneObjectElement this restraint will animate."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "closeAngle",
+                            "description": "The angle(radians) of the restraint when closed."
+                        },
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "openAngle",
+                            "description": "The angle(radians) of the restraint when open."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new HingedRestraint attached to a SceneObjectElement."
+                }
+            ]
+        },
+        {
+            "type": "interface",
+            "package": "scripts",
+            "libraries": [
+                "nlvm.lang.Object"
+            ],
+            "accessor": "public",
+            "name": "IGetable\n",
+            "full_name": "scripts.IGetable\n",
+            "description": "sExposes methods to get information about an Object.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "GetData",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "Base type which needs to be cast after calling.",
+                    "description": "Returns data associated with the Object."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "nlvm.lang.System",
+                "nlvm.lang.String"
+            ],
+            "accessor": "public",
+            "name": "InvalidAnimationException",
+            "full_name": "scripts.InvalidAnimationException",
+            "extends": "Exception",
+            "description": "Exception for invalid animations that cannot be used.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "nlvm.lang.System",
+                "nlvm.lang.String"
+            ],
+            "accessor": "public",
+            "name": "InvalidFormatException",
+            "full_name": "scripts.InvalidFormatException",
+            "extends": "Exception",
+            "description": "Exception for when files have invalid formats and cannot be read.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "nlvm.lang.System",
+                "nlvm.lang.String"
+            ],
+            "accessor": "public",
+            "name": "NullReferenceException",
+            "full_name": "scripts.NullReferenceException",
+            "extends": "Exception",
+            "description": "Exception for null objects.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster.SceneObjectElement",
+                "scripts.math.Mathf"
+            ],
+            "accessor": "public abstract",
+            "name": "Restraint",
+            "full_name": "scripts.Restraint",
+            "extends": "UpdateableObject",
+            "description": "Base class for restraints to inherit from for animating.",
+            "members": [
+                {
+                    "name": "OpeningTime",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "The time taken for the restraint to fully open."
+                },
+                {
+                    "name": "ClosingTime",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "The time taken for the restraint to fully close."
+                },
+                {
+                    "name": "DelayDeviation",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "The deviation(seconds) this restraint could have before beginning animation."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Open",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Begins opening the restraint."
+                },
+                {
+                    "args": [],
+                    "name": "Close",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Begins closing the restraint."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "activation",
+                            "description": "The current restraint activation 0 being closed, 1 fully open."
+                        }
+                    ],
+                    "name": "OnRestraintUpdate",
+                    "return": "void",
+                    "accessor": "protected abstract",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called each frame the restraint is updating."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [
+                        {
+                            "type": "com.nolimitscoaster.SceneObjectElement",
+                            "name": "restraintElement",
+                            "description": "The SceneObjectElement this restraint will animate."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new Restraint attached to a SceneObjectElement."
+                }
+            ]
         }
     ]
 }
