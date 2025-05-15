@@ -119,11 +119,20 @@ public final class Mathf
         return Math.max(a, b);
     }
 
-
+    /// <method>
+    /// <desc>Gets the ceiling of a given value.</desc>
+    /// <return>The value rounded to the ceiling.</return>
+    /// <arg name="t">The value to perform the operation on.</arg>
+    /// </method>
     public static float Ceiling(float t)
     {
         return (float)Math.ceil(t);
     }
+    /// <method>
+    /// <desc>Gets the floor of a given value.</desc>
+    /// <return>The value rounded to the floor.</return>
+    /// <arg name="t">The value to perform the operation on.</arg>
+    /// </method>
     public static float Floor(float t)
     {
         return (float)Math.floor(t);

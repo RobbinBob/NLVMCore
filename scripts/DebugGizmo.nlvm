@@ -2,6 +2,8 @@ package scripts;
 
 import com.nolimitscoaster.SceneObjectElement;
 
+/// <class ignore_api="true">
+/// <desc>.</desc>
 public final class DebugGizmo extends Object
 {
     public static final int GIZMO_STATE_INACTIVE = 0;
@@ -50,3 +52,4 @@ public final class DebugGizmo extends Object
         return m_GizmoType;
     }
 }
+/// </class>

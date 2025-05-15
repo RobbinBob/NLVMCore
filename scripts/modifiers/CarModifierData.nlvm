@@ -24,3 +24,4 @@ public class CarModifierData
     /// </member>
     public float CarOffset;
 }
+/// </class>

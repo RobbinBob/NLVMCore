@@ -4,8 +4,19 @@ package scripts.containers;
 /// <desc>Represents basic iterative behaviour over a span.</desc>
 public interface IEnumerator 
 {
+    /// <method>
+    /// <desc>Moves to the next element in the interface.</desc>
+    /// <return>True if another element is present, otherwise False.</return>
+    /// </method>
     public bool MoveNext();
+    /// <method>
+    /// <desc>Resets the enumerator to the first element in the sequence.</desc>
+    /// </method>
     public void Reset();
+    /// <method>
+    /// <desc>Gets the element at the current position in the sequence.</desc>
+    /// <return>The current element in the sequence.</return>
+    /// </method>
     public Object Get();
 }
 /// </interface>

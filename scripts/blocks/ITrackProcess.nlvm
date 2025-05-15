@@ -2,6 +2,8 @@ package scripts.core.blocks;
 
 import com.nolimitscoaster.Section;
 
+/// <interface ignore_api="true">
+/// <desc>.</desc>
 public interface ITrackProcess 
 {
     public Coaster GetCoaster();
@@ -9,3 +11,4 @@ public interface ITrackProcess
 
     public void Process();
 }
+/// </interface>

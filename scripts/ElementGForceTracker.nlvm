@@ -6,6 +6,8 @@ import nlvm.math3d.Vector3f;
 import nlvm.math3d.Vector4f;
 import scripts.math.Mathf;
 
+/// <class>
+/// <desc>Proveds G-Force data for a SceneObjectElement.</desc>
 public class ElementGForceTracker extends GForceTracker
 {
     private SceneObjectElement m_TrackingElement = null;
@@ -14,6 +16,10 @@ public class ElementGForceTracker extends GForceTracker
     private Vector3f m_Forces = new Vector3f();
     private Vector3f m_Position = new Vector3f();
 
+    /// <constructor>
+    /// <desc>Creates a new tracker for a SceneObjectElement.</desc>
+    /// <arg name="element">The SceneObjectElement to track G-Forces of.</arg>
+    /// </constructor>
     public ElementGForceTracker(SceneObjectElement element)
     {
         super(new Matrix4x4());
@@ -34,6 +40,7 @@ public class ElementGForceTracker extends GForceTracker
         m_ExposedMatrix.GetPosition(m_Position);
         Vector3f a = new Vector3f(m_Position);
         a.add(m_Forces);
-        Debug.DrawLine(m_Position, a, tick / 2.0f, new Vector4f(Mathf.Abs(m_Forces.x), Mathf.Abs(m_Forces.y), Mathf.Abs(m_Forces.z), 1.0f));
+        Debug.DrawLine(m_Position, a, tick / 2, new Vector4f(Mathf.Abs(m_Forces.x), Mathf.Abs(m_Forces.y), Mathf.Abs(m_Forces.z), 1.0f));
     }
 }
+/// </class>

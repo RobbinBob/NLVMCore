@@ -3,11 +3,25 @@ package scripts;
 import nlvm.lang.*;
 import nlvm.math3d.Vector3f;
 
+/// <class>
+/// <desc>Struct-like container for CoasterCar specific data.</desc>
 public class CoasterCarDescriptor extends Object
 {
+    /// <member>
+    /// <desc>The amount of restrains this car has.</desc>
+    /// </member>
     public int Restraints = 0;
+    /// <member>
+    /// <desc>The amount of cameras this car has.</desc>
+    /// </member>
     public int Cameras = 0;
+    /// <member>
+    /// <desc>The time(seconds) for the restraints to open.</desc>
+    /// </member>
     public float RestraintOpenDuration = 1.0f;
+    /// <member>
+    /// <desc>The time(seconds) for the restraints to close.</desc>
+    /// </member>
     public float RestraintCloseDuration = 1.0f;
 
     public Vector3f RearJointOffset = new Vector3f(0, 0, 0);
@@ -17,3 +31,4 @@ public class CoasterCarDescriptor extends Object
 
     public CoasterCarDescriptor() { }
 }
+/// </class>

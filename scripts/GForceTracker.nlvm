@@ -4,6 +4,8 @@ import nlvm.math3d.*;
 import scripts.math.*;
 import scripts.containers.*;
 
+/// <class>
+/// <desc>Base type to implement G-Force tracking capabilities.</desc>
 public class GForceTracker extends UpdateableObject
 {
     private Matrix4x4 m_TrackingMatrix = null;
@@ -20,6 +22,10 @@ public class GForceTracker extends UpdateableObject
 
     private static final Vector3f GRAVITY = new Vector3f(0, 9.81f, 0);
 
+    /// <constructor>
+    /// <desc>Create a new G-Force tracker, tracking a matrix.</desc>
+    /// <arg name="track">The matrix to track G-Forces of.</arg>
+    /// </constructor>
     public GForceTracker(Matrix4x4 track)
     {
         m_TrackingMatrix = track;
@@ -61,19 +67,32 @@ public class GForceTracker extends UpdateableObject
         m_TrackingMatrix.GetPosition(m_OldPosition);
         m_OldVelocity.set(m_NewVelocity);
     }
+    public void LateUpdate(float tick) { }
 
-
+    /// <method>
+    /// <desc>Gets the current G-Force read-out.</desc>
+    /// <arg name="outForce">The vector to set read-out data to.</arg>
+    /// </method>
     public void GetForce(Vector3f outForce)
     {
         outForce.set(m_GForces);
     }
+    /// <method>
+    /// <desc>Gets the current G-Force read-out, averaged over multiple frames.</desc>
+    /// <arg name="outForce">The vector to set read-out data to.</arg>
+    /// </method>
     public void GetAverageForce(Vector3f outForce)
     {
         outForce.set(m_AverageGForce);
     }
 
+    /// <method>
+    /// <desc>Exposes the underlying matrix for manipulation.</desc>
+    /// <return>The underlying matrix the tracker uses to calculate forces.</return>
+    /// </method>
     public final Matrix4x4 ExposeMatrix()
     {
         return m_TrackingMatrix;
     }
 }
+/// </class>

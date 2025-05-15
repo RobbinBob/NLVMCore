@@ -7,6 +7,8 @@ import nlvm.lang.*;
 import nlvm.math3d.*;
 import nlvm.util.*;
 
+/// <class ignore_api="true">
+/// <desc>.</desc>
 public class RideCameraHandler extends UpdateableObject
 {
     private static RideCameraHandler m_Instance = null;
@@ -70,14 +72,14 @@ public class RideCameraHandler extends UpdateableObject
             {
                 m_ChangeSeatButton = true;
                 m_Seat++;
-                if(m_Seat >= m_ActiveHandler.GetCarSeats())
-                    m_Seat = 0;
-
-                System.out.println("New seat index" + m_Seat);
 
                 ISetableCar car = m_ActiveHandler.GetCars()[m_Car];
                 SceneObject carSCO = (SceneObject)car.GetData();
                 SceneObjectElement[] cameras = GetElementsWithName(carSCO, "Camera");
+                CoasterCarDescriptor descriptor = car.GetDescriptor();
+
+                if(m_Seat >= descriptor.Cameras)
+                    m_Seat = 0;
                 m_ERVElement = cameras[m_Seat];
             }
             else if(!Button.isPressed(Button.NEXT_SEAT))
@@ -94,11 +96,13 @@ public class RideCameraHandler extends UpdateableObject
                 if(m_Car >= m_ActiveHandler.GetCars().length)
                     m_Car = 0;
 
-                System.out.println("New car index" + m_Car);
-
                 ISetableCar car = m_ActiveHandler.GetCars()[m_Car];
                 SceneObject carSCO = (SceneObject)car.GetData();
                 SceneObjectElement[] cameras = GetElementsWithName(carSCO, "Camera");
+                CoasterCarDescriptor descriptor = car.GetDescriptor();
+                if(m_Seat >= descriptor.Cameras)
+                    m_Seat = descriptor.Cameras - 1;
+
                 m_ERVElement = cameras[m_Seat];
             }
             else if(!Button.isPressed(Button.NEXT_CAR))
@@ -115,12 +119,18 @@ public class RideCameraHandler extends UpdateableObject
                 if(m_Train >= m_RegisteredTrains.size())
                     m_Train = 0;
 
-                System.out.println("New train index" + m_Train);
-
                 m_ActiveHandler = (TrainHandler)m_RegisteredTrains.elementAt(m_Train);
+                if(m_Car >= m_ActiveHandler.GetCars().length)
+                    m_Car = m_ActiveHandler.GetCars().length - 1;
+
                 ISetableCar car = m_ActiveHandler.GetCars()[m_Car];
                 SceneObject carSCO = (SceneObject)car.GetData();
                 SceneObjectElement[] cameras = GetElementsWithName(carSCO, "Camera");
+                CoasterCarDescriptor descriptor = car.GetDescriptor();
+                if(m_Seat >= descriptor.Cameras)
+                    m_Seat = descriptor.Cameras - 1;
+
+
                 m_ERVElement = cameras[m_Seat];
             }
             else if(!Button.isPressed(Button.NEXT_TRAIN))
@@ -216,3 +226,4 @@ public class RideCameraHandler extends UpdateableObject
         return arr;
     }
 }
+/// </class>

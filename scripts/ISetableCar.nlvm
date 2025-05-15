@@ -4,7 +4,9 @@ import com.nolimitscoaster.Coaster;
 import com.nolimitscoaster.Train;
 import nlvm.math3d.Vector3f;
 
-public interface ISetableCar extends ISetable// IGetable
+/// <interface>
+/// <desc>Exposes methods for custom cars.</desc>
+public interface ISetableCar extends ISetable
 {
     public Coaster GetCoaster();
     public Train GetTrain();
@@ -16,3 +18,4 @@ public interface ISetableCar extends ISetable// IGetable
         // Cant extend multiple interfaces in this awful language
     public Object GetData();
 }
+/// </interface>

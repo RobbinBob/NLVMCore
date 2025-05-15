@@ -81,6 +81,7 @@ public class TrainHandlerManager extends UpdateableObject
     }
 
     private int curFrame = 0;
+    public void LateUpdate(float tick) { }
     public void Update(float tick)
     {
         curFrame++;
