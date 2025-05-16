@@ -1,0 +1,31 @@
+{
+    "mode": "split_axle",
+    "yaw_elements": {
+        "left": "Bogie L",
+        "right": "Bogie R"
+    },
+    "pitch_elements": {
+        "left": "Bogie LRot",
+        "right": "Bogie RRot"
+    },
+    "wheels": {
+        "wheel_running_radius": 0.15,
+        "wheel_guide_radius": 0.105,
+        "wheel_upstop_radius": 0.105,
+        "elements": [
+            { "name": "Bogie L Wheel1", "type": "running", "direction": "bwd", "axis": "x" },
+            { "name": "Bogie L Wheel2", "type": "running", "direction": "bwd", "axis": "x" },
+            { "name": "Bogie L Wheel3", "type": "guide", "direction": "fwd", "axis": "y" },
+            { "name": "Bogie L Wheel4", "type": "guide", "direction": "fwd", "axis": "y" },
+            { "name": "Bogie L Wheel5", "type": "upstop", "direction": "fwd", "axis": "x" },
+            { "name": "Bogie L Wheel6", "type": "upstop", "direction": "fwd", "axis": "x" },
+
+            { "name": "Bogie R Wheel1", "type": "running", "direction": "bwd", "axis": "x" },
+            { "name": "Bogie R Wheel2", "type": "running", "direction": "bwd", "axis": "x" },
+            { "name": "Bogie R Wheel3", "type": "guide", "direction": "bwd", "axis": "y" },
+            { "name": "Bogie R Wheel4", "type": "guide", "direction": "bwd", "axis": "y" },
+            { "name": "Bogie R Wheel5", "type": "upstop", "direction": "fwd", "axis": "x" },
+            { "name": "Bogie R Wheel6", "type": "upstop", "direction": "fwd", "axis": "x" }
+        ]
+    } 
+}

@@ -1,0 +1,10 @@
+{
+    "mode": "trailer",
+    "cameras": 5,
+
+    "restraints": {
+        "count": 4,
+        "open_duration": 2.0,
+        "close_duration": 1.25
+    }
+}

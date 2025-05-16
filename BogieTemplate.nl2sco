@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path=""/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.CoasterBogie</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>coaster</type>
+      <id>coaster</id>
+      <label>Coaster</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <enums>1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20</enums>
+      <id>bogie_index</id>
+      <label>Bogie</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type filetype="any">resourcepath</type>
+      <defaultvalue>BogieDescriptorTemplate.bogiedescriptor</defaultvalue>
+      <id>bogie_descriptor</id>
+      <label>Bogie Descriptor</label>
+    </scriptparameter>
+  </sceneobject>
+</root>
