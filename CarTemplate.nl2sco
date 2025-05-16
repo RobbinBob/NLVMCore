@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="">
+      <content></content>
+    </model>
+    <script>
+      <classpath>/C:/Users/scott/Documents/com.nolimitscoaster.nolimits2/NLVMCore</classpath>
+      <class>scripts.CoasterCar</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>coaster</type>
+      <id>coaster</id>
+      <label>Coaster</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <enums>1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,29,20</enums>
+      <id>car_index</id>
+      <label>Car</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type filetype="any">resourcepath</type>
+      <defaultvalue>CarDescriptorTemplate.cardescriptor</defaultvalue>
+      <id>car_descriptor</id>
+      <label>Descriptor</label>
+    </scriptparameter>
+  </sceneobject>
+</root>
