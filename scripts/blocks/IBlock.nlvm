@@ -1,0 +1,12 @@
+package scripts.blocks;
+
+/// <interface>
+/// <desc>.</desc>
+public interface IBlock
+{
+    /// <method>
+    /// <desc>Gets the underlying block.</desc>
+    /// </method>
+    public Block GetBlock();
+}
+/// </interface>

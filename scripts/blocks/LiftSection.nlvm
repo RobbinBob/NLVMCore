@@ -5,8 +5,10 @@ import com.nolimitscoaster.Section;
 
 /// <class ignore_api="true">
 /// <desc>.</desc>
-public class LiftSection extends BlockSection
+public class LiftSection extends TrackSection implements IState, IBlock, ITrainPositionQuery
 {
+    protected Block m_Block = null;
+
     public static final int E_LIFT_OFF = 0;
     public static final int E_LIFT_FWD = 1;
     public static final int E_LIFT_IDLE = 2;
@@ -15,11 +17,13 @@ public class LiftSection extends BlockSection
 
     public LiftSection(Block block)
     {
-        super(block);
+        super(block.getSection());
+        m_Block = block;
     }
     public LiftSection(Section section)
     {
         super(section);
+        m_Block = section.getBlock();
     }
 
 
@@ -59,6 +63,17 @@ public class LiftSection extends BlockSection
     {
         return m_Section.isTrainBeforeLiftTrigger();
     }
+
+    public int GetState()
+    {
+        if(block.getState() == Block.STATE_ERROR_OPERATION_MODE)
+            return block.getNormalModeState(Block.PROTOCOL_V1);
+        return block.getState();
+    }
+    public void SetState(int state)
+    {
+        m_Block.setState(state);
+    } 
 
 
     public float GetDeviceSpeed()

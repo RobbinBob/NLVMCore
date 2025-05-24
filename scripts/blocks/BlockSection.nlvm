@@ -1,11 +1,11 @@
-package scripts.core.blocks;
+package scripts.blocks;
 
 import com.nolimitscoaster.Block;
 import com.nolimitscoaster.Section;
 
 /// <class ignore_api="true">
 /// <desc>.</desc>
-public class BlockSection extends TrackSection
+public class BlockSection extends TransportSection, IState, IBlock, ITrainPositionQuery
 {
     protected Block m_Block = null;
 
@@ -16,12 +16,12 @@ public class BlockSection extends TrackSection
 
     public BlockSection(Block block)
     {
+        super(block.getSection());
         m_Block = block;
-        m_Section = block.getSection();
     }
     public BlockSection(Section section)
     {
-        m_Section = section;
+        super(section);
         m_Block = section.getBlock();
     }
 
@@ -52,6 +52,15 @@ public class BlockSection extends TrackSection
         return m_BrakeState;
     }
 
+
+    public bool IsTrainBeforeTrigger()
+    {
+        return m_Section.isTrainBeforeBrakeTrigger();
+    }
+    public bool IsTrainBehindTrigger()
+    {
+        return m_Section.isTrainBehindBrakeTrigger();
+    }
 
 
     public int GetState()
