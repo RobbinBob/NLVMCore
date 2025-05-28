@@ -1,6 +1,6 @@
 package scripts.math;
 
-import nlvm.math3d.*;
+import nlvm.math3d.Vector3f;
 
 /// <class>
 /// <desc>Vector3 type.</desc>

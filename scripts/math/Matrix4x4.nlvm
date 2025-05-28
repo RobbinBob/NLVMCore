@@ -11,74 +11,79 @@ public final class Matrix4x4 extends Object
     private float[] m_NativeComponents = null;
 
     /// <member>
-    /// <desc>Collumn 1, Row 1.</desc>
+    /// <desc>Collumn 1, Row 1 (Read Only).</desc>
     /// </member>
     public static final int A1 = Matrix4x4f.a1;
     /// <member>
-    /// <desc>Collumn 2, Row 1.</desc>
+    /// <desc>Collumn 2, Row 1 (Read Only).</desc>
     /// </member>
     public static final int A2 = Matrix4x4f.a2;
     /// <member>
-    /// <desc>Collumn 3, Row 1.</desc>
+    /// <desc>Collumn 3, Row 1 (Read Only).</desc>
     /// </member>
     public static final int A3 = Matrix4x4f.a3;
     /// <member>
-    /// <desc>Collumn 4, Row 1.</desc>
+    /// <desc>Collumn 4, Row 1 (Read Only).</desc>
     /// </member>
     public static final int A4 = Matrix4x4f.a4;
 
     /// <member>
-    /// <desc>Collumn 1, Row 2.</desc>
+    /// <desc>Collumn 1, Row 2 (Read Only).</desc>
     /// </member>
     public static final int B1 = Matrix4x4f.b1;
     /// <member>
-    /// <desc>Collumn 2, Row 2.</desc>
+    /// <desc>Collumn 2, Row 2 (Read Only).</desc>
     /// </member>
     public static final int B2 = Matrix4x4f.b2;
     /// <member>
-    /// <desc>Collumn 3, Row 2.</desc>
+    /// <desc>Collumn 3, Row 2 (Read Only).</desc>
     /// </member>
     public static final int B3 = Matrix4x4f.b3;
     /// <member>
-    /// <desc>Collumn 4, Row 2.</desc>
+    /// <desc>Collumn 4, Row 2 (Read Only).</desc>
     /// </member>
     public static final int B4 = Matrix4x4f.b4;
 
     /// <member>
-    /// <desc>Collumn 1, Row 3.</desc>
+    /// <desc>Collumn 1, Row 3 (Read Only).</desc>
     /// </member>
     public static final int C1 = Matrix4x4f.c1;
     /// <member>
-    /// <desc>Collumn 2, Row 3.</desc>
+    /// <desc>Collumn 2, Row 3 (Read Only).</desc>
     /// </member>
     public static final int C2 = Matrix4x4f.c2;
     /// <member>
-    /// <desc>Collumn 3 Row 3.</desc>
+    /// <desc>Collumn 3 Row 3 (Read Only).</desc>
     /// </member>
     public static final int C3 = Matrix4x4f.c3;
     /// <member>
-    /// <desc>Collumn 4, Row 3.</desc>
+    /// <desc>Collumn 4, Row 3 (Read Only).</desc>
     /// </member>
     public static final int C4 = Matrix4x4f.c4;
 
     /// <member>
-    /// <desc>Collumn 1, Row 4.</desc>
+    /// <desc>Collumn 1, Row 4 (Read Only).</desc>
     /// </member>
     public static final int D1 = Matrix4x4f.d1;
     /// <member>
-    /// <desc>Collumn 2, Row 4.</desc>
+    /// <desc>Collumn 2, Row 4 (Read Only).</desc>
     /// </member>
     public static final int D2 = Matrix4x4f.d2;
     /// <member>
-    /// <desc>Collumn 3, Row 4.</desc>
+    /// <desc>Collumn 3, Row 4 (Read Only).</desc>
     /// </member>
     public static final int D3 = Matrix4x4f.d3;
     /// <member>
-    /// <desc>Collumn 4, Row 4.</desc>
+    /// <desc>Collumn 4, Row 4 (Read Only).</desc>
     /// </member>
     public static final int D4 = Matrix4x4f.d4;
 
+
+    /// <member>
+    /// <desc>Matrix4x4 initialized with the identity (Read Only).</desc>
+    /// </member>
     public static final Matrix4x4 Identity = new Matrix4x4();
+
 
     /// <constructor>
     /// <desc>Creates a new Matrix4x4 instance initialised to identity.</desc>
@@ -102,7 +107,7 @@ public final class Matrix4x4 extends Object
             m_NativeComponents[i] = copyComponents[i];
     }
     /// <constructor>
-    /// <desc>Creates a new Matrix4x4 instance.</desc>
+    /// <desc>Creates a new Matrix4x4 with each component.</desc>
     /// </constructor>
     public Matrix4x4(float a1, float a2, float a3, float a4, float b1, float b2, float b3, float b4, float c1, float c2, float c3, float c4, float d1, float d2, float d3, float d4)
     {
@@ -129,9 +134,41 @@ public final class Matrix4x4 extends Object
         m_NativeComponents[D4] = d4;
 
     }
+    /// <constructor>
+    /// <desc>Creates a Matrix4x4 using the 4 column components.</desc>
+    /// <arg name="right">The right vector.</arg>
+    /// <arg name="up">The up vector.</arg>
+    /// <arg name="forward">The forward vector.</arg>
+    /// <arg name="position">The position of the matrix.</arg>
+    /// </constructor>
+    public Matrix4x4(Vector4 right, Vector4 up, Vector4 forward, Vector4 position)
+    {
+        m_NativeMatrix = new Matrix4x4f();
+        m_NativeMatrix.initIdentity();
+        m_NativeComponents = m_NativeMatrix.elems();
+        SetColumns(new Vector3(right), new Vector3(up), new Vector3(forward), new Vector3(position));
+        m_NativeComponents[D4] = position.W;
+    }
+    /// <constructor>
+    /// <desc>Creates a Matrix4x4 using the 4 column components.</desc>
+    /// <arg name="right">The right vector.</arg>
+    /// <arg name="up">The up vector.</arg>
+    /// <arg name="forward">The forward vector.</arg>
+    /// <arg name="position">The position of the matrix.</arg>
+    /// </constructor>
+    public Matrix4x4(Vector3 right, Vector3 up, Vector3 forward, Vector3 position)
+    {
+        m_NativeMatrix = new Matrix4x4f();
+        m_NativeMatrix.initIdentity();
+        m_NativeComponents = m_NativeMatrix.elems();
+        SetColumns(right, up, forward, position);
+    }
+
+
 
     /// <method>
-    /// <desc>Creates a new transform Matrix4x4.</desc>
+    /// <desc>Creates a translation Matrix4x4.</desc>
+    /// <return>The translation Matrix4x4.</return>
     /// </method>
     public static Matrix4x4 AsTranslation(float x, float y, float z)
     {
@@ -139,13 +176,18 @@ public final class Matrix4x4 extends Object
         matrix.m_NativeMatrix.initTrans(x, y, z);
         return matrix;
     }
+    /// <method>
+    /// <desc>Creates a translation Matrix4x4.</desc>
+    /// <return>The translation Matrix4x4.</return>
+    /// </method>
     public static Matrix4x4 AsTranslation(Vector3 translation)
     {
         return AsTranslation(translation.X, translation.Y, translation.Z);
     }
 
     /// <method>
-    /// <desc>Creates a new rotation Matrix4x4.</desc>
+    /// <desc>Creates a rotation Matrix4x4.</desc>
+    /// <return>The rotation Matrix4x4.</return>
     /// </method>
     public static Matrix4x4 AsRotation(float x, float y, float z)
     {
@@ -170,13 +212,18 @@ public final class Matrix4x4 extends Object
 
         return matrix;
     }
+    /// <method>
+    /// <desc>Creates a rotation Matrix4x4.</desc>
+    /// <return>The rotation Matrix4x4.</return>
+    /// </method>
     public static Matrix4x4 AsRotation(Vector3 rotation)
     {
         return AsRotation(rotation.X, rotation.Y, rotation.Z);
     }
 
     /// <method>
-    /// <desc>Creates a new scale Matrix4x4.</desc>
+    /// <desc>Creates a scale Matrix4x4.</desc>
+    /// <return>The scale Matrix4x4.</return>
     /// </method>
     public static Matrix4x4 AsScale(float x, float y, float z)
     {
@@ -184,16 +231,31 @@ public final class Matrix4x4 extends Object
         matrix.m_NativeMatrix.initScal(x, y, z);
         return matrix;
     }
+    /// <method>
+    /// <desc>Creates a scale Matrix4x4.</desc>
+    /// <return>The scale Matrix4x4.</return>
+    /// </method>
     public static Matrix4x4 AsScale(Vector3 scale)
     {
         return AsScale(scale.X, scale.Y, scale.Z);
     }
+    /// <method>
+    /// <desc>Creates a scale Matrix4x4.</desc>
+    /// <return>THe scale Matrix4x4.</return>
+    /// </method>
     public static Matrix4x4 AsScale(float scale)
     {
         return AsScale(scale, scale, scale);
     }
 
 
+    /// <method>
+    /// <desc>Creates a Matrix4x4 looking towards a target.</desc>
+    /// <arg name="eye">The position of the eye looking outward.</arg>
+    /// <arg name="target">The position to look at from the eye.</arg>
+    /// <arg name="up">The up vector to use as a basis for rotation.</arg>
+    /// <return>The translated and rotated Matrix4x4.</return>
+    /// </method>
     public static Matrix4x4 LookTo(Vector3 eye, Vector3 target, Vector3 up)
     {
         Vector3 zaxis = eye.Sub(target).Normalized();
@@ -281,6 +343,7 @@ public final class Matrix4x4 extends Object
 
     /// <method>
     /// <desc>Inverts the matrix.</desc>
+    /// <return>The inverted Matrix4x4.</return>
     /// </method>
     public Matrix4x4 Invert()
     {
@@ -289,20 +352,36 @@ public final class Matrix4x4 extends Object
         return copy;
     }
 
+    /// <method>
+    /// <desc>Gets the Matrix4x4's right vector.</desc>
+    /// <return>A copy of the right vector.</return>
+    /// </method>
     public Vector3 GetRight()
     {
         return new Vector3(m_NativeComponents[A1], m_NativeComponents[B1], m_NativeComponents[C1]);
     }
+    /// <method>
+    /// <desc>Gets the Matrix4x4's up vector.</desc>
+    /// <return>A copy of the up vector.</return>
+    /// </method>
     public Vector3 GetUp()
     {
         return new Vector3(m_NativeComponents[A2], m_NativeComponents[B2], m_NativeComponents[C2]);
     }
+    /// <method>
+    /// <desc>Gets the Matrix4x4's forward vector.</desc>
+    /// <return>A copy of the forward vector.</return>
+    /// </method>
     public Vector3 GetForward()
     {
         Vector3 backward = new Vector3(m_NativeComponents[A3], m_NativeComponents[B3], m_NativeComponents[C3]);
         return backward.Mul(-1);
     }
 
+    /// <method>
+    /// <desc>Sets the Matrix4x4's right vector.</desc>
+    /// <return>The modified Matrix4x4.</return>
+    /// </method>
     public Matrix4x4 SetRight(Vector3 right)
     {
         Matrix4x4 copy = new Matrix4x4(this);
@@ -311,6 +390,10 @@ public final class Matrix4x4 extends Object
         copy.m_NativeComponents[C1] = right.Z;
         return copy;
     }
+    /// <method>
+    /// <desc>Sets the Matrix4x4's up vector.</desc>
+    /// <return>The modified Matrix4x4.</return>
+    /// </method>
     public Matrix4x4 SetUp(Vector3 up)
     {
         Matrix4x4 copy = new Matrix4x4(this);
@@ -319,6 +402,10 @@ public final class Matrix4x4 extends Object
         copy.m_NativeComponents[C2] = up.Z;
         return copy;
     }
+    /// <method>
+    /// <desc>Sets the Matrix4x4's forward vector.</desc>
+    /// <return>The modified Matrix4x4.</return>
+    /// </method>
     public Matrix4x4 SetForward(Vector3 forward)
     {
         Matrix4x4 copy = new Matrix4x4(this);
@@ -329,6 +416,14 @@ public final class Matrix4x4 extends Object
         return copy;
     }
 
+    /// <method>
+    /// <desc>Sets the Matrix4x4's collumns, each parameter can be null.</desc>
+    /// <arg name="right">The right vector.</arg>
+    /// <arg name="up">The up vector.</arg>
+    /// <arg name="forward">The forward vector.</arg>
+    /// <arg name="position">The position of the matrix.</arg>
+    /// <return>The modified Matrix4x4.</return>
+    /// </method>
     public Matrix4x4 SetColumns(Vector3 right, Vector3 up, Vector3 forward, Vector3 position)
     {
         Matrix4x4 copy = new Matrix4x4(this);
@@ -394,7 +489,7 @@ public final class Matrix4x4 extends Object
         return matrix;
     }
     /// <method>
-    /// <desc>Returns the matrix as athe native Matrix4x4f type.</desc>
+    /// <desc>Gets underlying Matrix4x4f type.</desc>
     /// <arg name="outmMatrix">The matrix that will be written to.</arg>
     /// </method>
     public void GetNative(Matrix4x4f outMatrix)
@@ -405,7 +500,10 @@ public final class Matrix4x4 extends Object
         for(int i = 0; i < 16; ++i)
             outComp[i] = copyComp[i];
     }
-
+    /// <method>
+    /// <desc>Gets the underlying Matrix4x4f type.</desc>
+    /// <return>A copy of the Matrix4x4f type used with the native API.</return>
+    /// </method>
     public Matrix4x4f GetNative()
     {
         Matrix4x4f outMatrix = new Matrix4x4f();
@@ -419,6 +517,9 @@ public final class Matrix4x4 extends Object
         return outMatrix;
     }
 
+    /// <method>
+    /// <desc>Returns a String representation of this Matrix4x4.</desc>
+    /// </method>
     public String toString()
     {
         float[] c = m_NativeComponents;
