@@ -26,3 +26,6 @@ ParticleTest/
 build/__pycache__/
 UnitTesting/
 SingleBlockAnimationModifier.nl2sco
+scripts/GForceTracker.nlvm
+unnittest/Cube.glb
+unnittest/UnitTest-Math.nl2sco

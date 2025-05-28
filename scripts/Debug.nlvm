@@ -1,8 +1,6 @@
 package scripts;
 
 import com.nolimitscoaster.*;
-import scripts.utilities.*;
-import nlvm.math3d.*;
 import scripts.math.*;
 
 /// <class>
@@ -36,28 +34,19 @@ public final class Debug extends Object
     /// </method>
     public static void DrawMatrix(Matrix4x4 matrix, float timespan, float size)
     {
-        Vector3f pos = matrix.GetPosition();
+        Vector3 pos = matrix.GetPosition();
         float scale = Mathf.Abs(size);
 
-        Vector3f mathV = pos.dup();
-        Vector3f axisV = matrix.GetRight();
-        axisV.mul(scale);
-        mathV.add(axisV);
-        DrawLine(pos, mathV.dup(), timespan, new Vector4f(1, 0, 0, 0));
+        Vector3 rightAxis = pos.Add(matrix.GetRight().Mul(scale));
+        DrawLine(pos, rightAxis, timespan, Color.Red);
 
-        mathV.set(pos);
-        matrix.GetUp(axisV);
-        axisV.mul(scale);
-        mathV.add(axisV);
-        DrawLine(pos, mathV.dup(), timespan, new Vector4f(0, 1, 0, 0));
+        Vector3 upAxis = pos.Add(matrix.GetUp().Mul(scale));
+        DrawLine(pos, upAxis, timespan, Color.Green);
 
-        mathV.set(pos);
-        matrix.GetForward(axisV);
-        axisV.mul(scale);
-        mathV.add(axisV);
-        DrawLine(pos, mathV.dup(), timespan, new Vector4f(0, 0, 1, 0));
+        Vector3 forwardAxis = pos.Add(matrix.GetForward().Mul(scale));
+        DrawLine(pos, forwardAxis, timespan, Color.Blue);
 
-        DrawSphere(pos, timespan, new Vector4f(0.7f, 0.7f, 0.7f, 0.0f));
+        DrawSphere(pos, timespan, new Color(0.7f, 0.7f, 0.7f));
     }
 
     /// <method>
@@ -65,9 +54,9 @@ public final class Debug extends Object
     /// <arg name="position">The world-space position to place the sphere.</arg>
     /// <arg name="timespan">The time(seconds) this sphere will exist for.</arg>
     /// </method>
-    public static void DrawSphere(Vector3f position, float timespan)
+    public static void DrawSphere(Vector3 position, float timespan)
     {
-        DrawSphere(position, timespan, new Vector4f(1, 1, 1, 0), 0.1f);
+        DrawSphere(position, timespan, Color.White, 0.1f);
     }
     /// <method>
     /// <desc>Draw a sphere at a point in space.</desc>
@@ -75,7 +64,7 @@ public final class Debug extends Object
     /// <arg name="timespan">The time(seconds) this sphere will exist for.</arg>
     /// <arg name="color">The color of the sphere being drawn.</arg>
     /// </method>
-    public static void DrawSphere(Vector3f position, float timespan, Vector4f color)
+    public static void DrawSphere(Vector3 position, float timespan, Color color)
     {
         DrawSphere(position, timespan, color, 0.1f);
     }
@@ -86,14 +75,11 @@ public final class Debug extends Object
     /// <arg name="color">The color of the sphere being drawn.</arg>
     /// <arg name="diameter">The diameter(meters) of the sphere.</arg>
     /// </method>
-    public static void DrawSphere(Vector3f position, float timespan, Vector4f color, float diameter)
+    public static void DrawSphere(Vector3 position, float timespan, Color color, float diameter)
     {
-        Matrix4x4f matrix = new Matrix4x4f();
-        matrix.initTrans(position);
-
-        Matrix4x4f scale = new Matrix4x4f();
-        scale.initScal(diameter, diameter, diameter);
-        matrix.multRight(scale);
+        Matrix4x4 matrix = Matrix4x4.AsTranslation(position);
+        Matrix4x4 scale = Matrix4x4.AsScale(diameter, diameter, diameter);
+        matrix = matrix.RightMultiply(scale);
 
         m_GizmoHandler.DrawSphere(matrix, timespan, color);
     }
@@ -105,9 +91,9 @@ public final class Debug extends Object
     /// <arg name="to">Point in world-space.</arg>
     /// <arg name="timespan">The time(seconds) this line will exist for.</arg>
     /// </method>
-    public static void DrawLine(Vector3f from, Vector3f to, float timespan)
+    public static void DrawLine(Vector3 from, Vector3 to, float timespan)
     {
-        DrawLine(from, to, timespan, new Vector4f(1, 1, 1, 0), 0.05f);
+        DrawLine(from, to, timespan, Color.White, 0.05f);
     }
     /// <method>
     /// <desc>Draw a line between two points.</desc>
@@ -116,7 +102,7 @@ public final class Debug extends Object
     /// <arg name="timespan">The time(seconds) this line will exist for.</arg>
     /// <arg name="color">The color of the line being drawn.</arg>
     /// </method>
-    public static void DrawLine(Vector3f from, Vector3f to, float timespan, Vector4f color)
+    public static void DrawLine(Vector3 from, Vector3 to, float timespan, Color color)
     {
         DrawLine(from, to, timespan, color, 0.05f);
     }
@@ -128,20 +114,14 @@ public final class Debug extends Object
     /// <arg name="color">The color of the line being drawn.</arg>
     /// <arg name="diameter">The thickness(meters) of the line.</arg>
     /// </method>
-    public static void DrawLine(Vector3f from, Vector3f to, float timespan, Vector4f color, float diameter)
+    public static void DrawLine(Vector3 from, Vector3 to, float timespan, Color color, float diameter)
     {
-        Vector3f vec = new Vector3f(0, 1, 0);
-        vec.cross(from, to);
-        //vec.cross(vec, new Vector3f(1, 0, 0));
+        Matrix4x4 matrix = Matrix4x4.LookTo(from, to, new Vector3(0, 1, 0));
+        Matrix4x4 scale = Matrix4x4.AsScale(diameter, Vector3.Distance(from, to), diameter);
+        Matrix4x4 rotation = Matrix4x4.AsRotation(Mathf.DegToRad * -90.0f, 0, 0);
 
-        Matrix4x4f matrix = MatrixUtil.LookTo(from, to, vec);
-
-        Matrix4x4f scale = new Matrix4x4f();
-        scale.initXRot(Mathf.DegToRad * -90.0f);
-        matrix.multRight(scale);
-
-        scale.initScal(diameter, from.distance(to), diameter);
-        matrix.multRight(scale);
+        matrix = matrix.RightMultiply(rotation);
+        matrix = matrix.RightMultiply(scale);
 
         m_GizmoHandler.DrawLine(matrix, timespan, color);
     }

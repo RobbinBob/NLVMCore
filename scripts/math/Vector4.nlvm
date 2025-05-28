@@ -1,0 +1,209 @@
+package scripts.math;
+
+import nlvm.math3d.Vector4f;
+
+/// <class>
+/// <desc>Vector4 type.</desc>
+public final class Vector4 extends Object
+{
+    public float X = 0;
+    public float Y = 0;
+    public float Z = 0;
+    public float W = 0;
+
+    public static final Vector4 Zero = new Vector4(0, 0, 0, 0);
+    public static final Vector4 One = new Vector4(1, 1, 1, 1);
+
+    public Vector4()
+    {
+        X = 0;
+        Y = 0;
+        Z = 0;
+        W = 0;
+    }
+    public Vector4(float s)
+    {
+        X = s;
+        Y = s;
+        Z = s;
+        W = s;
+    }
+    public Vector4(float x, float y, float z, float w)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+        W = w;
+    }
+    public Vector4(Vector4 copy)
+    {
+        X = copy.X;
+        Y = copy.Y;
+        Z = copy.Z;
+        W = copy.W;
+    }
+    public Vector4(Vector3 vector)
+    {
+        X = vector.X;
+        Y = vector.Y;
+        Z = vector.Z;
+        W = 0;
+    }
+    public Vector4(Vector3 vector, float w)
+    {
+        X = vector.X;
+        Y = vector.Y;
+        Z = vector.Z;
+        W = w;
+    }
+    public Vector4(Vector2 vector, float w)
+    {
+        X = vector.X;
+        Y = vector.Y;
+        Z = 0;
+        W = w;
+    }
+
+    public Vector4 Copy()
+    {
+        return new Vector4(this);
+    }
+
+    public float Length()
+    {
+        return Mathf.Sqrt(X * X + Y * Y + Z * Z + W * W);
+    }
+    public float LengthSqr()
+    {
+        return X * X + Y * Y + Z * Z + W * W;
+    }
+
+    public Vector4 Normalized()
+    {
+        float length = Length();
+        if(length < 0.0001f)
+            return new Vector4();
+
+        return this.Div(length);
+    }
+
+    public static Vector4 Lerp(Vector4 start, Vector4 end, float time)
+    {
+        return start.Mul(1 - time).Add(end.Mul(time));
+    }
+
+
+    public Vector4 Add(Vector4 right)
+    {
+        return new Vector4(X + right.X, Y + right.Y, Z + right.Z, W + right.W);
+    }
+    public Vector4 Add(float scalar)
+    {
+        return new Vector4(X + scalar, Y + scalar, Z + scalar, W + scalar);
+    }
+
+    public Vector4 Sub(Vector4 right)
+    {
+        return new Vector4(X - right.X, Y - right.Y, Z - right.Z, W - right.W);
+    }
+    public Vector4 Sub(float scalar)
+    {
+        return new Vector4(X - scalar, Y - scalar, Z - scalar, W - scalar);
+    }
+
+    public Vector4 Mul(Vector4 right)
+    {
+        return new Vector4(X * right.X, Y * right.Y, Z * right.Z, W * right.W);
+    }
+    public Vector4 Mul(float scalar)
+    {
+        return new Vector4(X * scalar, Y * scalar, Z * scalar, W * scalar);
+    }
+
+    public Vector4 Div(Vector4 right)
+    {
+        return new Vector4(X / right.X, Y / right.Y, Z / right.Z, W / right.W);
+    }
+    public Vector4 Div(float scalar)
+    {
+        return new Vector4(X / scalar, Y / scalar, Z / scalar, W / scalar);
+    }
+
+
+    public static float Dot(Vector4 left, Vector4 right)
+    {
+        return left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.W * right.W;
+    }
+    public static Vector4 Cross(Vector4 left, Vector4 right)
+    {
+        return new Vector4(
+            left.Y * right.Z - left.Z * right.Z,
+            left.Z * right.X - left.X * right.Z,
+            left.X * right.Y - left.Y * right.X,
+            left.W * right.W
+        );
+    }
+
+
+    public static float Distance(Vector4 left, Vector4 right)
+    {
+        return right.Sub(left).Length();
+    }
+    public static float DistanceSqr(Vector4 left, Vector4 right)
+    {
+        return right.Sub(left).LengthSqr();
+    }
+
+    public Vector4 Swizzle(int a)
+    {
+        float[] components = new float[4];
+        components[0] = X;
+        components[1] = Y;
+        components[2] = Z;
+        components[3] = W;
+        return new Vector4(components[a]);
+    }
+    public Vector4 Swizzle(int a, int b, int c, int d)
+    {
+        float[] components = new float[4];
+        components[0] = X;
+        components[1] = Y;
+        components[2] = Z;
+        components[3] = W;
+        return new Vector4(
+            components[a], 
+            components[b], 
+            components[c], 
+            components[d]);
+    }
+
+
+    public static Vector4 FromNative(Vector4f nativeVector)
+    {
+        return new Vector4(nativeVector.x, nativeVector.y, nativeVector.z, nativeVector.w);
+    }
+    public void GetNative(Vector4f outVector)
+    {
+        outVector.set(X, Y, Z, W);
+    }
+    public Vector4f GetNative()
+    {
+        return new Vector4f(X, Y, Z, W);
+    }
+
+
+    public String toString()
+    {
+        return "X: " + X + ", Y: " + Y + ", Z: " + Z + ", W: " + W; 
+    }
+    public bool equals(Object object)
+    {
+        if(object instanceof Vector4)
+        {
+            Vector4 vector = (Vector4)object;
+            return X == vector.X && Y == vector.Y && Z == vector.Z && W == vector.W;
+        }
+        return false;
+    }
+}
+/// </class>

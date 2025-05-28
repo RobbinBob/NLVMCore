@@ -1,0 +1,17 @@
+package scripts.math;
+
+/// <class>
+/// <desc>Swizzle macros for Vector/Color types.</desc>
+public abstract final class Swizzle extends Object
+{
+    public static final int X = 0;
+    public static final int Y = 1;
+    public static final int Z = 2;
+    public static final int W = 3;
+
+    public static final int R = 0;
+    public static final int G = 1;
+    public static final int B = 2;
+    public static final int A = 3;
+}
+/// </class>

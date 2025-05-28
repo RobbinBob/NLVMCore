@@ -1,0 +1,76 @@
+package scripts;
+
+import nlvm.math3d.Vector4f;
+
+/// <class>
+/// <desc>Represents RGBA colors.</desc>
+public final class Color extends Object
+{
+    public float R = 0;
+    public float G = 0;
+    public float B = 0;
+    public float A = 1;
+
+
+    public static final Color Red = new Color(1, 0, 0);
+    public static final Color Yellow = new Color(1, 1, 0);
+    public static final Color Green = new Color(0, 1, 0);
+    public static final Color Cyan = new Color(0, 1, 1);
+    public static final Color Blue = new Color(0, 0, 1);
+    public static final Color Magenta = new Color(1, 0, 1);
+    
+    public static final Color Black = new Color(0, 0, 0);
+    public static final Color White = new Color(1, 1, 1);
+
+
+    public Color()
+    {
+        R = 0;
+        G = 0;
+        B = 0;
+        A = 1;
+    }
+    public Color(Color color)
+    {
+        R = color.R;
+        G = color.G;
+        B = color.B;
+        A = color.A;
+    }
+    public Color(float r, float g, float b)
+    {
+        R = r;
+        G = g;
+        B = b;
+        A = 1;
+    }
+    public Color(float r, float g, float b, float a)
+    {
+        R = r;
+        G = g;
+        B = b;
+        A = a;
+    }
+
+    public Color Copy()
+    {
+        return new Color(this);
+    }
+
+    public Color Swizzle(int r, int g, int b)
+    {
+        float[] channels = { R, G, B, A };
+        return new Color(channels[r], channels[g], channels[b], A);
+    }
+    public Color Swizzle(int r, int g, int b, int a)
+    {
+        float[] channels = { R, G, B, A };
+        return new Color(channels[r], channels[g], channels[b], channels[a]);
+    }
+
+    public Vector4f GetNative()
+    {
+        return new Vector4f(R, G, B, A);
+    }
+}
+/// </class>

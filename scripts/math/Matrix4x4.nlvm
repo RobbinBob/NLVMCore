@@ -4,7 +4,7 @@ import nlvm.math3d.*;
 import com.nolimitscoaster.Tools;
 
 /// <class>
-/// <desc>A wrapper for the native Matrix4x4f type with some extra QoL methods.</desc>
+/// <desc>Immutable Matrix4x4 type.</desc>
 public final class Matrix4x4 extends Object
 {
     private Matrix4x4f m_NativeMatrix = null;
@@ -78,6 +78,8 @@ public final class Matrix4x4 extends Object
     /// </member>
     public static final int D4 = Matrix4x4f.d4;
 
+    public static final Matrix4x4 Identity = new Matrix4x4();
+
     /// <constructor>
     /// <desc>Creates a new Matrix4x4 instance initialised to identity.</desc>
     /// </constructor>
@@ -94,8 +96,10 @@ public final class Matrix4x4 extends Object
     public Matrix4x4(Matrix4x4 copy)
     {
         m_NativeMatrix = new Matrix4x4f();
-        Set(copy);
         m_NativeComponents = m_NativeMatrix.elems();
+        float[] copyComponents = copy.m_NativeComponents;
+        for(int i = 0; i < copyComponents.length; ++i)
+            m_NativeComponents[i] = copyComponents[i];
     }
     /// <constructor>
     /// <desc>Creates a new Matrix4x4 instance.</desc>
@@ -103,28 +107,27 @@ public final class Matrix4x4 extends Object
     public Matrix4x4(float a1, float a2, float a3, float a4, float b1, float b2, float b3, float b4, float c1, float c2, float c3, float c4, float d1, float d2, float d3, float d4)
     {
         m_NativeMatrix = new Matrix4x4f();
-        float[] elems = m_NativeMatrix.elems();
-        elems[A1] = a1;
-        elems[A2] = a2;
-        elems[A3] = a3;
-        elems[A4] = a4;
-
-        elems[B1] = b1;
-        elems[B2] = b2;
-        elems[B3] = b3;
-        elems[B4] = b4;
-
-        elems[C1] = c1;
-        elems[C2] = c2;
-        elems[C3] = c3;
-        elems[C4] = c4;
-
-        elems[D1] = d1;
-        elems[D2] = d2;
-        elems[D3] = d3;
-        elems[D4] = d4;
-
         m_NativeComponents = m_NativeMatrix.elems();
+        m_NativeComponents[A1] = a1;
+        m_NativeComponents[A2] = a2;
+        m_NativeComponents[A3] = a3;
+        m_NativeComponents[A4] = a4;
+
+        m_NativeComponents[B1] = b1;
+        m_NativeComponents[B2] = b2;
+        m_NativeComponents[B3] = b3;
+        m_NativeComponents[B4] = b4;
+
+        m_NativeComponents[C1] = c1;
+        m_NativeComponents[C2] = c2;
+        m_NativeComponents[C3] = c3;
+        m_NativeComponents[C4] = c4;
+
+        m_NativeComponents[D1] = d1;
+        m_NativeComponents[D2] = d2;
+        m_NativeComponents[D3] = d3;
+        m_NativeComponents[D4] = d4;
+
     }
 
     /// <method>
@@ -136,11 +139,9 @@ public final class Matrix4x4 extends Object
         matrix.m_NativeMatrix.initTrans(x, y, z);
         return matrix;
     }
-    public static Matrix4x4 AsTranslation(Vector3f translation)
+    public static Matrix4x4 AsTranslation(Vector3 translation)
     {
-        Matrix4x4 matrix = new Matrix4x4();
-        matrix.m_NativeMatrix.initTrans(translation);
-        return matrix;
+        return AsTranslation(translation.X, translation.Y, translation.Z);
     }
 
     /// <method>
@@ -149,19 +150,31 @@ public final class Matrix4x4 extends Object
     public static Matrix4x4 AsRotation(float x, float y, float z)
     {
         Matrix4x4 matrix = new Matrix4x4();
-
         Matrix4x4f rotation = new Matrix4x4f();
-        rotation.initXRot(x);
-        matrix.m_NativeMatrix.multRight(rotation);
 
-        rotation.initYRot(y);
-        matrix.m_NativeMatrix.multRight(rotation);
-        
-        rotation.initZRot(z);
-        matrix.m_NativeMatrix.multRight(rotation);
+        if(x != 0)
+        {
+            rotation.initXRot(x);
+            matrix.m_NativeMatrix.multRight(rotation);
+        }
+        if(y != 0)
+        {
+            matrix.m_NativeMatrix.multRight(rotation);
+            rotation.initYRot(y);
+        }    
+        if(z != 0)
+        {
+            rotation.initZRot(z);
+            matrix.m_NativeMatrix.multRight(rotation);
+        }
 
         return matrix;
     }
+    public static Matrix4x4 AsRotation(Vector3 rotation)
+    {
+        return AsRotation(rotation.X, rotation.Y, rotation.Z);
+    }
+
     /// <method>
     /// <desc>Creates a new scale Matrix4x4.</desc>
     /// </method>
@@ -171,156 +184,181 @@ public final class Matrix4x4 extends Object
         matrix.m_NativeMatrix.initScal(x, y, z);
         return matrix;
     }
-    
+    public static Matrix4x4 AsScale(Vector3 scale)
+    {
+        return AsScale(scale.X, scale.Y, scale.Z);
+    }
+    public static Matrix4x4 AsScale(float scale)
+    {
+        return AsScale(scale, scale, scale);
+    }
+
+
+    public static Matrix4x4 LookTo(Vector3 eye, Vector3 target, Vector3 up)
+    {
+        Vector3 zaxis = eye.Sub(target).Normalized();
+
+        if(Mathf.Abs(Vector3.Dot(zaxis, up)) >= 0.999f)
+            up = new Vector3(0, 0, 1);
+
+        Vector3 xaxis = Vector3.Cross(up, zaxis).Normalized();
+        Vector3 yaxis = Vector3.Cross(zaxis, xaxis).Normalized();
+
+        Matrix4x4 matrix = new Matrix4x4(
+            xaxis.X, yaxis.X, zaxis.X, eye.X,
+            xaxis.Y, yaxis.Y, zaxis.Y, eye.Y,
+            xaxis.Z, yaxis.Z, zaxis.Z, eye.Z,
+            0, 0, 0, 1
+        );
+
+        return matrix;
+    }
+
+
     /// <method>
     /// <desc>Returns this Matrix4x4's position.</desc>
-    /// <arg name="outPosition">The Vector3f that will be written to.</arg>
+    /// <return>The position.</return>
     /// </method>
-    public void GetPosition(Vector3f outPosition)
+    public Vector3 GetPosition()
     {
-        m_NativeMatrix.getTrans(outPosition);
-    }
-    public Vector3f GetPosition()
-    {
-        return m_NativeMatrix.getTrans();
+        return new Vector3(m_NativeComponents[A4], m_NativeComponents[B4], m_NativeComponents[C4]);
     }
     /// <method>
-    /// <desc>Sets this Matrix4x4's position.</desc>
-    /// <arg name="position">The Vector3f position to copy.</arg>
+    /// <desc>Sets the Matrix4x4 position.</desc>
+    /// <arg name="position">The Vector3 position to copy.</arg>
+    /// <return>The modified Matrix4x4.</return>
     /// </method>
-    public void SetPosition(Vector3f position)
+    public Matrix4x4 SetPosition(Vector3 position)
     {
-        m_NativeMatrix.setElemAt(3, 0, position.x);
-        m_NativeMatrix.setElemAt(3, 1, position.y);
-        m_NativeMatrix.setElemAt(3, 2, position.z);
+        Matrix4x4 copy = new Matrix4x4(this);
+        copy.m_NativeComponents[A4] = position.X;
+        copy.m_NativeComponents[B4] = position.Y;
+        copy.m_NativeComponents[C4] = position.Z;
+        return copy;
     }
 
     /// <method>
     /// <desc>Performs a left multiplication.</desc>
+    /// <return>The modified Matrix4x4.</return>
     /// </method>
-    public void LeftMultiply(Matrix4x4 left)
+    public Matrix4x4 LeftMultiply(Matrix4x4 left)
     {
-        m_NativeMatrix.multLeft(left.m_NativeMatrix);
+        Matrix4x4 copy = new Matrix4x4(this);
+        copy.m_NativeMatrix.multLeft(left.m_NativeMatrix);
+        return copy;
     }
     /// <method>
     /// <desc>Performs a right multiplication.</desc>
+    /// <return>The modified Matrix4x4.</return>
     /// </method>
-    public void RightMultiply(Matrix4x4 right)
+    public Matrix4x4 RightMultiply(Matrix4x4 right)
     {
-        m_NativeMatrix.multRight(right.m_NativeMatrix);
+        Matrix4x4 copy = new Matrix4x4(this);
+        copy.m_NativeMatrix.multRight(right.m_NativeMatrix);
+        return copy;
     }
 
     /// <method>
     /// <desc>Transforms the vector by the matrix with the virtual 4th component being 0.</desc>
+    /// <return>The resulting vector.</return>
     /// </method>
-    public void TransformVector3Zero(Vector3f vector)
+    public Vector3 TransformVector3Zero(Vector3 vector)
     {
-        Vector4f v = new Vector4f(vector.x, vector.y, vector.z, 0);
+        Vector4f v = new Vector4f(vector.X, vector.Y, vector.Z, 0);
         m_NativeMatrix.multVector(v, v);
-        vector.set(v.x, v.y, v.z);
+        return new Vector3(v.x, v.y, v.z);
     }
     /// <method>
     /// <desc>Transforms the vector by the matrix with the virtual 4th component being 1.</desc>
+    /// <return>The resulting vector.</return>
     /// </method>
-    public void TransformVector3One(Vector3f vector)
+    public Vector3 TransformVector3One(Vector3 vector)
     {
-        Vector4f v = new Vector4f(vector.x, vector.y, vector.z, 1);
+        Vector4f v = new Vector4f(vector.X, vector.Y, vector.Z, 1);
         m_NativeMatrix.multVector(v, v);
-        vector.set(v.x, v.y, v.z);
+        return new Vector3(v.x, v.y, v.z);
     }
 
     /// <method>
     /// <desc>Inverts the matrix.</desc>
     /// </method>
-    public void Invert()
+    public Matrix4x4 Invert()
     {
-        m_NativeMatrix.invert();
+        Matrix4x4 copy = new Matrix4x4(this);
+        copy.m_NativeMatrix.invert();
+        return copy;
     }
 
-    /// <method>
-    /// <desc>Sets this matrix as a copy.</desc>
-    /// </method>
-    public void Set(Matrix4x4 copy)
+    public Vector3 GetRight()
     {
-        float[] inComp = m_NativeMatrix.elems();
-        float[] copyComp = copy.m_NativeMatrix.elems();
-
-        for(int i = 0; i < 16; ++i)
-            inComp[i] = copyComp[i];
+        return new Vector3(m_NativeComponents[A1], m_NativeComponents[B1], m_NativeComponents[C1]);
     }
-    /// <method>
-    /// <desc>Sets this matrix as a copy.</desc>
-    /// </method>
-    public void Set(Matrix4x4f copy)
+    public Vector3 GetUp()
     {
-        float[] inComp = m_NativeMatrix.elems();
-        float[] copyComp = copy.elems();
-
-        for(int i = 0; i < 16; ++i)
-            inComp[i] = copyComp[i];
+        return new Vector3(m_NativeComponents[A2], m_NativeComponents[B2], m_NativeComponents[C2]);
     }
-    /// <method>
-    /// <desc>Sets this matrix component.</desc>
-    /// </method>
-    public void Set(int collumn, int row, float value)
+    public Vector3 GetForward()
     {
-        m_NativeMatrix.setElemAt(collumn, row, value);
-    }
-    /// <method>
-    /// <desc>Sets this matrix component using the index.</desc>
-    /// </method>
-    public void Set(int index, float value)
-    {
-        float[] elems = m_NativeMatrix.elems();//[index] = value;
-        elems[index] = value;
+        Vector3 backward = new Vector3(m_NativeComponents[A3], m_NativeComponents[B3], m_NativeComponents[C3]);
+        return backward.Mul(-1);
     }
 
-
-    public void GetRight(Vector3f outRight)
+    public Matrix4x4 SetRight(Vector3 right)
     {
-        outRight.set(m_NativeComponents[A1], m_NativeComponents[B1], m_NativeComponents[C1]);
+        Matrix4x4 copy = new Matrix4x4(this);
+        copy.m_NativeComponents[A1] = right.X;
+        copy.m_NativeComponents[B1] = right.Y;
+        copy.m_NativeComponents[C1] = right.Z;
+        return copy;
     }
-    public Vector3f GetRight()
+    public Matrix4x4 SetUp(Vector3 up)
     {
-        return new Vector3f(m_NativeComponents[A1], m_NativeComponents[B1], m_NativeComponents[C1]);
+        Matrix4x4 copy = new Matrix4x4(this);
+        copy.m_NativeComponents[A2] = up.X;
+        copy.m_NativeComponents[B2] = up.Y;
+        copy.m_NativeComponents[C2] = up.Z;
+        return copy;
     }
-
-    public void GetUp(Vector3f outUp)
+    public Matrix4x4 SetForward(Vector3 forward)
     {
-        outUp.set(m_NativeComponents[A2], m_NativeComponents[B2], m_NativeComponents[C2]);
-    }
-    public Vector3f GetUp()
-    {
-        return new Vector3f(m_NativeComponents[A2], m_NativeComponents[B2], m_NativeComponents[C2]);
-    }
-
-    public void GetForward(Vector3f outForward)
-    {
-        outForward.set(m_NativeComponents[A3], m_NativeComponents[B3], m_NativeComponents[C3]);
-        outForward.mul(-1);
-    }
-    public Vector3f GetForward()
-    {
-        return new Vector3f(m_NativeComponents[A3], m_NativeComponents[B3], m_NativeComponents[C3]);
+        Matrix4x4 copy = new Matrix4x4(this);
+        Vector3 backward = forward.Mul(-1);
+        copy.m_NativeComponents[A3] = backward.X;
+        copy.m_NativeComponents[B3] = backward.Y;
+        copy.m_NativeComponents[C3] = backward.Z;
+        return copy;
     }
 
-    public void SetRight(Vector3f right)
+    public Matrix4x4 SetColumns(Vector3 right, Vector3 up, Vector3 forward, Vector3 position)
     {
-        m_NativeComponents[A1] = right.x;
-        m_NativeComponents[B1] = right.y;
-        m_NativeComponents[C1] = right.z;
-    }
-    public void SetUp(Vector3f up)
-    {
-        m_NativeComponents[A2] = up.x;
-        m_NativeComponents[B2] = up.y;
-        m_NativeComponents[C2] = up.z;
-    }
-    public void SetForward(Vector3f forward)
-    {
-        m_NativeComponents[A3] = forward.x;
-        m_NativeComponents[B3] = forward.y;
-        m_NativeComponents[C3] = forward.z;
+        Matrix4x4 copy = new Matrix4x4(this);
+        float[] nativeArray = copy.m_NativeComponents;
+        if(right != null)
+        {
+            nativeArray[A1] = right.X;
+            nativeArray[B1] = right.Y;
+            nativeArray[C1] = right.Z;
+        }
+        if(up != null)
+        {
+            nativeArray[A2] = up.X;
+            nativeArray[B2] = up.Y;
+            nativeArray[C2] = up.Z;
+        }
+        if(forward != null)
+        {
+            Vector3 backward = forward.Mul(-1);
+            nativeArray[A3] = backward.X;
+            nativeArray[B3] = backward.Y;
+            nativeArray[C3] = backward.Z;
+        }
+        if(position != null)
+        {
+            nativeArray[A4] = position.X;
+            nativeArray[B4] = position.Y;
+            nativeArray[C4] = position.Z;
+        }
+        return copy;
     }
 
 
@@ -366,6 +404,30 @@ public final class Matrix4x4 extends Object
 
         for(int i = 0; i < 16; ++i)
             outComp[i] = copyComp[i];
+    }
+
+    public Matrix4x4f GetNative()
+    {
+        Matrix4x4f outMatrix = new Matrix4x4f();
+
+        float[] outComp = outMatrix.elems();
+        float[] copyComp = m_NativeMatrix.elems();
+
+        for(int i = 0; i < 16; ++i)
+            outComp[i] = copyComp[i];
+
+        return outMatrix;
+    }
+
+    public String toString()
+    {
+        float[] c = m_NativeComponents;
+
+        return 
+            "\nrx: " + c[A1] + ", tx: " + c[A2] + ", bx: " + c[A3] + ", px: " + c[A4] + 
+            "\nry: " + c[B1] + ", ty: " + c[B2] + ", by: " + c[B3] + ", py: " + c[B4] + 
+            "\nrz: " + c[C1] + ", tz: " + c[C2] + ", bz: " + c[C3] + ", pz: " + c[C4] + 
+            "\nrw: " + c[D1] + ", tw: " + c[D2] + ", bw: " + c[D3] + ", pw: " + c[D4]; 
     }
 }
 /// </class>

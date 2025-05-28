@@ -1,0 +1,177 @@
+package scripts.math;
+
+import nlvm.math3d.*;
+
+/// <class>
+/// <desc>Vector2 type.</desc>
+public final class Vector2 extends Object
+{
+    public float X = 0;
+    public float Y = 0;
+
+    public static final Vector2 Left = new Vector2(-1, 0);
+    public static final Vector2 Right = new Vector2(1, 0);
+    public static final Vector2 Up = new Vector2(0, 1);
+    public static final Vector2 Down = new Vector2(0, -1);
+
+    public static final Vector2 Zero = new Vector2(0, 0);
+    public static final Vector2 One = new Vector2(1, 1);
+
+    public Vector2()
+    {
+        X = 0;
+        Y = 0;
+    }
+    public Vector2(float s)
+    {
+        X = s;
+        Y = s;
+    }
+    public Vector2(float x, float y)
+    {
+        X = x;
+        Y = y;
+    }
+    public Vector2(Vector2 copy)
+    {
+        X = copy.X;
+        Y = copy.Y;
+    }
+    public Vector2(Vector3 vector)
+    {
+        X = vector.X;
+        Y = vector.Y;
+    }
+    public Vector2(Vector4 vector)
+    {
+        X = vector.X;
+        Y = vector.Y;
+    }
+
+    public Vector2 Copy()
+    {
+        return new Vector2(this);
+    }
+
+    public float Length()
+    {
+        return Mathf.Sqrt(X * X + Y * Y);
+    }
+    public float LengthSqr()
+    {
+        return X * X + Y * Y;
+    }
+
+    public Vector2 Normalized()
+    {
+        float length = Length();
+        if(length < 0.0001f)
+            return new Vector2();
+
+        return this.Div(length);
+    }
+
+    public static Vector2 Lerp(Vector2 start, Vector2 end, float time)
+    {
+        return start.Mul(1 - time).Add(end.Mul(time));
+    }
+
+    public Vector2 Add(Vector2 right)
+    {
+        return new Vector2(X + right.X, Y + right.Y);
+    }
+    public Vector2 Add(float scalar)
+    {
+        return new Vector2(X + scalar, Y + scalar);
+    }
+
+    public Vector2 Sub(Vector2 right)
+    {
+        return new Vector2(X - right.X, Y - right.Y);
+    }
+    public Vector2 Sub(float scalar)
+    {
+        return new Vector2(X - scalar, Y - scalar);
+    }
+
+    public Vector2 Mul(Vector2 right)
+    {
+        return new Vector2(X * right.X, Y * right.Y);
+    }
+    public Vector2 Mul(float scalar)
+    {
+        return new Vector2(X * scalar, Y * scalar);
+    }
+
+    public Vector2 Div(Vector2 right)
+    {
+        return new Vector2(X / right.X, Y / right.Y);
+    }
+    public Vector2 Div(float scalar)
+    {
+        return new Vector2(X / scalar, Y / scalar);
+    }
+
+    public static float Dot(Vector2 left, Vector2 right)
+    {
+        return left.X * right.X + left.Y * right.Y;
+    }
+    public static float Cross(Vector2 left, Vector2 right)
+    {
+        return left.X * right.Y - left.Y * right.X;
+    }
+
+    public static float Distance(Vector2 left, Vector2 right)
+    {
+        return right.Sub(left).Length();
+    }
+    public static float DistanceSqr(Vector2 left, Vector2 right)
+    {
+        return right.Sub(left).LengthSqr();
+    }
+
+    public Vector2 Swizzle(int a)
+    {
+        float[] components = new float[2];
+        components[0] = X;
+        components[1] = Y;
+        return new Vector2(components[a]);
+    }
+    public Vector2 Swizzle(int a, int b)
+    {
+        float[] components = new float[2];
+        components[0] = X;
+        components[1] = Y;
+        return new Vector2(components[a], components[b]);
+    }
+
+    
+    public static Vector2 FromNative(Vector3f nativeVector)
+    {
+        return new Vector2(nativeVector.x, nativeVector.y);
+    }
+    public void GetNative(Vector3f outVector)
+    {
+        outVector.set(X, Y, 0);
+    }
+    public Vector3f GetNative()
+    {
+        return new Vector3f(X, Y, 0);
+    }
+
+
+    public String toString()
+    {
+        return "X: " + X + ", Y: " + Y;
+    }
+    public bool equals(Object object)
+    {
+        if(object instanceof Vector2)
+        {
+            Vector2 vector = (Vector2)object;
+            return X == vector.X && Y == vector.Y;
+        }
+        return false;
+    }
+}
+/// </class>
