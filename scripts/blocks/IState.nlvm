@@ -1,0 +1,10 @@
+package scripts.blocks;
+
+/// <interface>
+/// <desc>.</desc>
+public interface IState
+{
+    public void SetState(int state);
+    public int GetState();
+}
+/// </interface>

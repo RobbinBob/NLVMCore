@@ -18,7 +18,7 @@
                     "name": "FRAME_RATE",
                     "type": "float",
                     "accessor": "public static final",
-                    "description": "The fixed frame-rate that all Animations run on."
+                    "description": "The fixed frame-rate that all Animations run on (Read Only)."
                 }
             ],
             "methods": [
@@ -280,6 +280,34 @@
             ],
             "methods": [
                 {
+                    "args": [
+                        {
+                            "type": "IUpdateable",
+                            "name": "updateable",
+                            "description": "The interface to be registered."
+                        }
+                    ],
+                    "name": "RegisterUpdateable",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Registers an IUpdateable interface to be called each frame."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "IUpdateable",
+                            "name": "updateable",
+                            "description": "The interface to be removed."
+                        }
+                    ],
+                    "name": "RemoveUppdateable",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Removes an IUpdateable interface from the registry."
+                },
+                {
                     "args": [],
                     "name": "Start",
                     "return": "bool",
@@ -508,6 +536,39 @@
             "constructors": []
         },
         {
+            "type": "interface",
+            "package": "scripts.blocks",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IBlock\n",
+            "full_name": "scripts.blocks.IBlock\n",
+            "description": ".",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "GetBlock",
+                    "return": "com.nolimitscoaster.Block",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the underlying block."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "interface",
+            "package": "scripts.blocks",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IState\n",
+            "full_name": "scripts.blocks.IState\n",
+            "description": ".",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
             "type": "class",
             "package": "scripts",
             "libraries": [
@@ -672,6 +733,228 @@
                     ],
                     "accessor": "public",
                     "description": "Creates a new wheel descriptor."
+                }
+            ]
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "nlvm.math3d.Vector4f"
+            ],
+            "accessor": "public final",
+            "name": "Color",
+            "full_name": "scripts.Color",
+            "extends": "Object",
+            "description": "Represents RGBA colors.",
+            "members": [
+                {
+                    "name": "R",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Red channel."
+                },
+                {
+                    "name": "G",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Green channel."
+                },
+                {
+                    "name": "B",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Blue channel."
+                },
+                {
+                    "name": "A",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Alpha channel."
+                },
+                {
+                    "name": "Red",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Red color (Read Only)."
+                },
+                {
+                    "name": "Yellow",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Yellow color (Read Only)."
+                },
+                {
+                    "name": "Green",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Green color (Read Only)."
+                },
+                {
+                    "name": "Cyan",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Cyan color (Read Only)."
+                },
+                {
+                    "name": "Blue",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Blue color (Read Only)."
+                },
+                {
+                    "name": "Magenta",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Magenta color (Read Only)."
+                },
+                {
+                    "name": "Black",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "Black color (Read Only)."
+                },
+                {
+                    "name": "White",
+                    "type": "Color",
+                    "accessor": "public static final",
+                    "description": "White color (Read Only)."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Copy",
+                    "return": "Color",
+                    "accessor": "public",
+                    "return_desc": "The copied color.",
+                    "description": "Creates a copy of this color."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "r",
+                            "description": "The red channel swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "g",
+                            "description": "The green channel swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "b",
+                            "description": "The blue channel swizzle."
+                        }
+                    ],
+                    "name": "Swizzle",
+                    "return": "Color",
+                    "accessor": "public",
+                    "return_desc": "The new color using the swizzled channels.",
+                    "description": "Swizzle color channels preserving alpha."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "r",
+                            "description": "The red channel swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "g",
+                            "description": "The green channel swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "b",
+                            "description": "The blue channel swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "a",
+                            "description": "The alpha channel swizzle."
+                        }
+                    ],
+                    "name": "Swizzle",
+                    "return": "Color",
+                    "accessor": "public",
+                    "return_desc": "The new color using the swizzled channels.",
+                    "description": "Swizzle color channels."
+                },
+                {
+                    "args": [],
+                    "name": "GetNative",
+                    "return": "nlvm.math3d.Vector4f",
+                    "accessor": "public",
+                    "return_desc": "The native API compatible type.",
+                    "description": "Gets the underlying type."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [],
+                    "accessor": "public",
+                    "description": "Creates a new Color."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Color",
+                            "name": "color",
+                            "description": "The color to copy data from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new Color copying data from color."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "r",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "g",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "b",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new color using RGB, assumes alpha to be 1."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "r",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "g",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "b",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "a",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new color using RGBA."
                 }
             ]
         },
@@ -1336,11 +1619,26 @@
         },
         {
             "type": "class",
+            "package": "scripts.custom",
+            "libraries": [
+                "scripts",
+                "scripts.math",
+                "nlvm.math3d"
+            ],
+            "accessor": "public",
+            "name": "UnitTestMath",
+            "full_name": "scripts.custom.UnitTestMath",
+            "extends": "Behaviour",
+            "description": "Auto-Generated by Visual Studio Code snippets.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
             "package": "scripts",
             "libraries": [
                 "com.nolimitscoaster",
-                "scripts.utilities",
-                "nlvm.math3d",
                 "scripts.math"
             ],
             "accessor": "public final",
@@ -1396,7 +1694,7 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
                             "description": "The world-space position to place the sphere."
                         },
@@ -1415,7 +1713,7 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
                             "description": "The world-space position to place the sphere."
                         },
@@ -1425,7 +1723,7 @@
                             "description": "The time(seconds) this sphere will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the sphere being drawn."
                         }
@@ -1439,7 +1737,7 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
                             "description": "The world-space position to place the sphere."
                         },
@@ -1449,7 +1747,7 @@
                             "description": "The time(seconds) this sphere will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the sphere being drawn."
                         },
@@ -1468,12 +1766,12 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "from",
                             "description": "Point in world-space."
                         },
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "to",
                             "description": "Point in world-space."
                         },
@@ -1492,12 +1790,12 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "from",
                             "description": "Point in world-space."
                         },
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "to",
                             "description": "Point in world-space."
                         },
@@ -1507,7 +1805,7 @@
                             "description": "The time(seconds) this line will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the line being drawn."
                         }
@@ -1521,12 +1819,12 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "from",
                             "description": "Point in world-space."
                         },
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "to",
                             "description": "Point in world-space."
                         },
@@ -1536,7 +1834,7 @@
                             "description": "The time(seconds) this line will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the line being drawn."
                         },
@@ -1686,10 +1984,7 @@
             "package": "scripts",
             "libraries": [
                 "com.nolimitscoaster.SceneObjectElement",
-                "scripts.math.Matrix4x4",
-                "nlvm.math3d.Vector3f",
-                "nlvm.math3d.Vector4f",
-                "scripts.math.Mathf"
+                "scripts.math"
             ],
             "accessor": "public",
             "name": "ElementGForceTracker",
@@ -1716,7 +2011,7 @@
             "type": "class",
             "package": "scripts",
             "libraries": [],
-            "accessor": "public final",
+            "accessor": "public abstract final",
             "name": "Enum",
             "full_name": "scripts.Enum",
             "extends": "Object",
@@ -1832,51 +2127,25 @@
             "members": [],
             "methods": [
                 {
-                    "args": [
-                        {
-                            "type": "nlvm.math3d.Vector3f",
-                            "name": "outForce",
-                            "description": "The vector to set read-out data to."
-                        }
-                    ],
+                    "args": [],
                     "name": "GetForce",
-                    "return": "void",
+                    "return": "Vector3",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The vector to set read-out data to.",
                     "description": "Gets the current G-Force read-out."
                 },
                 {
-                    "args": [
-                        {
-                            "type": "nlvm.math3d.Vector3f",
-                            "name": "outForce",
-                            "description": "The vector to set read-out data to."
-                        }
-                    ],
-                    "name": "GetAverageForce",
-                    "return": "void",
-                    "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Gets the current G-Force read-out, averaged over multiple frames."
-                },
-                {
                     "args": [],
-                    "name": "ExposeMatrix",
-                    "return": "Matrix4x4",
-                    "accessor": "public final",
-                    "return_desc": "The underlying matrix the tracker uses to calculate forces.",
-                    "description": "Exposes the underlying matrix for manipulation."
+                    "name": "GetAverageForce",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The vector to set read-out data to.",
+                    "description": "Gets the current G-Force read-out, averaged over multiple frames."
                 }
             ],
             "constructors": [
                 {
-                    "args": [
-                        {
-                            "type": "Matrix4x4",
-                            "name": "track",
-                            "description": "The matrix to track G-Forces of."
-                        }
-                    ],
+                    "args": [],
                     "accessor": "public",
                     "description": "Create a new G-Force tracker, tracking a matrix."
                 }
@@ -1924,9 +2193,7 @@
         {
             "type": "interface",
             "package": "scripts",
-            "libraries": [
-                "scripts.containers"
-            ],
+            "libraries": [],
             "accessor": "public",
             "name": "IEnum\n",
             "full_name": "scripts.IEnum\n",
@@ -2057,8 +2324,7 @@
             "package": "scripts",
             "libraries": [
                 "com.nolimitscoaster.Coaster",
-                "com.nolimitscoaster.Train",
-                "nlvm.math3d.Vector3f"
+                "com.nolimitscoaster.Train"
             ],
             "accessor": "public",
             "name": "ISetableCar",
@@ -2661,103 +2927,109 @@
             "name": "Matrix4x4",
             "full_name": "scripts.math.Matrix4x4",
             "extends": "Object",
-            "description": "A wrapper for the native Matrix4x4f type with some extra QoL methods.",
+            "description": "Immutable Matrix4x4 type.",
             "members": [
                 {
                     "name": "A1",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 1, Row 1."
+                    "description": "Collumn 1, Row 1 (Read Only)."
                 },
                 {
                     "name": "A2",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 2, Row 1."
+                    "description": "Collumn 2, Row 1 (Read Only)."
                 },
                 {
                     "name": "A3",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 3, Row 1."
+                    "description": "Collumn 3, Row 1 (Read Only)."
                 },
                 {
                     "name": "A4",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 4, Row 1."
+                    "description": "Collumn 4, Row 1 (Read Only)."
                 },
                 {
                     "name": "B1",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 1, Row 2."
+                    "description": "Collumn 1, Row 2 (Read Only)."
                 },
                 {
                     "name": "B2",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 2, Row 2."
+                    "description": "Collumn 2, Row 2 (Read Only)."
                 },
                 {
                     "name": "B3",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 3, Row 2."
+                    "description": "Collumn 3, Row 2 (Read Only)."
                 },
                 {
                     "name": "B4",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 4, Row 2."
+                    "description": "Collumn 4, Row 2 (Read Only)."
                 },
                 {
                     "name": "C1",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 1, Row 3."
+                    "description": "Collumn 1, Row 3 (Read Only)."
                 },
                 {
                     "name": "C2",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 2, Row 3."
+                    "description": "Collumn 2, Row 3 (Read Only)."
                 },
                 {
                     "name": "C3",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 3 Row 3."
+                    "description": "Collumn 3 Row 3 (Read Only)."
                 },
                 {
                     "name": "C4",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 4, Row 3."
+                    "description": "Collumn 4, Row 3 (Read Only)."
                 },
                 {
                     "name": "D1",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 1, Row 4."
+                    "description": "Collumn 1, Row 4 (Read Only)."
                 },
                 {
                     "name": "D2",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 2, Row 4."
+                    "description": "Collumn 2, Row 4 (Read Only)."
                 },
                 {
                     "name": "D3",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 3, Row 4."
+                    "description": "Collumn 3, Row 4 (Read Only)."
                 },
                 {
                     "name": "D4",
                     "type": "int",
                     "accessor": "public static final",
-                    "description": "Collumn 4, Row 4."
+                    "description": "Collumn 4, Row 4 (Read Only)."
+                },
+                {
+                    "name": "Identity",
+                    "type": "Matrix4x4",
+                    "accessor": "public static final",
+                    "description": "Matrix4x4 initialized with the identity (Read Only)."
                 }
             ],
             "methods": [
@@ -2782,8 +3054,22 @@
                     "name": "AsTranslation",
                     "return": "Matrix4x4",
                     "accessor": "public static",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Creates a new transform Matrix4x4."
+                    "return_desc": "The translation Matrix4x4.",
+                    "description": "Creates a translation Matrix4x4."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "translation",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "AsTranslation",
+                    "return": "Matrix4x4",
+                    "accessor": "public static",
+                    "return_desc": "The translation Matrix4x4.",
+                    "description": "Creates a translation Matrix4x4."
                 },
                 {
                     "args": [
@@ -2806,8 +3092,22 @@
                     "name": "AsRotation",
                     "return": "Matrix4x4",
                     "accessor": "public static",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Creates a new rotation Matrix4x4."
+                    "return_desc": "The rotation Matrix4x4.",
+                    "description": "Creates a rotation Matrix4x4."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "rotation",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "AsRotation",
+                    "return": "Matrix4x4",
+                    "accessor": "public static",
+                    "return_desc": "The rotation Matrix4x4.",
+                    "description": "Creates a rotation Matrix4x4."
                 },
                 {
                     "args": [
@@ -2830,36 +3130,82 @@
                     "name": "AsScale",
                     "return": "Matrix4x4",
                     "accessor": "public static",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Creates a new scale Matrix4x4."
+                    "return_desc": "The scale Matrix4x4.",
+                    "description": "Creates a scale Matrix4x4."
                 },
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
-                            "name": "outPosition",
-                            "description": "The Vector3f that will be written to."
+                            "type": "Vector3",
+                            "name": "scale",
+                            "description": "No Description Supplied."
                         }
                     ],
+                    "name": "AsScale",
+                    "return": "Matrix4x4",
+                    "accessor": "public static",
+                    "return_desc": "The scale Matrix4x4.",
+                    "description": "Creates a scale Matrix4x4."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scale",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "AsScale",
+                    "return": "Matrix4x4",
+                    "accessor": "public static",
+                    "return_desc": "THe scale Matrix4x4.",
+                    "description": "Creates a scale Matrix4x4."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "eye",
+                            "description": "The position of the eye looking outward."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "target",
+                            "description": "The position to look at from the eye."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "up",
+                            "description": "The up vector to use as a basis for rotation."
+                        }
+                    ],
+                    "name": "LookTo",
+                    "return": "Matrix4x4",
+                    "accessor": "public static",
+                    "return_desc": "The translated and rotated Matrix4x4.",
+                    "description": "Creates a Matrix4x4 looking towards a target."
+                },
+                {
+                    "args": [],
                     "name": "GetPosition",
-                    "return": "void",
+                    "return": "Vector3",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The position.",
                     "description": "Returns this Matrix4x4's position."
                 },
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
-                            "description": "The Vector3f position to copy."
+                            "description": "The Vector3 position to copy."
                         }
                     ],
                     "name": "SetPosition",
-                    "return": "void",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Sets this Matrix4x4's position."
+                    "return_desc": "The modified Matrix4x4.",
+                    "description": "Sets the Matrix4x4 position."
                 },
                 {
                     "args": [
@@ -2870,9 +3216,9 @@
                         }
                     ],
                     "name": "LeftMultiply",
-                    "return": "void",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The modified Matrix4x4.",
                     "description": "Performs a left multiplication."
                 },
                 {
@@ -2884,117 +3230,141 @@
                         }
                     ],
                     "name": "RightMultiply",
-                    "return": "void",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The modified Matrix4x4.",
                     "description": "Performs a right multiplication."
                 },
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "vector",
                             "description": "No Description Supplied."
                         }
                     ],
                     "name": "TransformVector3Zero",
-                    "return": "void",
+                    "return": "Vector3",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The resulting vector.",
                     "description": "Transforms the vector by the matrix with the virtual 4th component being 0."
                 },
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "vector",
                             "description": "No Description Supplied."
                         }
                     ],
                     "name": "TransformVector3One",
-                    "return": "void",
+                    "return": "Vector3",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The resulting vector.",
                     "description": "Transforms the vector by the matrix with the virtual 4th component being 1."
                 },
                 {
                     "args": [],
                     "name": "Invert",
-                    "return": "void",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
+                    "return_desc": "The inverted Matrix4x4.",
                     "description": "Inverts the matrix."
                 },
                 {
-                    "args": [
-                        {
-                            "type": "Matrix4x4",
-                            "name": "copy",
-                            "description": "No Description Supplied."
-                        }
-                    ],
-                    "name": "Set",
-                    "return": "void",
+                    "args": [],
+                    "name": "GetRight",
+                    "return": "Vector3",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Sets this matrix as a copy."
+                    "return_desc": "A copy of the right vector.",
+                    "description": "Gets the Matrix4x4's right vector."
+                },
+                {
+                    "args": [],
+                    "name": "GetUp",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "A copy of the up vector.",
+                    "description": "Gets the Matrix4x4's up vector."
+                },
+                {
+                    "args": [],
+                    "name": "GetForward",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "A copy of the forward vector.",
+                    "description": "Gets the Matrix4x4's forward vector."
                 },
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Matrix4x4f",
-                            "name": "copy",
+                            "type": "Vector3",
+                            "name": "right",
                             "description": "No Description Supplied."
                         }
                     ],
-                    "name": "Set",
-                    "return": "void",
+                    "name": "SetRight",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Sets this matrix as a copy."
+                    "return_desc": "The modified Matrix4x4.",
+                    "description": "Sets the Matrix4x4's right vector."
                 },
                 {
                     "args": [
                         {
-                            "type": "int",
-                            "name": "collumn",
-                            "description": "No Description Supplied."
-                        },
-                        {
-                            "type": "int",
-                            "name": "row",
-                            "description": "No Description Supplied."
-                        },
-                        {
-                            "type": "float",
-                            "name": "value",
+                            "type": "Vector3",
+                            "name": "up",
                             "description": "No Description Supplied."
                         }
                     ],
-                    "name": "Set",
-                    "return": "void",
+                    "name": "SetUp",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Sets this matrix component."
+                    "return_desc": "The modified Matrix4x4.",
+                    "description": "Sets the Matrix4x4's up vector."
                 },
                 {
                     "args": [
                         {
-                            "type": "int",
-                            "name": "index",
-                            "description": "No Description Supplied."
-                        },
-                        {
-                            "type": "float",
-                            "name": "value",
+                            "type": "Vector3",
+                            "name": "forward",
                             "description": "No Description Supplied."
                         }
                     ],
-                    "name": "Set",
-                    "return": "void",
+                    "name": "SetForward",
+                    "return": "Matrix4x4",
                     "accessor": "public",
-                    "return_desc": "No Description Supplied.",
-                    "description": "Sets this matrix component using the index."
+                    "return_desc": "The modified Matrix4x4.",
+                    "description": "Sets the Matrix4x4's forward vector."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "The right vector."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "up",
+                            "description": "The up vector."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "forward",
+                            "description": "The forward vector."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "position",
+                            "description": "The position of the matrix."
+                        }
+                    ],
+                    "name": "SetColumns",
+                    "return": "Matrix4x4",
+                    "accessor": "public",
+                    "return_desc": "The modified Matrix4x4.",
+                    "description": "Sets the Matrix4x4's collumns, each parameter can be null."
                 },
                 {
                     "args": [
@@ -3046,7 +3416,23 @@
                     "return": "void",
                     "accessor": "public",
                     "return_desc": "No Description Supplied.",
-                    "description": "Returns the matrix as athe native Matrix4x4f type."
+                    "description": "Gets underlying Matrix4x4f type."
+                },
+                {
+                    "args": [],
+                    "name": "GetNative",
+                    "return": "nlvm.math3d.Matrix4x4f",
+                    "accessor": "public",
+                    "return_desc": "A copy of the Matrix4x4f type used with the native API.",
+                    "description": "Gets the underlying Matrix4x4f type."
+                },
+                {
+                    "args": [],
+                    "name": "toString",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns a String representation of this Matrix4x4."
                 }
             ],
             "constructors": [
@@ -3150,9 +3536,168 @@
                         }
                     ],
                     "accessor": "public",
-                    "description": "Creates a new Matrix4x4 instance."
+                    "description": "Creates a new Matrix4x4 with each component."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector4",
+                            "name": "right",
+                            "description": "The right vector."
+                        },
+                        {
+                            "type": "Vector4",
+                            "name": "up",
+                            "description": "The up vector."
+                        },
+                        {
+                            "type": "Vector4",
+                            "name": "forward",
+                            "description": "The forward vector."
+                        },
+                        {
+                            "type": "Vector4",
+                            "name": "position",
+                            "description": "The position of the matrix."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Matrix4x4 using the 4 column components."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "The right vector."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "up",
+                            "description": "The up vector."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "forward",
+                            "description": "The forward vector."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "position",
+                            "description": "The position of the matrix."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Matrix4x4 using the 4 column components."
                 }
             ]
+        },
+        {
+            "type": "class",
+            "package": "scripts.math",
+            "libraries": [],
+            "accessor": "public abstract final",
+            "name": "Swizzle",
+            "full_name": "scripts.math.Swizzle",
+            "extends": "Object",
+            "description": "Swizzle macros for Vector/Color types.",
+            "members": [
+                {
+                    "name": "X",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "X axis (Read Only)."
+                },
+                {
+                    "name": "Y",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Y axis (Read Only)."
+                },
+                {
+                    "name": "Z",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Z axis (Read Only)."
+                },
+                {
+                    "name": "W",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "W axis (Read Only)."
+                },
+                {
+                    "name": "R",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Red channel (Read Only)."
+                },
+                {
+                    "name": "G",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Green channel (Read Only)."
+                },
+                {
+                    "name": "B",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Blue channel (Read Only)."
+                },
+                {
+                    "name": "A",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Alpha channel (Read Only)."
+                }
+            ],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts.math",
+            "libraries": [
+                "nlvm.math3d.Vector3f"
+            ],
+            "accessor": "public final",
+            "name": "Vector2",
+            "full_name": "scripts.math.Vector2",
+            "extends": "Object",
+            "description": "Vector2 type.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts.math",
+            "libraries": [
+                "nlvm.math3d.Vector3f"
+            ],
+            "accessor": "public final",
+            "name": "Vector3",
+            "full_name": "scripts.math.Vector3",
+            "extends": "Object",
+            "description": "Vector3 type.",
+            "members": [],
+            "methods": [],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts.math",
+            "libraries": [
+                "nlvm.math3d.Vector4f"
+            ],
+            "accessor": "public final",
+            "name": "Vector4",
+            "full_name": "scripts.math.Vector4",
+            "extends": "Object",
+            "description": "Vector4 type.",
+            "members": [],
+            "methods": [],
+            "constructors": []
         },
         {
             "type": "class",

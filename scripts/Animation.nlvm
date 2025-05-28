@@ -17,7 +17,7 @@ public final class Animation extends UpdateableObject
     private float m_AnimationEndTime = 0.0f;
 
     /// <member>
-    /// <desc>The fixed frame-rate that all Animations run on.</desc>
+    /// <desc>The fixed frame-rate that all Animations run on (Read Only).</desc>
     /// </member>
     public static final float FRAME_RATE = 24.f;
 

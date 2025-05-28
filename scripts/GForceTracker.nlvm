@@ -9,90 +9,79 @@ import scripts.containers.*;
 public class GForceTracker extends UpdateableObject
 {
     private Matrix4x4 m_TrackingMatrix = null;
-    private Vector3f m_OldPosition = new Vector3f();
-    private Vector3f m_NewVelocity = new Vector3f();
-    private Vector3f m_OldVelocity = new Vector3f();
-    private Vector3f m_MathVec = new Vector3f();
+    private Vector3 m_OldPosition = new Vector3();
+    private Vector3 m_NewVelocity = new Vector3();
+    private Vector3 m_OldVelocity = new Vector3();
 
-    private Vector3f m_GForces = new Vector3f();
-    private Vector3f m_AverageGForce = new Vector3f();
+    private Vector3 m_GForces = new Vector3();
+    private Vector3 m_AverageGForce = new Vector3();
 
     private static final int MAX_AVERAGE = 25;
     private List m_AverageForces = new List(MAX_AVERAGE);
 
-    private static final Vector3f GRAVITY = new Vector3f(0, 9.81f, 0);
+    private static final Vector3 GRAVITY = new Vector3(0, 9.81f, 0);
 
     /// <constructor>
     /// <desc>Create a new G-Force tracker, tracking a matrix.</desc>
-    /// <arg name="track">The matrix to track G-Forces of.</arg>
     /// </constructor>
-    public GForceTracker(Matrix4x4 track)
+    public GForceTracker()
     {
-        m_TrackingMatrix = track;
         SetShouldUpdate(true);
+    }
+
+    public void SetMatrix(Matrix4x4 matrix)
+    {
+        m_TrackingMatrix = matrix;
     }
 
     public void Update(float tick)
     {
-        m_TrackingMatrix.GetPosition(m_MathVec); // New position
+        Vector3 position = m_TrackingMatrix.GetPosition(); // New position
 
             // Velocity
-        m_MathVec.sub(m_OldPosition);
-        m_MathVec.div(tick);
-        m_NewVelocity.set(m_MathVec);
+        m_NewVelocity = position.Sub(m_OldPosition).Div(tick);
 
             // Acceleration
-        m_MathVec.sub(m_OldVelocity);
-        m_MathVec.div(tick);
-        m_MathVec.add(GRAVITY);
+        Vector3 accel = m_NewVelocity.Sub(m_OldVelocity).Div(tick);
+        accel = accel.Add(GRAVITY); // Add gravity
 
             // G-force
-        m_MathVec.div(9.81f);
-        m_GForces.set(m_MathVec);
+        m_GForces = accel.Div(9.81f);
 
             // Averages the forces to reduce jitters
-        m_AverageForces.Insert(m_GForces.dup());
+        m_AverageForces.Insert(m_GForces);
         while(m_AverageForces.Count() < MAX_AVERAGE)
-            m_AverageForces.Insert(m_GForces.dup());
+            m_AverageForces.Insert(m_GForces);
         while(m_AverageForces.Count() > MAX_AVERAGE)
             m_AverageForces.PopFront();
 
-        m_AverageGForce.set(0, 0, 0);
+        m_AverageGForce = Vector3.Zero;
         IEnumerator forceEnumerator = m_AverageForces.GetEnumerator();
         while(forceEnumerator.MoveNext())
-            m_AverageGForce.add((Vector3f)forceEnumerator.Get());
-        m_AverageGForce.div(m_AverageForces.Count());
+            m_AverageGForce = m_AverageGForce.Add((Vector3)forceEnumerator.Get());
+        m_AverageGForce = m_AverageGForce.Div(m_AverageForces.Count());
 
             // Store old positions
-        m_TrackingMatrix.GetPosition(m_OldPosition);
-        m_OldVelocity.set(m_NewVelocity);
+        m_OldPosition = position;
+        m_OldVelocity = m_NewVelocity;
     }
     public void LateUpdate(float tick) { }
 
     /// <method>
     /// <desc>Gets the current G-Force read-out.</desc>
-    /// <arg name="outForce">The vector to set read-out data to.</arg>
+    /// <return>The vector to set read-out data to.</return>
     /// </method>
-    public void GetForce(Vector3f outForce)
+    public Vector3 GetForce()
     {
-        outForce.set(m_GForces);
+        return m_GForces.Copy();
     }
     /// <method>
     /// <desc>Gets the current G-Force read-out, averaged over multiple frames.</desc>
-    /// <arg name="outForce">The vector to set read-out data to.</arg>
+    /// <return>The vector to set read-out data to.</return>
     /// </method>
-    public void GetAverageForce(Vector3f outForce)
+    public Vector3 GetAverageForce()
     {
-        outForce.set(m_AverageGForce);
-    }
-
-    /// <method>
-    /// <desc>Exposes the underlying matrix for manipulation.</desc>
-    /// <return>The underlying matrix the tracker uses to calculate forces.</return>
-    /// </method>
-    public final Matrix4x4 ExposeMatrix()
-    {
-        return m_TrackingMatrix;
+        return m_AverageGForce.Copy();
     }
 }
 /// </class>

@@ -1,20 +1,15 @@
 package scripts;
 
 import com.nolimitscoaster.SceneObjectElement;
-import scripts.math.Matrix4x4;
-import nlvm.math3d.Vector3f;
-import nlvm.math3d.Vector4f;
-import scripts.math.Mathf;
+import scripts.math.*;
 
 /// <class>
 /// <desc>Proveds G-Force data for a SceneObjectElement.</desc>
 public class ElementGForceTracker extends GForceTracker
 {
     private SceneObjectElement m_TrackingElement = null;
-    private Matrix4x4 m_ExposedMatrix = null;
 
-    private Vector3f m_Forces = new Vector3f();
-    private Vector3f m_Position = new Vector3f();
+    public bool DisplayForces = false;
 
     /// <constructor>
     /// <desc>Creates a new tracker for a SceneObjectElement.</desc>
@@ -22,25 +17,32 @@ public class ElementGForceTracker extends GForceTracker
     /// </constructor>
     public ElementGForceTracker(SceneObjectElement element)
     {
-        super(new Matrix4x4());
+        super();
         m_TrackingElement = element;
-        m_ExposedMatrix = ExposeMatrix();
-        m_ExposedMatrix.Set(Matrix4x4.FromNative(element.getAbsoluteMatrix()));
+        SetMatrix(Matrix4x4.FromNative(element.getAbsoluteMatrix()));
+    }
+    public ElementGForceTracker(SceneObjectElement element, bool displayForces)
+    {
+        super();
+        m_TrackingElement = element;
+        SetMatrix(Matrix4x4.FromNative(element.getAbsoluteMatrix()));
+        DisplayForces = displayForces;
     }
 
     public void Update(float tick)
     {
-        m_ExposedMatrix.Set(m_TrackingElement.getAbsoluteMatrix());
+        Matrix4x4 elementMatrix = Matrix4x4.FromNative(m_TrackingElement.getAbsoluteMatrix());
+        SetMatrix(elementMatrix);
         super.Update(tick);
 
-        GetAverageForce(m_Forces);
-        m_Forces.mul(-0.5f);
+        Vector3 forces = GetAverageForce().Mul(-0.5f);
+        Vector3 position = elementMatrix.GetPosition();
+        Vector3 rayEnd = position.Add(forces);
 
+        Color color = new Color(Mathf.Abs(forces.X), Mathf.Abs(forces.Y), Mathf.Abs(forces.Z));
 
-        m_ExposedMatrix.GetPosition(m_Position);
-        Vector3f a = new Vector3f(m_Position);
-        a.add(m_Forces);
-        Debug.DrawLine(m_Position, a, tick / 2, new Vector4f(Mathf.Abs(m_Forces.x), Mathf.Abs(m_Forces.y), Mathf.Abs(m_Forces.z), 1.0f));
+        if(DisplayForces)
+            Debug.DrawLine(position, rayEnd, tick, color);
     }
 }
 /// </class>

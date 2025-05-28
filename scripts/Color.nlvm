@@ -1,0 +1,146 @@
+package scripts;
+
+import nlvm.math3d.Vector4f;
+
+/// <class>
+/// <desc>Represents RGBA colors.</desc>
+public final class Color extends Object
+{
+    /// <member>
+    /// <desc>Red channel.</desc>
+    /// </member>
+    public float R = 0;
+    /// <member>
+    /// <desc>Green channel.</desc>
+    /// </member>
+    public float G = 0;
+    /// <member>
+    /// <desc>Blue channel.</desc>
+    /// </member>
+    public float B = 0;
+    /// <member>
+    /// <desc>Alpha channel.</desc>
+    /// </member>
+    public float A = 1;
+
+    /// <member>
+    /// <desc>Red color (Read Only).</desc>
+    /// </member>
+    public static final Color Red = new Color(1, 0, 0);
+    /// <member>
+    /// <desc>Yellow color (Read Only).</desc>
+    /// </member>
+    public static final Color Yellow = new Color(1, 1, 0);
+    /// <member>
+    /// <desc>Green color (Read Only).</desc>
+    /// </member>
+    public static final Color Green = new Color(0, 1, 0);
+    /// <member>
+    /// <desc>Cyan color (Read Only).</desc>
+    /// </member>
+    public static final Color Cyan = new Color(0, 1, 1);
+    /// <member>
+    /// <desc>Blue color (Read Only).</desc>
+    /// </member>
+    public static final Color Blue = new Color(0, 0, 1);
+    /// <member>
+    /// <desc>Magenta color (Read Only).</desc>
+    /// </member>
+    public static final Color Magenta = new Color(1, 0, 1);
+    
+    /// <member>
+    /// <desc>Black color (Read Only).</desc>
+    /// </member>
+    public static final Color Black = new Color(0, 0, 0);
+    /// <member>
+    /// <desc>White color (Read Only).</desc>
+    /// </member>
+    public static final Color White = new Color(1, 1, 1);
+
+    /// <constructor>
+    /// <desc>Creates a new Color.</desc>
+    /// </constructor>
+    public Color()
+    {
+        R = 0;
+        G = 0;
+        B = 0;
+        A = 1;
+    }
+    /// <constructor>
+    /// <desc>Creates a new Color copying data from color.</desc>
+    /// <arg name="color">The color to copy data from.</arg>
+    /// </constructor>
+    public Color(Color color)
+    {
+        R = color.R;
+        G = color.G;
+        B = color.B;
+        A = color.A;
+    }
+    /// <constructor>
+    /// <desc>Creates a new color using RGB, assumes alpha to be 1.</desc>
+    /// </constructor>
+    public Color(float r, float g, float b)
+    {
+        R = r;
+        G = g;
+        B = b;
+        A = 1;
+    }
+    /// <constructor>
+    /// <desc>Creates a new color using RGBA.</desc>
+    /// </constructor>
+    public Color(float r, float g, float b, float a)
+    {
+        R = r;
+        G = g;
+        B = b;
+        A = a;
+    }
+
+    /// <method>
+    /// <desc>Creates a copy of this color.</desc>
+    /// <return>The copied color.</return>
+    /// </method>
+    public Color Copy()
+    {
+        return new Color(this);
+    }
+
+    /// <method>
+    /// <desc>Swizzle color channels preserving alpha.</desc>
+    /// <arg name="r">The red channel swizzle.</arg>
+    /// <arg name="g">The green channel swizzle.</arg>
+    /// <arg name="b">The blue channel swizzle.</arg>
+    /// <return>The new color using the swizzled channels.</return>
+    /// </method>
+    public Color Swizzle(int r, int g, int b)
+    {
+        float[] channels = { R, G, B, A };
+        return new Color(channels[r], channels[g], channels[b], A);
+    }
+    /// <method>
+    /// <desc>Swizzle color channels.</desc>
+    /// <arg name="r">The red channel swizzle.</arg>
+    /// <arg name="g">The green channel swizzle.</arg>
+    /// <arg name="b">The blue channel swizzle.</arg>
+    /// <arg name="a">The alpha channel swizzle.</arg>
+    /// <return>The new color using the swizzled channels.</return>
+    /// </method>
+    public Color Swizzle(int r, int g, int b, int a)
+    {
+        float[] channels = { R, G, B, A };
+        return new Color(channels[r], channels[g], channels[b], channels[a]);
+    }
+
+    /// <method>
+    /// <desc>Gets the underlying type.</desc>
+    /// <return>The native API compatible type.</return>
+    /// </method>
+    public Vector4f GetNative()
+    {
+        return new Vector4f(R, G, B, A);
+    }
+}
+/// </class>

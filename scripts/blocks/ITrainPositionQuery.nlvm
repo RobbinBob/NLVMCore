@@ -1,0 +1,13 @@
+package scripts.blocks;
+
+public interface ITrainPositionQuery
+{
+    public bool IsTrainBeforeCenterOfSection();
+    public bool IsTrainBehindCenterOfSection();
+
+    public bool IsTrainBeforeTrigger();
+    public bool IsTrainBehindTrigger();
+
+    public bool IsTrainBeforeStartOfSection(float offset);
+    public bool IsTrainBehindEndOfSection(float offset);
+}

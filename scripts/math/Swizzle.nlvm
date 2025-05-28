@@ -1,0 +1,41 @@
+package scripts.math;
+
+/// <class>
+/// <desc>Swizzle macros for Vector/Color types.</desc>
+public abstract final class Swizzle extends Object
+{
+    /// <member>
+    /// <desc>X axis (Read Only).</desc>
+    /// </member>
+    public static final int X = 0;
+    /// <member>
+    /// <desc>Y axis (Read Only).</desc>
+    /// </member>
+    public static final int Y = 1;
+    /// <member>
+    /// <desc>Z axis (Read Only).</desc>
+    /// </member>
+    public static final int Z = 2;
+    /// <member>
+    /// <desc>W axis (Read Only).</desc>
+    /// </member>
+    public static final int W = 3;
+
+    /// <member>
+    /// <desc>Red channel (Read Only).</desc>
+    /// </member>
+    public static final int R = 0;
+    /// <member>
+    /// <desc>Green channel (Read Only).</desc>
+    /// </member>
+    public static final int G = 1;
+    /// <member>
+    /// <desc>Blue channel (Read Only).</desc>
+    /// </member>
+    public static final int B = 2;
+    /// <member>
+    /// <desc>Alpha channel (Read Only).</desc>
+    /// </member>
+    public static final int A = 3;
+}
+/// </class>

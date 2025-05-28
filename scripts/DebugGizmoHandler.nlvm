@@ -5,6 +5,7 @@ import nlvm.math3d.*;
 import nlvm.util.*;
 import scripts.containers.*;
 import scripts.utilities.*;
+import scripts.math.*;
 
 /// <class ignore_api="true">
 /// <desc>.</desc>
@@ -53,7 +54,7 @@ public final class DebugGizmoHandler extends UpdateableObject
     }
 
 
-    public void DrawLine(Matrix4x4f matrix, float timespan, Vector4f color)
+    public void DrawLine(Matrix4x4 matrix, float timespan, Color color)
     {
         if(m_SpherePool.Count() < 1)
             return;
@@ -62,8 +63,8 @@ public final class DebugGizmoHandler extends UpdateableObject
         gizmo.SetTimespan(timespan);
         SceneObjectElement element = gizmo.GetElement();
 
-        element.setMatrix(matrix);
-        element.setEntityColor(0, color);
+        element.setMatrix(matrix.GetNative());
+        element.setEntityColor(0, color.GetNative());
         element.setVisible(true);
         m_ActiveGizmos.Insert(gizmo);
 
@@ -72,7 +73,7 @@ public final class DebugGizmoHandler extends UpdateableObject
             Register();
     }
 
-    public void DrawSphere(Matrix4x4f matrix, float timespan, Vector4f color)
+    public void DrawSphere(Matrix4x4 matrix, float timespan, Color color)
     {
         if(m_SpherePool.Count() < 1)
             return;
@@ -81,8 +82,8 @@ public final class DebugGizmoHandler extends UpdateableObject
         gizmo.SetTimespan(timespan);
         SceneObjectElement element = gizmo.GetElement();
 
-        element.setMatrix(matrix);
-        element.setEntityColor(0, color);
+        element.setMatrix(matrix.GetNative());
+        element.setEntityColor(0, color.GetNative());
         element.setVisible(true);
         m_ActiveGizmos.Insert(gizmo);
 

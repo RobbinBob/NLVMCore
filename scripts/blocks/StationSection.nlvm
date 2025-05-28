@@ -5,7 +5,8 @@ import com.nolimitscoaster.Section;
 
 /// <class ignore_api="true">
 /// <desc>.</desc>
-public class StationSection extends BlockSection
+public class StationSection extends BlockSection implements IState, IBlock, ITrainPositionQuery
 {
+
 }
 /// </class>

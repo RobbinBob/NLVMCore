@@ -1,0 +1,98 @@
+package scripts.blocks;
+
+import com.nolimitscoaster.Section;
+
+/// <class>
+/// <desc>.</desc>
+public class TransportSection extends TrackSection implements ITrainPositionQuery
+{
+    /// <member>
+    /// <desc>Transports off (Read Only).</desc>
+    /// </member>
+    public static final int E_TRANSPORT_OFF = 0;
+    /// <member>
+    /// <desc>Transports forward (Read Only).</desc>
+    /// </member>
+    public static final int E_TRANSPORT_FWD = 1;
+    /// <member>
+    /// <desc>Transports forward launched (Read Only).</desc>
+    /// </member>
+    public static final int E_TRANSPORT_FWD_LAUNCH = 2;
+    /// <member>
+    /// <desc>Transports backward (Read Only).</desc>
+    /// </member>
+    public static final int E_TRANSPORT_BWD = -1;
+    /// <member>
+    /// <desc>Transports backward launched (Read Only).</desc>
+    /// </member>
+    public static final int E_TRANSPORT_BWD_LAUNCH = -2;
+    private int m_TransportState = E_TRANSPORT_OFF;
+
+    /// <constructor>
+    public TransportSection(Section section)
+    {
+        super(section);
+    }
+    /// </constructor>
+
+
+    public bool IsTrainBeforeTrigger()
+    {
+        return false;
+    }
+    public bool IsTrainBehindTrigger()
+    {
+        return false;
+    }
+
+
+    /// <method>
+    /// <desc>Sets the current transports state.</desc>
+    /// <arg name="transportState">The transport state to use.</arg>
+    /// </method>
+    public void SetTransportState(int transportState)
+    {
+        if(transportState < -2 || transportState > 2)
+            return;
+
+        switch(transportState)
+        {
+            case E_TRANSPORT_OFF:
+                m_Section.setTransportsOff();
+                break;
+            case E_TRANSPORT_FWD:
+                m_Section.setTransportsStandardFwdOn();
+                break;
+            case E_TRANSPORT_BWD:
+                m_Section.setTransportsStandardBwdOn();
+                break;
+            case E_TRANSPORT_FWD_LAUNCH:
+                m_Section.setTransportsLaunchFwdOn();
+                break;
+            case E_TRANSPORT_BWD_LAUNCH:
+                m_Section.setTransportsLaunchBwdOn();
+                break;
+        }
+
+        m_TransportState = transportState;
+    }
+    /// <method>
+    /// <desc>Gets the current transport state currently active.</desc>
+    /// <return>The current transport state.</return>
+    /// </method>
+    public int GetTransportState()
+    {
+        return m_TransportState;
+    }
+    /// <method>
+    /// <desc>Gets the current transport device speed.</desc>
+    /// <return>The current device speed(meters/s).</return>
+    /// </method>
+    public float GetDeviceSpeed()
+    {
+        return m_Section.getTransportCurrentSpeed();
+    }
+
+    public void Process() { }
+}
+/// </class>

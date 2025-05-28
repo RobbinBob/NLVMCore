@@ -1,7 +1,5 @@
 package scripts;
 
-import scripts.containers.*;
-
 /// <interface>
 /// <desc>Exposes methods for an Object that uses enum style integers.</desc>
 public interface IEnum

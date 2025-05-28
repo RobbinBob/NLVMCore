@@ -2,7 +2,6 @@ package scripts;
 
 import com.nolimitscoaster.Coaster;
 import com.nolimitscoaster.Train;
-import nlvm.math3d.Vector3f;
 
 /// <interface>
 /// <desc>Exposes methods for custom cars.</desc>

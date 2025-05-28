@@ -65,12 +65,20 @@ public abstract class Behaviour extends Script
     }
 
 
+    /// <method>
+    /// <desc>Registers an IUpdateable interface to be called each frame.</desc>
+    /// <arg name="updateable">The interface to be registered.</arg>
+    /// </method>
     public static final void RegisterUpdateable(IUpdateable updateable)
     {
         if(m_Updateables.Contains(updateable))
             return;
         m_Updateables.Insert(updateable);
     }
+    /// <method>
+    /// <desc>Removes an IUpdateable interface from the registry.</desc>
+    /// <arg name="updateable">The interface to be removed.</arg>
+    /// </method>
     public static final void RemoveUppdateable(IUpdateable updateable)
     {
         if(!m_Updateables.Contains(updateable))
