@@ -6,14 +6,35 @@ import nlvm.math3d.Vector4f;
 /// <desc>Vector4 type.</desc>
 public final class Vector4 extends Object
 {
+    /// <member>
+    /// <desc>X axis.</desc>
+    /// </member>
     public float X = 0;
+    /// <member>
+    /// <desc>Y axis.</desc>
+    /// </member>
     public float Y = 0;
+    /// <member>
+    /// <desc>Z axis.</desc>
+    /// </member>
     public float Z = 0;
+    /// <member>
+    /// <desc>W axis.</desc>
+    /// </member>
     public float W = 0;
 
+    /// <member>
+    /// <desc>Zero (Read Only).</desc>
+    /// </member>
     public static final Vector4 Zero = new Vector4(0, 0, 0, 0);
+    /// <member>
+    /// <desc>One (Read Only).</desc>
+    /// </member>
     public static final Vector4 One = new Vector4(1, 1, 1, 1);
 
+    /// <constructor>
+    /// <desc>Creates a Vector4 initialized to zeros.</desc>
+    /// </constructor>
     public Vector4()
     {
         X = 0;
@@ -21,13 +42,19 @@ public final class Vector4 extends Object
         Z = 0;
         W = 0;
     }
-    public Vector4(float s)
+    /// <constructor>
+    /// <desc>Creates a Vector4 with each axis initialized to a scalar.</desc>
+    /// </constructor>
+    public Vector4(float scalar)
     {
-        X = s;
-        Y = s;
-        Z = s;
-        W = s;
+        X = scalar;
+        Y = scalar;
+        Z = scalar;
+        W = scalar;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector4 with each axis.</desc>
+    /// </constructor>
     public Vector4(float x, float y, float z, float w)
     {
         X = x;
@@ -35,6 +62,10 @@ public final class Vector4 extends Object
         Z = z;
         W = w;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector4 copy from another.</desc>
+    /// <arg name="copy">The vector to copy from.</arg>
+    /// </constructor>
     public Vector4(Vector4 copy)
     {
         X = copy.X;
@@ -42,6 +73,9 @@ public final class Vector4 extends Object
         Z = copy.Z;
         W = copy.W;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector4 copying from a Vector3, assuming W is zero.</desc>
+    /// </constructor>
     public Vector4(Vector3 vector)
     {
         X = vector.X;
@@ -49,6 +83,11 @@ public final class Vector4 extends Object
         Z = vector.Z;
         W = 0;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector4 copying from a Vector3, with specified W.</desc>
+    /// <arg name="vector">The Vector3 to copy from.</arg>
+    /// <arg name="w">The W axis to use.</arg>
+    /// </constructor>
     public Vector4(Vector3 vector, float w)
     {
         X = vector.X;
@@ -56,28 +95,48 @@ public final class Vector4 extends Object
         Z = vector.Z;
         W = w;
     }
-    public Vector4(Vector2 vector, float w)
+    /// <constructor>
+    /// <desc>Creates a Vector4 copying from a Vector2, with specified Z/W.</desc>
+    /// <arg name="vector">The Vector2 to copy from.</arg>
+    /// <arg name="z">The Z axis to use.</arg>
+    /// <arg name="w">The W axis to use.</arg>
+    /// </constructor>
+    public Vector4(Vector2 vector, float z, float w)
     {
         X = vector.X;
         Y = vector.Y;
-        Z = 0;
+        Z = z;
         W = w;
     }
 
+    /// <method>
+    /// <desc>Gets a copy of this vector.</desc>
+    /// <return>The copy of this vector.</return>
+    /// </method>
     public Vector4 Copy()
     {
         return new Vector4(this);
     }
 
+    /// <method>
+    /// <desc>Gets the length of this vector.</desc>
+    /// </method>
     public float Length()
     {
         return Mathf.Sqrt(X * X + Y * Y + Z * Z + W * W);
     }
+    /// <method>
+    /// <desc>Gets the squared length of this vector.</desc>
+    /// </method>
     public float LengthSqr()
     {
         return X * X + Y * Y + Z * Z + W * W;
     }
 
+    /// <method>
+    /// <desc>Normalizes the vector.</desc>
+    /// <return>The normalized copy of the vector.</return>
+    /// </method>
     public Vector4 Normalized()
     {
         float length = Length();
@@ -87,53 +146,101 @@ public final class Vector4 extends Object
         return this.Div(length);
     }
 
+    /// <method>
+    /// <desc>Linear-interpolates between two Vector4s.</desc>
+    /// <arg name="start">The starting Vector4.</arg>
+    /// <arg name="end">The end Vector4.</arg>
+    /// <arg name="time">The time value between 0-1, can be beyond extents.</arg>
+    /// <return>The vector4 which has been interpolated.</return>
+    /// </method>
     public static Vector4 Lerp(Vector4 start, Vector4 end, float time)
     {
         return start.Mul(1 - time).Add(end.Mul(time));
     }
 
-
+    /// <method>
+    /// <desc>Adds a Vector4.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Add(Vector4 right)
     {
         return new Vector4(X + right.X, Y + right.Y, Z + right.Z, W + right.W);
     }
+    /// <method>
+    /// <desc>Adds a scalar to each axis.</desc>
+    /// </method>
     public Vector4 Add(float scalar)
     {
         return new Vector4(X + scalar, Y + scalar, Z + scalar, W + scalar);
     }
 
+    /// <method>
+    /// <desc>Subtracts a Vector4.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Sub(Vector4 right)
     {
         return new Vector4(X - right.X, Y - right.Y, Z - right.Z, W - right.W);
     }
+    /// <method>
+    /// <desc>Subtracts a scalar from each axis.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Sub(float scalar)
     {
         return new Vector4(X - scalar, Y - scalar, Z - scalar, W - scalar);
     }
 
+    /// <method>
+    /// <desc>Multiplies this by a Vector4.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Mul(Vector4 right)
     {
         return new Vector4(X * right.X, Y * right.Y, Z * right.Z, W * right.W);
     }
+    /// <member>
+    /// <desc>Multiplies this by a scalar on each axis.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </member>
     public Vector4 Mul(float scalar)
     {
         return new Vector4(X * scalar, Y * scalar, Z * scalar, W * scalar);
     }
 
+    /// <method>
+    /// <desc>Divides this by a Vector4.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Div(Vector4 right)
     {
         return new Vector4(X / right.X, Y / right.Y, Z / right.Z, W / right.W);
     }
+    /// <method>
+    /// <desc>Divides this by a scalar on each axis.</desc>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Div(float scalar)
     {
         return new Vector4(X / scalar, Y / scalar, Z / scalar, W / scalar);
     }
 
-
+    /// <method>
+    /// <desc>Computes the dot prodcut of two Vector4s.</desc>
+    /// <arg name="left">The left Vector4.</arg>
+    /// <arg name="right">The right Vector4.</arg>
+    /// <return>The dot product of the two Vector4s.</return>
+    /// </method>
     public static float Dot(Vector4 left, Vector4 right)
     {
         return left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.W * right.W;
     }
+    /// <method>
+    /// <desc>Computes the cross product of two Vector4s.</desc>
+    /// <arg name="left">The left Vector4.</arg>
+    /// <arg name="right">The right Vector4.</arg>
+    /// <return>The cross product of the two Vector4s.</return>
+    /// </method>
     public static Vector4 Cross(Vector4 left, Vector4 right)
     {
         return new Vector4(
@@ -144,16 +251,32 @@ public final class Vector4 extends Object
         );
     }
 
-
+    /// <method>
+    /// <desc>Computes the distance between two Vector4s.</desc>
+    /// <arg name="left">The left Vector4.</arg>
+    /// <arg name="right">The right Vector4.</arg>
+    /// <return>The distance between the two Vector4s.</return>
+    /// </method>
     public static float Distance(Vector4 left, Vector4 right)
     {
         return right.Sub(left).Length();
     }
+    /// <method>
+    /// <desc>Computes the square distance between two Vector4s.</desc>
+    /// <arg name="left">The left Vector4.</arg>
+    /// <arg name="right">The right Vector4.</arg>
+    /// <return>The square distance between the two Vector4s.</return>
+    /// </method>
     public static float DistanceSqr(Vector4 left, Vector4 right)
     {
         return right.Sub(left).LengthSqr();
     }
 
+    /// <method>
+    /// <desc>Swizzles all axis to one axis.</desc>
+    /// <arg name="a">The axis to copy across.</arg>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Swizzle(int a)
     {
         float[] components = new float[4];
@@ -163,6 +286,14 @@ public final class Vector4 extends Object
         components[3] = W;
         return new Vector4(components[a]);
     }
+    /// <method>
+    /// <desc>Swizzles each axis to a new one.</desc>
+    /// <arg name="a">The x axis swizzle.</arg>
+    /// <arg name="b">The y axis swizzle.</arg>
+    /// <arg name="c">The z axis swizzle.</arg>
+    /// <arg name="d">The w axis swizzle.</arg>
+    /// <return>The resulting Vector4.</return>
+    /// </method>
     public Vector4 Swizzle(int a, int b, int c, int d)
     {
         float[] components = new float[4];
@@ -177,25 +308,35 @@ public final class Vector4 extends Object
             components[d]);
     }
 
-
+    /// <method>
+    /// <desc>Creates a Vector4 from a nl2 API Vector4f</desc>
+    /// <arg name="nativeVector">The Vector4f to copy data from.</arg>
+    /// <return>The Vector4 instance.</return>
+    /// </method>
     public static Vector4 FromNative(Vector4f nativeVector)
     {
         return new Vector4(nativeVector.x, nativeVector.y, nativeVector.z, nativeVector.w);
     }
-    public void GetNative(Vector4f outVector)
-    {
-        outVector.set(X, Y, Z, W);
-    }
+    /// <method>
+    /// <desc>Returns the underlying native API type.</desc>
+    /// </method>
     public Vector4f GetNative()
     {
         return new Vector4f(X, Y, Z, W);
     }
 
-
+    /// <method>
+    /// <desc>Gets the string representation of this Vector4.</desc>
+    /// </method>
     public String toString()
     {
         return "X: " + X + ", Y: " + Y + ", Z: " + Z + ", W: " + W; 
     }
+    /// <method>
+    /// <desc>Checks if another Vector4 equals this.</desc>
+    /// <arg name="object">The Vector4 to check against.</arg>
+    /// <return>Trye if they equal eachother, otherwise False.</return>
+    /// </method>
     public bool equals(Object object)
     {
         if(object instanceof Vector4)
