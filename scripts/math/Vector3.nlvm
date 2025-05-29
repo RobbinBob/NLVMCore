@@ -6,71 +6,151 @@ import nlvm.math3d.Vector3f;
 /// <desc>Vector3 type.</desc>
 public final class Vector3 extends Object
 {
+    /// <member>
+    /// <desc>X axis.</desc>
+    /// </member>
     public float X = 0;
+    /// <member>
+    /// <desc>Y axis.</desc>
+    /// </member>
     public float Y = 0;
+    /// <member>
+    /// <desc>Z axis.</desc>
+    /// </member>
     public float Z = 0;
 
+    /// <member>
+    /// <desc>Left (Read Only).</desc>
+    /// </member>
     public static final Vector3 Left = new Vector3(-1, 0, 0);
+    /// <member>
+    /// <desc>Right (Read Only).</desc>
+    /// </member>
     public static final Vector3 Right = new Vector3(1, 0, 0);
+    /// <member>
+    /// <desc>Up (Read Only).</desc>
+    /// </member>
     public static final Vector3 Up = new Vector3(0, 1, 0);
+    /// <member>
+    /// <desc>Down (Read Only).</desc>
+    /// </member>
     public static final Vector3 Down = new Vector3(0, -1, 0);
+    /// <member>
+    /// <desc>Forward (Read Only).</desc>
+    /// </member>
     public static final Vector3 Forward = new Vector3(0, 0, 1);
+    /// <member>
+    /// <desc>Backward (Read Only).</desc>
+    /// </member>
     public static final Vector3 Backward = new Vector3(0, 0, -1);
 
+    /// <member>
+    /// <desc>Zero (Read Only).</desc>
+    /// </member>
     public static final Vector3 Zero = new Vector3(0, 0, 0);
+    /// <member>
+    /// <desc>One (Read Only).</desc>
+    /// </member>
     public static final Vector3 One = new Vector3(1, 1, 1);
 
+    /// <constructor>
+    /// <desc>Creates a Vector3 initialized with zeros.</desc>
+    /// </constructor>
     public Vector3()
     {
         X = 0;
         Y = 0;
         Z = 0;
     }
-    public Vector3(float s)
+    /// <constructor>
+    /// <desc>Creates a Vector3 with each axis initialized to a value.</desc>
+    /// <arg name="scalar">The scalar to initialize each axis with.</arg>
+    /// </constructor>
+    public Vector3(float scalar)
     {
-        X = s;
-        Y = s;
-        Z = s;
+        X = scalar;
+        Y = scalar;
+        Z = scalar;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector3 with each axis.</desc>
+    /// </constructor>
     public Vector3(float x, float y, float z)
     {
         X = x;
         Y = y;
         Z = z;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector3 copying from a Vector3.</desc>
+    /// <arg name="copy">The vector to copy from.</arg>
+    /// </constructor>
     public Vector3(Vector3 copy)
     {
         X = copy.X;
         Y = copy.Y;
         Z = copy.Z;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector3 copying from a Vector4, discarding the W axis.</desc>
+    /// <arg name="vector">The vector to copy from.</arg>
+    /// </constructor>
     public Vector3(Vector4 vector)
     {
         X = vector.X;
         Y = vector.Y;
         Z = vector.Z;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector3 copying from a Vector2, assuming Z axis as zero.</desc>'
+    /// <arg name="vector">The vector to copy from.</arg>
+    /// </constructor>
     public Vector3(Vector2 vector)
     {
         X = vector.X;
         Y = vector.Y;
         Z = 0;
     }
+    /// <constructor>
+    /// <desc>Creates a Vector3 copying from a Vector2, with a defined Z axis.</desc>
+    /// <arg name="vector">The Vector2 to copy from.</arg>
+    /// <arg name="z">The z axis.</arg>
+    /// </constructor>
+    public Vector3(Vector2 vector, float z)
+    {
+        X = vector.X;
+        Y = vector.Y;
+        Z = z;
+    }
 
+    /// <method>
+    /// <desc>Gets a copy of this vector.</desc>
+    /// <return>The copy of this vector.</return>
+    /// </method>
     public Vector3 Copy()
     {
         return new Vector3(this);
     }
 
+    /// <method>
+    /// <desc>Gets the length of this vector.</desc>
+    /// </method>
     public float Length()
     {
         return Mathf.Sqrt(X * X + Y * Y + Z * Z);
     }
+    /// <method>
+    /// <desc>Gets the squared length of this vector.</desc>
+    /// </method>
     public float LengthSqr()
     {
         return X * X + Y * Y + Z * Z;
     }
 
+    /// <method>
+    /// <desc>Normalizes the vector.</desc>
+    /// <return>The normalized copy of the vector.</return>
+    /// </method>
     public Vector3 Normalized()
     {
         float length = Length();
@@ -80,53 +160,102 @@ public final class Vector3 extends Object
         return Div(length);
     }
 
-
+    /// <method>
+    /// <desc>Linear-interpolates between two Vector3s.</desc>
+    /// <arg name="start">The starting Vector3.</arg>
+    /// <arg name="end">The end Vector3.</arg>
+    /// <arg name="time">The time value between 0-1, can be beyond extents.</arg>
+    /// <return>The Vector3 which has been interpolated.</return>
+    /// </method>
     public static Vector3 Lerp(Vector3 start, Vector3 end, float time)
     {
         return start.Mul(1 - time).Add(end.Mul(time)); 
     }
 
-
+    /// <method>
+    /// <desc>Adds a Vector3.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Add(Vector3 right)
     {
         return new Vector3(X + right.X, Y + right.Y, Z + right.Z);
     }
+    /// <method>
+    /// <desc>Adds a scalar to each axis.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Add(float scalar)
     {
         return new Vector3(X + scalar, Y + scalar, Z + scalar);
     }
 
+    /// <method>
+    /// <desc>Subtracts a Vector3.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Sub(Vector3 right)
     {
         return new Vector3(X - right.X, Y - right.Y, Z - right.Z);
     }
+    /// <method>
+    /// <desc>Subtracts a scalar from each axis.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Sub(float scalar)
     {
         return new Vector3(X - scalar, Y - scalar, Z - scalar);
     }
 
+    /// <method>
+    /// <desc>Multiplies this by a Vector3.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Mul(Vector3 right)
     {
         return new Vector3(X * right.X, Y * right.Y, Z * right.Z);
     }
+    /// <method>
+    /// <desc>Multiplies this by a scalar on each axis.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Mul(float scalar)
     {
         return new Vector3(X * scalar, Y * scalar, Z * scalar);
     }
 
+    /// <method>
+    /// <desc>Divides this by a Vector3.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Div(Vector3 right)
     {
         return new Vector3(X / right.X, Y / right.Y, Z / right.Z);
     }
+    /// <method>
+    /// <desc>Divides this by a scalar on each axis.</desc>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Div(float scalar)
     {
         return new Vector3(X / scalar, Y / scalar, Z / scalar);
     }
 
+    /// <method>
+    /// <desc>Computes the dot product of two Vector3.</desc>
+    /// <arg name="left">The left Vector3.</arg>
+    /// <arg name="right">The right Vector3.</arg>
+    /// <return>The dot product of the two Vector3s.</return>
+    /// </method>
     public static float Dot(Vector3 left, Vector3 right)
     {
         return left.X * right.X + left.Y * right.Y + left.Z * right.Z;
     }
+    /// <method>
+    /// <desc>Computes the cross product of two Vector3.</desc>
+    /// <arg name="left">The left Vector3.</arg>
+    /// <arg name="right">The right Vector3.</arg>
+    /// <return>The cross product of the two Vector3s.</return>
+    /// </method>
     public static Vector3 Cross(Vector3 left, Vector3 right)
     {
         return new Vector3(
@@ -135,15 +264,32 @@ public final class Vector3 extends Object
             left.X * right.Y - left.Y * right.X );
     }
 
+    /// <method>
+    /// <desc>Computes the distance between two Vector3.</desc>
+    /// <arg name="left">The left Vector3.</arg>
+    /// <arg name="right">The right Vector3.</arg>
+    /// <return>The distance between the two Vector3s.</return>
+    /// </method>
     public static float Distance(Vector3 left, Vector3 right)
     {
         return right.Sub(left).Length();
     }
+    /// <method>
+    /// <desc>Computes the squared distance between two Vector3.</desc>
+    /// <arg name="left">The left Vector3.</arg>
+    /// <arg name="right">The right Vector3.</arg>
+    /// <return>The squared distance between the two Vector3s.</return>
+    /// </method>
     public static float DistanceSqr(Vector3 left, Vector3 right)
     {
         return right.Sub(left).LengthSqr();
     }
 
+    /// <method>
+    /// <desc>Swizzles all axis to one axis.</desc>
+    /// <arg name="a">The axis to copy across.</arg>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Swizzle(int a)
     {
         float[] components = new float[3];
@@ -152,6 +298,13 @@ public final class Vector3 extends Object
         components[2] = Z;
         return new Vector3(components[a]);
     }
+    /// <method>
+    /// <desc>Swizzles each axis to a new one.</desc>
+    /// <arg name="a">The x axis swizzle.</arg>
+    /// <arg name="b">The y axis swizzle.</arg>
+    /// <arg name="c">The z axis swizzle.</arg>
+    /// <return>The resulting Vector3.</return>
+    /// </method>
     public Vector3 Swizzle(int a, int b, int c)
     {
         float[] components = new float[3];
@@ -164,25 +317,35 @@ public final class Vector3 extends Object
             components[c]);
     }
 
-
+    /// <method>
+    /// <desc>Ceates a Vector3 from a nl2 API Vector3f.</desc>
+    /// <arg name="nativeVector">The Vector3f to copy data from.</arg>
+    /// <return>The Vector3 instance.</return>
+    /// </method>
     public static Vector3 FromNative(Vector3f nativeVector)
     {
         return new Vector3(nativeVector.x, nativeVector.y, nativeVector.z);
     }
-    public void GetNative(Vector3f outVector)
-    {
-        outVector.set(X, Y, Z);
-    }
+    /// <method>
+    /// <desc>Returns the underlying native API type.</desc>
+    /// </method>
     public Vector3f GetNative()
     {
         return new Vector3f(X, Y, Z);
     }
 
-
+    /// <method>
+    /// <desc>Gets the string representation of this Vector3.</desc>
+    /// </method>
     public String toString()
     {
         return "X: " + X + ", Y: " + Y + ", Z: " + Z; 
     }
+    /// <method>
+    /// <desc>Checks if another Vector3 equals this.</desc>
+    /// <arg name="object">The Vector3 to check against.</arg>
+    /// <return>True if they equal eachother, otherwise False.</return>
+    /// </method>
     public bool equals(Object object)
     {
         if(object instanceof Vector3)
