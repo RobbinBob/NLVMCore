@@ -3665,9 +3665,446 @@
             "full_name": "scripts.math.Vector2",
             "extends": "Object",
             "description": "Vector2 type.",
-            "members": [],
-            "methods": [],
-            "constructors": []
+            "members": [
+                {
+                    "name": "X",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "X axis."
+                },
+                {
+                    "name": "Y",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Y axis."
+                },
+                {
+                    "name": "Left",
+                    "type": "Vector2",
+                    "accessor": "public static final",
+                    "description": "Left (Read Only)."
+                },
+                {
+                    "name": "Right",
+                    "type": "Vector2",
+                    "accessor": "public static final",
+                    "description": "Right (Read Only)."
+                },
+                {
+                    "name": "Up",
+                    "type": "Vector2",
+                    "accessor": "public static final",
+                    "description": "Up (Read Only)."
+                },
+                {
+                    "name": "Down",
+                    "type": "Vector2",
+                    "accessor": "public static final",
+                    "description": "Down (Read Only)."
+                },
+                {
+                    "name": "Zero",
+                    "type": "Vector2",
+                    "accessor": "public static final",
+                    "description": "Zero (Read Only)."
+                },
+                {
+                    "name": "One",
+                    "type": "Vector2",
+                    "accessor": "public static final",
+                    "description": "One (Read Only)."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Copy",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The copy of this vector.",
+                    "description": "Gets a copy of this vector."
+                },
+                {
+                    "args": [],
+                    "name": "Length",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the length of this vector."
+                },
+                {
+                    "args": [],
+                    "name": "LengthSqr",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the squared length of this vector."
+                },
+                {
+                    "args": [],
+                    "name": "Normalized",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The normalized copy of the vector.",
+                    "description": "Normalizes the vector."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "start",
+                            "description": "The starting Vector2."
+                        },
+                        {
+                            "type": "Vector2",
+                            "name": "end",
+                            "description": "The end Vector2."
+                        },
+                        {
+                            "type": "float",
+                            "name": "time",
+                            "description": "The time value between 0-1, can be beyond extents."
+                        }
+                    ],
+                    "name": "Lerp",
+                    "return": "Vector2",
+                    "accessor": "public static",
+                    "return_desc": "The Vector2 which has been interpolated.",
+                    "description": "Linear-interpolates between two Vector2s."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Add",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Adds a Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Add",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Adds a scalar to each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Sub",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Substracts a Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Sub",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Subtracts a scalar from each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Mul",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Multiplies this by a Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Mul",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Multiplies this by a scalar on each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Div",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Divides this by a Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Div",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Divides this by a scalar on each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "left",
+                            "description": "The left Vector2."
+                        },
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "The right Vector2."
+                        }
+                    ],
+                    "name": "Dot",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The dot product of the two Vector2s.",
+                    "description": "Computes the dot product of two Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "left",
+                            "description": "The left Vector2."
+                        },
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "The right Vector2."
+                        }
+                    ],
+                    "name": "Cross",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The cross product of the two Vector2s.",
+                    "description": "Computes the cross product of two Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "left",
+                            "description": "The left Vector2."
+                        },
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "The right Vector2."
+                        }
+                    ],
+                    "name": "Distance",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The distance between the two Vector2s.",
+                    "description": "Computes the distance between two Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "left",
+                            "description": "The left Vector2."
+                        },
+                        {
+                            "type": "Vector2",
+                            "name": "right",
+                            "description": "The right Vector2."
+                        }
+                    ],
+                    "name": "DistanceSqr",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The squared distance between the two Vector2s.",
+                    "description": "Computes the squared distance between two Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "a",
+                            "description": "The axis to copy across."
+                        }
+                    ],
+                    "name": "Swizzle",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Swizzles all axis to one axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "a",
+                            "description": "The x axis swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "b",
+                            "description": "The y axis swizzle."
+                        }
+                    ],
+                    "name": "Swizzle",
+                    "return": "Vector2",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector2.",
+                    "description": "Swizzles each axis to a new one."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "nativeVector",
+                            "description": "The Vector3f to copy data from."
+                        }
+                    ],
+                    "name": "FromNative",
+                    "return": "Vector2",
+                    "accessor": "public static",
+                    "return_desc": "The Vector2 instance.",
+                    "description": "Creates a Vector2 from a nl2 API Vector3f."
+                },
+                {
+                    "args": [],
+                    "name": "GetNative",
+                    "return": "nlvm.math3d.Vector3f",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns the underlying native API type."
+                },
+                {
+                    "args": [],
+                    "name": "toString",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the string representation of this Vector2."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The Vector2 to check against."
+                        }
+                    ],
+                    "name": "equals",
+                    "return": "bool",
+                    "accessor": "public",
+                    "return_desc": "True if they equal eachother, otherwise False.",
+                    "description": "Checks if another Vector2 equals this."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [],
+                    "accessor": "public",
+                    "description": "Creates a Vector2 initialized to zeros."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "The scalar to initialize each axis with."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector2 with each axis initialized to a scalar."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "x",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "y",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector2 with each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "copy",
+                            "description": "The vector to copy from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector2 copy from another."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "vector",
+                            "description": "The Vector3 to copy from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector2 copying from a Vector3, discarding the Z axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector4",
+                            "name": "vector",
+                            "description": "The vector to copy from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector2 copying from a Vector4, discarding the Z/W axis."
+                }
+            ]
         },
         {
             "type": "class",
@@ -3680,24 +4117,490 @@
             "full_name": "scripts.math.Vector3",
             "extends": "Object",
             "description": "Vector3 type.",
-            "members": [],
-            "methods": [],
-            "constructors": []
-        },
-        {
-            "type": "class",
-            "package": "scripts.math",
-            "libraries": [
-                "nlvm.math3d.Vector4f"
+            "members": [
+                {
+                    "name": "X",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "X axis."
+                },
+                {
+                    "name": "Y",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Y axis."
+                },
+                {
+                    "name": "Z",
+                    "type": "float",
+                    "accessor": "public",
+                    "description": "Z axis."
+                },
+                {
+                    "name": "Left",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Left (Read Only)."
+                },
+                {
+                    "name": "Right",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Right (Read Only)."
+                },
+                {
+                    "name": "Up",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Up (Read Only)."
+                },
+                {
+                    "name": "Down",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Down (Read Only)."
+                },
+                {
+                    "name": "Forward",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Forward (Read Only)."
+                },
+                {
+                    "name": "Backward",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Backward (Read Only)."
+                },
+                {
+                    "name": "Zero",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "Zero (Read Only)."
+                },
+                {
+                    "name": "One",
+                    "type": "Vector3",
+                    "accessor": "public static final",
+                    "description": "One (Read Only)."
+                }
             ],
-            "accessor": "public final",
-            "name": "Vector4",
-            "full_name": "scripts.math.Vector4",
-            "extends": "Object",
-            "description": "Vector4 type.",
-            "members": [],
-            "methods": [],
-            "constructors": []
+            "methods": [
+                {
+                    "args": [],
+                    "name": "Copy",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The copy of this vector.",
+                    "description": "Gets a copy of this vector."
+                },
+                {
+                    "args": [],
+                    "name": "Length",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the length of this vector."
+                },
+                {
+                    "args": [],
+                    "name": "LengthSqr",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the squared length of this vector."
+                },
+                {
+                    "args": [],
+                    "name": "Normalized",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The normalized copy of the vector.",
+                    "description": "Normalizes the vector."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "start",
+                            "description": "The starting Vector3."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "end",
+                            "description": "The end Vector3."
+                        },
+                        {
+                            "type": "float",
+                            "name": "time",
+                            "description": "The time value between 0-1, can be beyond extents."
+                        }
+                    ],
+                    "name": "Lerp",
+                    "return": "Vector3",
+                    "accessor": "public static",
+                    "return_desc": "The Vector3 which has been interpolated.",
+                    "description": "Linear-interpolates between two Vector3s."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Add",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Adds a Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Add",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Adds a scalar to each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Sub",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Subtracts a Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Sub",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Subtracts a scalar from each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Mul",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Multiplies this by a Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Mul",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Multiplies this by a scalar on each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Div",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Divides this by a Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "Div",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Divides this by a scalar on each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "left",
+                            "description": "The left Vector3."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "The right Vector3."
+                        }
+                    ],
+                    "name": "Dot",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The dot product of the two Vector3s.",
+                    "description": "Computes the dot product of two Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "left",
+                            "description": "The left Vector3."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "The right Vector3."
+                        }
+                    ],
+                    "name": "Cross",
+                    "return": "Vector3",
+                    "accessor": "public static",
+                    "return_desc": "The cross product of the two Vector3s.",
+                    "description": "Computes the cross product of two Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "left",
+                            "description": "The left Vector3."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "The right Vector3."
+                        }
+                    ],
+                    "name": "Distance",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The distance between the two Vector3s.",
+                    "description": "Computes the distance between two Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "left",
+                            "description": "The left Vector3."
+                        },
+                        {
+                            "type": "Vector3",
+                            "name": "right",
+                            "description": "The right Vector3."
+                        }
+                    ],
+                    "name": "DistanceSqr",
+                    "return": "float",
+                    "accessor": "public static",
+                    "return_desc": "The squared distance between the two Vector3s.",
+                    "description": "Computes the squared distance between two Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "a",
+                            "description": "The axis to copy across."
+                        }
+                    ],
+                    "name": "Swizzle",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Swizzles all axis to one axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "a",
+                            "description": "The x axis swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "b",
+                            "description": "The y axis swizzle."
+                        },
+                        {
+                            "type": "int",
+                            "name": "c",
+                            "description": "The z axis swizzle."
+                        }
+                    ],
+                    "name": "Swizzle",
+                    "return": "Vector3",
+                    "accessor": "public",
+                    "return_desc": "The resulting Vector3.",
+                    "description": "Swizzles each axis to a new one."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.math3d.Vector3f",
+                            "name": "nativeVector",
+                            "description": "The Vector3f to copy data from."
+                        }
+                    ],
+                    "name": "FromNative",
+                    "return": "Vector3",
+                    "accessor": "public static",
+                    "return_desc": "The Vector3 instance.",
+                    "description": "Ceates a Vector3 from a nl2 API Vector3f."
+                },
+                {
+                    "args": [],
+                    "name": "GetNative",
+                    "return": "nlvm.math3d.Vector3f",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Returns the underlying native API type."
+                },
+                {
+                    "args": [],
+                    "name": "toString",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the string representation of this Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.Object",
+                            "name": "object",
+                            "description": "The Vector3 to check against."
+                        }
+                    ],
+                    "name": "equals",
+                    "return": "bool",
+                    "accessor": "public",
+                    "return_desc": "True if they equal eachother, otherwise False.",
+                    "description": "Checks if another Vector3 equals this."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 initialized with zeros."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "scalar",
+                            "description": "The scalar to initialize each axis with."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 with each axis initialized to a value."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "x",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "y",
+                            "description": "No Description Supplied."
+                        },
+                        {
+                            "type": "float",
+                            "name": "z",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 with each axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "copy",
+                            "description": "The vector to copy from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 copying from a Vector3."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector4",
+                            "name": "vector",
+                            "description": "The vector to copy from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 copying from a Vector4, discarding the W axis."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "vector",
+                            "description": "The vector to copy from."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 copying from a Vector2, assuming Z axis as zero."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector2",
+                            "name": "vector",
+                            "description": "The Vector2 to copy from."
+                        },
+                        {
+                            "type": "float",
+                            "name": "z",
+                            "description": "The z axis."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a Vector3 copying from a Vector2, with a defined Z axis."
+                }
+            ]
         },
         {
             "type": "class",
