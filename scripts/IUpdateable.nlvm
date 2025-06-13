@@ -14,5 +14,9 @@ public interface IUpdateable
     /// <arg name="tick">The time(seconds) the previous frame took to process.</arg>
     /// </method>
     public void LateUpdate(float tick);
+    /// <member>
+    /// <desc>Called each frame after all Updates have been called, is unaffected by simulation pause state.</desc>
+    /// </member>
+    public void LateUnblockedUpdate();
 }
 /// </interface>
