@@ -117,5 +117,6 @@ public abstract class Restraint extends UpdateableObject
         OnRestraintUpdate(Mathf.Clamp01(m_CurrentActivation));
     }
     public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
 }
 /// </class>

@@ -98,4 +98,5 @@ public class TrainHandlerManager extends UpdateableObject
             handler.HandleBogies();
         }
     }
+    public void LateUnblockedUpdate() { }
 }

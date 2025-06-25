@@ -264,7 +264,7 @@ public class TrainHandler extends Object
         data.BogieMatrix = m_BogieMatrix.dup();
         data.TrainDistance = m_Distance;
         data.BogieOffset = 0;
-        data.WheelRotation = m_WrappedDistance;
+        data.WheelRotation = m_Distance;
 
         m_BogieModifier.Run(data);
     }

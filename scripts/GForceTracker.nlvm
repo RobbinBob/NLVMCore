@@ -1,6 +1,5 @@
 package scripts;
 
-import nlvm.math3d.*;
 import scripts.math.*;
 import scripts.containers.*;
 
@@ -66,6 +65,7 @@ public class GForceTracker extends UpdateableObject
         m_OldVelocity = m_NewVelocity;
     }
     public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
 
     /// <method>
     /// <desc>Gets the current G-Force read-out.</desc>

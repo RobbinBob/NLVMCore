@@ -158,5 +158,6 @@ public final class DebugGizmoHandler extends UpdateableObject
         }
     }
     public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
 }
 /// </class>

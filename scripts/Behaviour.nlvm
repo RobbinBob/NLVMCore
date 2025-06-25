@@ -21,6 +21,7 @@ public abstract class Behaviour extends Script
     protected String m_Name = "";
 
     private float m_PreviousTick = 0.0f;
+    private bool m_HasRecievedNextFrameUpdate = false;
 
     public final bool onInit()
     {
@@ -40,6 +41,9 @@ public abstract class Behaviour extends Script
         m_PreviousTick = tick;
         Update(tick);
 
+            // Set to true so we know the sim isnt paused and can recieve late update
+        m_HasRecievedNextFrameUpdate = true;
+
         if(m_Caller != this)
             return;
             // Loop over the updateables and call their updates
@@ -49,6 +53,21 @@ public abstract class Behaviour extends Script
     }
     public final void onLateUpdate()
     {
+        if(m_HasRecievedNextFrameUpdate == false)
+        {
+            LateUnblockedUpdate();
+
+            if(m_Caller != this)
+                return;
+                
+            IEnumerator enumerator = m_Updateables.GetEnumerator();
+            while(enumerator.MoveNext())
+                ((IUpdateable)enumerator.Get()).LateUnblockedUpdate();
+
+            return;
+        }
+
+        m_HasRecievedNextFrameUpdate = false;
         LateUpdate(m_PreviousTick);
 
 
@@ -79,7 +98,7 @@ public abstract class Behaviour extends Script
     /// <desc>Removes an IUpdateable interface from the registry.</desc>
     /// <arg name="updateable">The interface to be removed.</arg>
     /// </method>
-    public static final void RemoveUppdateable(IUpdateable updateable)
+    public static final void RemoveUpdateable(IUpdateable updateable)
     {
         if(!m_Updateables.Contains(updateable))
             return;
@@ -104,6 +123,12 @@ public abstract class Behaviour extends Script
     /// <arg name="tick">The time-step the previous frame took to execute.</arg>
     /// </method>
     public void LateUpdate(float tick)
+    {
+    }
+    /// <method>
+    /// <desc>Called each frame unaffected by pausing.</desc>
+    /// </method>
+    public void LateUnblockedUpdate()
     {
     }
     /// <method>
