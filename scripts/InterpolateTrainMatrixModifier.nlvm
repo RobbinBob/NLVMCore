@@ -1,8 +1,8 @@
 package scripts;
 
 import scripts.modifiers.*;
-import scripts.utilities.*;
 import com.nolimitscoaster.*;
+import scripts.math.*;
 import nlvm.math3d.*;
 
 public class InterpolateTrainMatrixModifier extends InterpolateMatrixModifier implements ICarModifier, IBogieModifier
@@ -22,7 +22,7 @@ public class InterpolateTrainMatrixModifier extends InterpolateMatrixModifier im
 
         Matrix4x4f carMatrix = new Matrix4x4f();
         train.getCarMatrix(carData.SetableCar.GetCarIndex(), carMatrix);
-        Matrix4x4f matrix = MatrixUtil.Lerp(time, m_CarStartMatrices[index], carMatrix);
+        Matrix4x4f matrix = Matrix4x4.Lerp(time, Matrix4x4.FromNative(m_CarStartMatrices[index]), Matrix4x4.FromNative(carMatrix)).GetNative();
         carData.SetableCar.SetMatrix(matrix);
     }
 
@@ -36,7 +36,7 @@ public class InterpolateTrainMatrixModifier extends InterpolateMatrixModifier im
 
         Matrix4x4f bogieMatrix = new Matrix4x4f();
         train.getBogieMatrix(bogieData.SetableBogie.GetBogieIndex(), bogieMatrix);
-        Matrix4x4f matrix = MatrixUtil.Lerp(time, m_BogieStartMatrices[index], bogieMatrix);
+        Matrix4x4f matrix = Matrix4x4.Lerp(time, Matrix4x4.FromNative(m_BogieStartMatrices[index]), Matrix4x4.FromNative(bogieMatrix)).GetNative();
         bogieData.SetableBogie.SetMatrix(matrix);
     }
 }

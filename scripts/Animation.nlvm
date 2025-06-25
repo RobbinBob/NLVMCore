@@ -320,5 +320,6 @@ public final class Animation extends UpdateableObject
         m_SceneObject.setKeyFrameAnimationTime(m_CurrentAnimationTime);
     }
     public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
 }
 /// </class>

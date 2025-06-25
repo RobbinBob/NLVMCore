@@ -1,8 +1,8 @@
 package scripts;
 
 import scripts.modifiers.*;
-import scripts.utilities.*;
 import com.nolimitscoaster.*;
+import scripts.math.*;
 
 import nlvm.math3d.*;
 
@@ -53,7 +53,7 @@ public class InterpolateMatrixModifier extends Object implements ICarModifier, I
 
         float time = (float)Tools.cubicRamp(m_Timer.GetTimePercent());
 
-        Matrix4x4f matrix = MatrixUtil.Lerp(time,  m_CarStartMatrices[index], m_CarEndMatrices[index]);
+        Matrix4x4f matrix = Matrix4x4.Lerp(time,  Matrix4x4.FromNative(m_CarStartMatrices[index]), Matrix4x4.FromNative(m_CarEndMatrices[index])).GetNative();
         carData.SetableCar.SetMatrix(matrix);
     }
     public void Run(BogieModifierData bogieData)
@@ -64,7 +64,7 @@ public class InterpolateMatrixModifier extends Object implements ICarModifier, I
 
         float time = (float)Tools.cubicRamp(m_Timer.GetTimePercent());
 
-        Matrix4x4f matrix = MatrixUtil.Lerp(time, m_BogieStartMatrices[index], m_BogieEndMatrices[index]);
+        Matrix4x4f matrix = Matrix4x4.Lerp(time, Matrix4x4.FromNative(m_BogieStartMatrices[index]), Matrix4x4.FromNative(m_BogieEndMatrices[index])).GetNative();
         bogieData.SetableBogie.SetMatrix(matrix);
     }
 }

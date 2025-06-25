@@ -145,8 +145,8 @@ public class RideCameraHandler extends UpdateableObject
             m_ActiveHandler = null;
         }
     }
-
-    public void LateUpdate(float tick)
+    public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate()
     {
             // Skip checking nearest cameras if were inside one already
         if(m_ERV.isActive())

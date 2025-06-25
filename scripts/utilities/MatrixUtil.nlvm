@@ -1,7 +1,6 @@
 package scripts.utilities;
 
 import nlvm.math3d.*;
-import com.nolimitscoaster.Tools;
 
 public class MatrixUtil
 {
