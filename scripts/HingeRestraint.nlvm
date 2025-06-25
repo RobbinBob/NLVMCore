@@ -2,15 +2,15 @@ package scripts;
 
 import com.nolimitscoaster.SceneObjectElement;
 import com.nolimitscoaster.Tools;
-import nlvm.math3d.Vector3f;
+import scripts.math.*;
 
 /// <class>
 /// <desc>Represents a simple hindged rotating restraint.</desc>
 public class HingeRestraint extends Restraint
 {
-    private Vector3f m_ClosedAngle = null;
-    private Vector3f m_OpenAngle = null;
-    private Vector3f m_CurrentAngle = new Vector3f();
+    private Vector3 m_ClosedAngle = null;
+    private Vector3 m_OpenAngle = null;
+    private Vector3 m_CurrentAngle = Vector3.Zero;
 
     /// <constructor>
     /// <desc>Creates a new HingedRestraint attached to a SceneObjectElement.</desc>
@@ -18,7 +18,7 @@ public class HingeRestraint extends Restraint
     /// <arg name="closeAngle">The angle(radians) of the restraint when closed.</arg>
     /// <arg name="openAngle">The angle(radians) of the restraint when open.</arg>
     /// </constructor>
-    public HingeRestraint(SceneObjectElement restraintElement, Vector3f closeAngle, Vector3f openAngle)
+    public HingeRestraint(SceneObjectElement restraintElement, Vector3 closeAngle, Vector3 openAngle)
     {
         super(restraintElement);
 
@@ -28,8 +28,8 @@ public class HingeRestraint extends Restraint
 
     protected void OnRestraintUpdate(float activation)
     {
-        m_CurrentAngle.lerp((float)Tools.cubicRamp(activation), m_ClosedAngle, m_OpenAngle);
-        m_RestraintElement.setRotation(m_CurrentAngle);
+        m_CurrentAngle = Vector3.Lerp(m_ClosedAngle, m_OpenAngle, (float)Tools.cubicRamp(activation));
+        m_RestraintElement.setRotation(m_CurrentAngle.GetNative());
     }
 }
 /// </class>
