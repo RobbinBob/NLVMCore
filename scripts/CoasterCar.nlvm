@@ -7,7 +7,7 @@ import nlvm.util.Vector;
 
 import scripts.utilities.*;
 import scripts.containers.*;
-import scripts.math.Mathf;
+import scripts.math.*;
 
 /// <class>
 /// <desc>Type used for custom coaster cars; Allows customisation of restraint animations using the descriptor files, has g-force trackers placed for each camera which can be visualised and cameras can be cycled through like in-game counterparts.</desc>
@@ -52,9 +52,10 @@ public class CoasterCar extends Behaviour implements ISetableCar
             // Setup restraints
         m_Restraints = new Restraint[m_Descriptor.Restraints];
         SceneObjectElement[] restraintElements = GetElementsWithName(m_SceneObject, "Restraint");
+
         for(int i = 0; i < m_Descriptor.Restraints; ++i)
         {
-            m_Restraints[i] = new HingeRestraint(restraintElements[i], new Vector3f(0, 0, 0), new Vector3f(90 * Mathf.DegToRad, 0, 0));
+            m_Restraints[i] = new HingeRestraint(restraintElements[i], m_Descriptor.RestraintCloseAngle, m_Descriptor.RestraintOpenAngle);
             m_Restraints[i].OpeningTime = m_Descriptor.RestraintOpenDuration;
             m_Restraints[i].ClosingTime = m_Descriptor.RestraintCloseDuration;
         }
@@ -138,6 +139,27 @@ public class CoasterCar extends Behaviour implements ISetableCar
                 descriptor.RestraintOpenDuration = restraints.Get("open_duration").GetFloat();       
             if(restraints.HasKey("close_duration"))
                 descriptor.RestraintCloseDuration = restraints.Get("close_duration").GetFloat();
+
+            if(restraints.HasKey("open_angle"))
+            {
+                Json openAngle = restraints.Get("open_angle");
+                descriptor.RestraintOpenAngle = new Vector3(
+                    ((Json)openAngle.At(0)).GetFloat(), 
+                    ((Json)openAngle.At(1)).GetFloat(), 
+                    ((Json)openAngle.At(2)).GetFloat());
+                
+                descriptor.RestraintOpenAngle = descriptor.RestraintOpenAngle.Mul(Mathf.DegToRad);
+            }
+            if(restraints.HasKey("close_angle"))
+            {
+                Json closeAngle = restraints.Get("close_angle");
+                descriptor.RestraintCloseAngle = new Vector3(
+                    ((Json)closeAngle.At(0)).GetFloat(), 
+                    ((Json)closeAngle.At(1)).GetFloat(), 
+                    ((Json)closeAngle.At(2)).GetFloat());
+
+                descriptor.RestraintCloseAngle = descriptor.RestraintCloseAngle.Mul(Mathf.DegToRad);
+            }
         }
 
         if(head.HasKey("rear_joint_offset"))

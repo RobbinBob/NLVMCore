@@ -5,6 +5,8 @@
     "restraints": {
         "count": 4,
         "open_duration": 2.0,
-        "close_duration": 1.25
+        "close_duration": 1.25,
+        "open_angle": [0, -45, 0],
+        "close_angle": [0, 0, 0]
     }
 }

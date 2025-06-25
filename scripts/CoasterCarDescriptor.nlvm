@@ -2,6 +2,7 @@ package scripts;
 
 import nlvm.lang.*;
 import nlvm.math3d.Vector3f;
+import scripts.math.*;
 
 /// <class>
 /// <desc>Struct-like container for CoasterCar specific data.</desc>
@@ -23,6 +24,10 @@ public class CoasterCarDescriptor extends Object
     /// <desc>The time(seconds) for the restraints to close.</desc>
     /// </member>
     public float RestraintCloseDuration = 1.0f;
+
+    public Vector3 RestraintOpenAngle = Vector3.Zero;
+    public Vector3 RestraintCloseAngle = Vector3.Zero;
+
 
     public Vector3f RearJointOffset = new Vector3f(0, 0, 0);
     public Vector3f FrontJointOffset = new Vector3f(0, 0, 0);
