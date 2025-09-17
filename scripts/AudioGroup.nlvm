@@ -1,0 +1,87 @@
+package scripts;
+
+import scripts.math.*;
+import scripts.utilities.*;
+
+public class AudioGroup extends Behaviour implements IReferenceable
+{
+    private SpatialSound m_PrimaryAudioLoop = null;
+    private SpatialSound[] m_TriggeredAudio = new SpatialSound[6];
+
+    private AudioEmitter[] m_GroupEmitters = null;
+
+        // Behaviour    
+    public int GetOrder() { return -25; }
+
+    public bool Awake()
+    {
+        return true;
+    }
+
+    public void Start()
+    {
+        Registry registry = Registry.GetInstance();
+
+            // Fetch the main audio loop
+        SpatialSound primaryAudio = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", GetStringParameter("primary_audio_name"));
+        if(primaryAudio == null)
+            Exception.Throw("Unable to find scripts.SpatialSound with name '" + GetStringParameter("primary_audio_name") + "'");
+
+            // Fetch triggered audios
+        for(int i = 0; i < m_TriggeredAudio.length; ++i)
+        {
+            String audioName = GetStringParameter("trigger_" + i + "_audio_name");
+            String parsedName = StringUtil.ToLower(audioName);
+            if(parsedName.equals("none") || parsedName.equals(""))
+                continue;
+
+            m_TriggeredAudio[i] = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", audioName);
+            if(m_TriggeredAudio[i] == null)
+                Exception.Throw("Unable to find scripts.SpatialSound with name '" + audioName + "'");
+        }
+
+            // Fetch the audio group name and register it
+        String groupName = GetStringParameter("group_name");
+        if(groupName == null || groupName.equals(""))
+            Exception.Throw("Audio group name is invalid, please make sure to specify a valid name");
+        SetName(groupName);
+
+            // Fetch all AudioEmitters with the same group name
+        IReferenceable[] references = registry.GetReferencesFromName("scripts.AudioEmitter", groupName);
+        Debug.Print("Found '" + references.length + "' AudioEmitters associated with group '" + groupName + "'");
+        m_GroupEmitters = new AudioEmitter[references.length];
+        for(int i = 0; i < references.length; ++i)
+        {
+            m_GroupEmitters[i] = (AudioEmitter)references[i];
+            m_GroupEmitters[i].CacheAudioClip((SpatialSound)primaryAudio.Instantiate());
+        }
+
+        registry.Register(this);
+
+        PlaySoundOnAll(0);
+    }
+
+
+    public void PlaySoundOnAll(int slot)
+    {
+        for(int i = 0; i < m_GroupEmitters.length; ++i)
+        {
+            m_GroupEmitters[i].PlayFromCache(slot);
+        }
+    }
+
+
+        // IReferenceable
+    public String GetType()
+    {
+        return "scripts.AudioGroup";
+    }
+    public String GetName()
+    {
+        return m_Name;
+    }
+    public void SetName(String string)
+    {
+        m_Name = string;
+    }
+}

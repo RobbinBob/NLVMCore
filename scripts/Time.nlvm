@@ -1,0 +1,9 @@
+package scripts;
+
+public final class Time extends Object
+{
+    public static float DeltaTime = 0.0f;
+    public static float PreviousDeltaTime = 0.0f;
+
+    private Time() { }
+}

@@ -1,0 +1,52 @@
+package scripts;
+
+import scripts.containers.*;
+
+public class AudioEmitter extends Behaviour implements IReferenceable
+{
+    private List m_AudioClips = new List();
+    private SpatialSound m_ActiveSound = null;
+
+    public int GetOrder() { return -30; }
+    public bool Awake()
+    {
+        return true;
+    }
+    public void Start()
+    {
+        SetName(GetStringParameter("group_name"));
+        Registry.GetInstance().Register(this);
+    }
+
+
+    public void CacheAudioClip(SpatialSound sound)
+    {
+        m_AudioClips.Insert(sound);
+    }
+
+    public void PlayFromCache(int slot)
+    {
+        if(m_ActiveSound != null)
+        {
+            m_ActiveSound.Stop();
+            m_ActiveSound = null;
+        }
+        ((SpatialSound)m_AudioClips.At(slot)).PlaySoundLooped();
+        m_ActiveSound = (SpatialSound)m_AudioClips.At(slot);
+        m_ActiveSound.SetPosition(GetPosition());
+    }
+
+        // IReferenceable
+    public String GetType()
+    {
+        return "scripts.AudioEmitter";
+    }
+    public String GetName()
+    {
+        return m_Name;
+    }
+    public void SetName(String name)
+    {
+        m_Name = name;
+    }
+}

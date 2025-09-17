@@ -28,7 +28,9 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
     private CoasterCarDescriptor m_Descriptor = null;
 
-    public bool Start()
+    public int GetOrder() { return 25; }
+
+    public bool Awake()
     {
         m_Coaster = GetCoasterParameter("coaster");
         String coasterName = m_Coaster.getName();

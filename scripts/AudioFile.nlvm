@@ -1,0 +1,25 @@
+package scripts;
+
+import scripts.math.*;
+import com.nolimitscoaster.*;
+
+public class AudioFile extends Behaviour
+{
+    public bool Awake()
+    {
+        ResourcePath resource = GetResourcePathParameter("audio_file");
+
+        int audioFlags = Sound.AUDIO_FLAG_SOUND | Sound.AUDIO_FLAG_MONO;
+        bool isMusic = GetBoolParameter("audio_is_music");
+        if(isMusic)
+            audioFlags |= Sound.AUDIO_FLAG_MUSIC;
+
+        SpatialSound sound = new SpatialSound(resource, audioFlags);
+
+        sound.SetGain(GetFloatParameter("audio_gain"));
+        sound.SetPitch(GetFloatParameter("audio_pitch"));
+        sound.SetName(GetStringParameter("audio_name"));
+
+        return false;
+    }
+}

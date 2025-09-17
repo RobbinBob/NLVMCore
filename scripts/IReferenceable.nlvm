@@ -1,0 +1,9 @@
+package scripts;
+
+public interface IReferenceable
+{
+    public String GetName();
+    public void SetName(String name);
+
+    public String GetType();
+}

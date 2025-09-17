@@ -1,0 +1,50 @@
+package scripts;
+
+import scripts.math.*;
+import com.nolimitscoaster.*;
+
+public class SpatialSound extends Sound implements IReferenceable, IInstantiateable
+{
+    private Vector3 m_WorldPosition = Vector3.Zero;
+
+    public SpatialSound(ResourcePath soundResource)
+    {
+        super(soundResource, AUDIO_DEFAULT, ENVIRONMENT_NONE);
+    }
+    public SpatialSound(ResourcePath soundResource, int audioFlags)
+    {
+        super(soundResource, audioFlags, ENVIRONMENT_NONE);
+    }
+    public SpatialSound(ResourcePath soundResource, int audioFlags, int environmentFlags)
+    {
+        super(soundResource, audioFlags, environmentFlags);
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        m_WorldPosition = position;
+        m_StaticSound.setPosition(position.GetNative());
+    }
+    public Vector3 GetPosition()
+    {
+        return m_WorldPosition;
+    }
+
+    public static void Copy(SpatialSound copyFrom, SpatialSound copyTo)
+    {
+        copyTo.SetPosition(copyFrom.m_WorldPosition);
+        Sound.Copy(copyFrom, copyTo);
+    }
+    public Object Instantiate()
+    {
+        SpatialSound sound = new SpatialSound(m_Resource, GetAudioFlags(), GetEnvironmentFlags());
+        SpatialSound.Copy(this, sound);
+        sound.SetName(GetName() + "Instance");
+        return sound;
+    }
+
+    public String GetType()
+    {
+        return "scripts.SpatialSound";
+    }
+}

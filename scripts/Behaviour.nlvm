@@ -3,6 +3,7 @@ package scripts;
 import com.nolimitscoaster.*;
 
 import scripts.containers.*;
+import scripts.math.*;
 
 /// <class>
 /// <desc>Base class to derrive any SceneObject attached scripts.</desc>
@@ -10,6 +11,7 @@ public abstract class Behaviour extends Script
 {
     private static final List m_Updateables = new List();
     private static Behaviour m_Caller = null;
+    private static List m_OrderList = new List(1);
 
     /// <member>
     /// <desc>Reference to the SceneObject this Behaviour is attached to.</desc>
@@ -28,16 +30,49 @@ public abstract class Behaviour extends Script
             // The whole reason this exists is because im too lazy to write this
         m_SceneObject = sim.getSceneObjectForEntityId(getParentEntityId());
         if(m_SceneObject == null)
-            NullReferenceException.Throw("Unable to find SceneObject, is this Behaviour attached to one?");
+            NullReferenceException.Throw("Unable to find SceneObject, is this Behaviour attached to one?\nCurrently there is no support for non-sceneobject attached scripts");
+        m_Name = m_SceneObject.getName();
 
         if(m_Caller == null)
+        {
             m_Caller = this;
+            Debug.Print("Behaviour '" + toString() + "' is assigned caller");
+        }
 
-        m_Name = m_SceneObject.getName();
-        return Start();
+        bool isStaying = Awake();
+            // If this is the caller and its trying to exit then we need to transfer
+        if(isStaying == false && this == m_Caller)
+        {
+            Debug.Print("Behaviour '" + toString() + "' is caller but is exiting, unassigning caller");
+            m_Caller = null;
+        }
+        if(isStaying == true)
+            m_Caller.RegisterOrder(this);
+
+        return isStaying;
     }
+    public final bool onLateInit()
+    {
+            // Skip if not the caller
+        if(this != m_Caller)
+            return true;
+        Debug.Print("Late Start Caller with '" + m_OrderList.Count() + "' behaviours registered");
+
+
+        IEnumerator enumerator = m_OrderList.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            Behaviour behaviour = (Behaviour)enumerator.Get();
+            //Debug.Print(behaviour.GetOrder());
+            behaviour.Start();
+        }
+
+        return true;
+    } 
     public final void onNextFrame(float tick)
     {
+        Time.DeltaTime = tick;
+        Time.PreviousDeltaTime = m_PreviousTick;
         m_PreviousTick = tick;
         Update(tick);
 
@@ -46,6 +81,7 @@ public abstract class Behaviour extends Script
 
         if(m_Caller != this)
             return;
+        
             // Loop over the updateables and call their updates
         IEnumerator enumerator = m_Updateables.GetEnumerator();
         while(enumerator.MoveNext())
@@ -84,6 +120,38 @@ public abstract class Behaviour extends Script
     }
 
 
+    protected int GetOrder() { return 0; }
+    private void RegisterOrder(Behaviour behaviour)
+    {
+        if(m_OrderList == null)
+            Exception.Throw("Trying to register Behaviour for Start on wrong behaviour");
+
+        Debug.Print("Registering behaviour with order " + behaviour.GetOrder());
+        
+        if(m_OrderList.Count() == 0)
+        {
+            m_OrderList.Insert(behaviour);
+            return;
+        }
+
+        bool success = false;
+        for(int i = 0; i < m_OrderList.Count(); i++)
+        {
+            Behaviour b = (Behaviour)m_OrderList.At(i);
+            if(behaviour.GetOrder() <= b.GetOrder())
+            {
+                m_OrderList.InsertAt(behaviour, i);
+                success = true;
+                break;
+            }
+        }
+
+        if(!success)
+        {
+            m_OrderList.Insert(behaviour);
+        }
+    }
+
     /// <method>
     /// <desc>Registers an IUpdateable interface to be called each frame.</desc>
     /// <arg name="updateable">The interface to be registered.</arg>
@@ -110,7 +178,13 @@ public abstract class Behaviour extends Script
     /// <desc>Called once to initialize the object.</desc>
     /// <return>Pass True to allow it to continue excecution, otherwise False to cancel.</return>
     /// </method>
-    public abstract bool Start();
+    public abstract bool Awake();
+    /// <method>
+    /// <desc>Called once to signify start of update cycle, order can be configured if overriding GetOrder.</desc>
+    /// </method>
+    public void Start()
+    {
+    }
     /// <method>
     /// <desc>Called each frame the Behaviour is active.</desc>
     /// <arg name="tick">The time-step the previous frame took to execute.</arg>
@@ -145,6 +219,19 @@ public abstract class Behaviour extends Script
     {
         return "Behaviour" + getEntityId();
     }
+
+
+    public Vector3 GetPosition()
+    {
+        return Vector3.FromNative(m_SceneObject.getTranslation());
+    }
+    public void SetPosition(Vector3 position)
+    {
+        m_SceneObject.setTranslation(position.GetNative());
+    }
+
+
+
 
     /// <method>
     /// <desc>Attempts to retrieve a float parameter, throws an exception if no parameter is found with the given id.</desc>

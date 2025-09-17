@@ -1,0 +1,105 @@
+package scripts.containers;
+
+public final class Dictionary extends Object implements IEnumerable, IQuerySize
+{
+    private List m_KeyValues = null;
+
+    public Dictionary()
+    {
+        m_KeyValues = new List();
+    }
+    public Dictionary(int capacity)
+    {
+        m_KeyValues = new List(capacity);
+    }
+    public Dictionary(int capacity, int capacityIncrement)
+    {
+        m_KeyValues = new List(capacity, capacityIncrement);
+    }
+    public Dictionary(IEnumerable enumerable)
+    {
+        //Exception.Throw("Not implemented");
+        System.throwRuntimeException("Not implemented");
+    }
+    public Dictionary(KeyValuePair[] KeyPair)
+    {
+        //Exception.Throw("Not implemented");
+        System.throwRuntimeException("Not implemented");
+    }
+
+    public int Count()
+    {
+        return m_KeyValues.Count();
+    }
+    public bool ContainsKey(Object object)
+    {
+        IEnumerator enumerator = m_KeyValues.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            KeyValuePair keyPair = (KeyValuePair)enumerator.Get();
+            if(keyPair.GetKey().equals(object))
+                return true;
+        }
+        return false;
+    }
+    public Object GetValue(Object key)
+    {
+        IEnumerator enumerator = m_KeyValues.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            KeyValuePair keyPair = (KeyValuePair)enumerator.Get();
+            if(keyPair.GetKey().equals(key))
+                return keyPair.GetValue();
+        }
+        return null;
+    }
+
+
+    public void Clear()
+    {
+        m_KeyValues.Clear();
+    }
+
+    public bool Insert(Object key, Object value)
+    {
+        return Insert(new KeyValuePair(key, value));
+    }
+    public bool Insert(KeyValuePair keyPair)
+    {
+        if(ContainsKey(keyPair.GetKey()))
+            return false;
+
+        m_KeyValues.Insert(keyPair);
+        return true;
+    }
+    public bool Remove(Object key)
+    {
+        int foundIndex = -1;
+        int index = 0;
+        IEnumerator enumerator = m_KeyValues.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            KeyValuePair keyPair = (KeyValuePair)enumerator.Get();
+            if(key.equals(keyPair.GetKey()))
+            {
+                foundIndex = index;
+                break;
+            }
+            index++;
+        }
+        if(foundIndex == -1)
+            return false;
+        
+        m_KeyValues.RemoveAt(foundIndex);
+        return true;
+    }
+
+    public Object[] ToArray()
+    {
+        return m_KeyValues.ToArray();
+    }
+    public IEnumerator GetEnumerator()
+    {
+        return new ArrayEnumerator(m_KeyValues);
+    }
+}

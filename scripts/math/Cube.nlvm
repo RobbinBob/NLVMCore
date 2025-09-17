@@ -1,0 +1,82 @@
+package scripts.math;
+
+import scripts.*; // Temp
+
+/// <class>
+/// <desc>Represents a Cuboid.</desc>
+public class Cube extends Volume
+{
+    public Cube(Matrix4x4 matrix, Vector3 scale)
+    {
+        super(matrix, scale);
+    }
+    public Cube(Vector3 position, Vector3 rotation, Vector3 scale)
+    {
+        super();
+
+        m_VolumeMatrix = Matrix4x4.Identity;
+        if(position != null)
+            m_VolumeMatrix = Matrix4x4.AsTranslation(position);
+        if(rotation != null)
+            m_VolumeMatrix = m_VolumeMatrix.RightMultiply(Matrix4x4.AsRotation(rotation));
+        if(scale != null)
+            m_VolumeMatrix = m_VolumeMatrix.RightMultiply(Matrix4x4.AsScale(scale));
+
+        m_VolumeScale = scale == null ? Vector3.One : scale;
+    }
+
+    private Bounds GetCorners()
+    {
+        Matrix4x4 matrixInv = m_VolumeMatrix.Invert();
+        
+        Matrix4x4 localScale = Matrix4x4.AsScale(1.0f / m_VolumeScale.X, 1.0f / m_VolumeScale.Y, 1.0f / m_VolumeScale.Z);
+        Matrix4x4 scaledMatrix = m_VolumeMatrix.RightMultiply(localScale); // Seems to bring it back into -1 to 1 range
+        Vector3 halfScale = m_VolumeScale.Div(2);
+
+            // Create the minimum corner in local-space
+        Vector3 minCorner = halfScale.Copy().Mul(-1);
+        minCorner = scaledMatrix.RightMultiply(Matrix4x4.AsTranslation(minCorner)).GetPosition();
+        minCorner = matrixInv.Multiply3x3(minCorner);
+
+            // Create the maximum corner in local-space
+        Vector3 maxCorner = halfScale.Copy();
+        maxCorner = scaledMatrix.RightMultiply(Matrix4x4.AsTranslation(maxCorner)).GetPosition();
+        maxCorner = matrixInv.Multiply3x3(maxCorner);
+
+        return new Bounds(minCorner, maxCorner);
+    }
+
+    public bool IsPointWithinVolume(Vector3 point)
+    {
+        Vector3 center = m_VolumeMatrix.GetPosition();
+        if(Vector3.Distance(center, point) > m_VolumeScale.Length() / 2.0f)
+        {
+            Debug.Print("Point is outside of sphere range, skipping calculations")
+            return false;
+        }
+
+
+        Matrix4x4 matrixInv = m_VolumeMatrix.Invert();
+        Debug.DrawMatrix(m_VolumeMatrix, 0.2f);
+        Bounds bounds = GetCorners();
+        Vector3 minCorner = bounds.Min;
+        Vector3 maxCorner = bounds.Max;
+
+            // Pull the world-space point into local-space
+        Vector3 localPoint = matrixInv.Multiply3x3(point);
+        return localPoint.GreaterThan(minCorner) && localPoint.LessThan(maxCorner);
+    }
+    public bool IsPointOutsideVolume(Vector3 point)
+    {
+        Matrix4x4 matrixInv = m_VolumeMatrix.Invert();
+        Bounds bounds = GetCorners();
+        Vector3 minCorner = bounds.Min;
+        Vector3 maxCorner = bounds.Max;
+
+            // Pull the world-space point into local-space
+        Vector3 localPoint = matrixInv.Multiply3x3(point);
+        return (localPoint.X < minCorner.X || localPoint.Y < minCorner.Y || localPoint.Z < minCorner.Z) ||
+                (localPoint.X > maxCorner.X || localPoint.Y > maxCorner.Y || localPoint.Z > maxCorner.Z);
+    }
+}
+/// </class>

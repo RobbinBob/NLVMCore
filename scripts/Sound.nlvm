@@ -1,0 +1,329 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public class Sound extends UpdateableObject implements IUpdateable, IReferenceable, IInstantiateable
+{
+    protected StaticSound m_StaticSound = null;
+    private float m_Pitch = 1.0f;
+    private float m_Gain = 1.0f;
+    private String m_Name = "Sound";
+    protected ResourcePath m_Resource = null;
+
+    private bool m_IsPlaying = true;
+    private bool m_IsPaused = false;
+
+    public static final int ENVIRONMENT_WORLD = StaticSound.E_ENVMODE_GLOBAL;
+    public static final int ENVIRONMENT_LOCAL = StaticSound.E_ENVMODE_LOCAL;
+    public static final int ENVIRONMENT_COPY = StaticSound.E_ENVMODE_SAME_AS_LISTENER;
+    public static final int ENVIRONMENT_NONE = StaticSound.E_ENVMODE_PLAIN;
+
+         // Fake enum because it uses sound by default
+         // I just wanted it because unless you know the inner workings you dont know itll use sound
+    public static final int AUDIO_FLAG_SOUND = 0;
+    public static final int AUDIO_FLAG_MUSIC = StaticSound.FLAG_MUSIC;
+    public static final int AUDIO_FLAG_MONO = StaticSound.FLAG_MIXDOWN_MONO;
+    public static final int AUDIO_FLAG_SHARED = StaticSound.FLAG_SHARED;
+
+    public static final int AUDIO_DEFAULT = AUDIO_FLAG_SOUND | AUDIO_FLAG_MONO;
+
+
+    private float m_PlayCutoffTime = 0.0f;
+    private int m_PlayLoops = 0;
+    private int m_PlayLoopsCurrent = 0;
+    private int m_AudioFlags = AUDIO_DEFAULT;
+    private int m_EnvironmentFlags = ENVIRONMENT_NONE;
+    private float m_AudioLength = 0.0f;
+    private float m_CurrentTime = 0.0f;
+    private float m_AudioDistance = 1.0f;
+    private float m_AudioFalloff = 1.0f;
+    private bool m_IsUsingDoppler = false;
+
+    private static final int MODE_NONE = -1;
+    private static final int MODE_PLAYING_ONCE = 0;
+    private static final int MODE_PLAYING_ONCE_CUTOFF = 1;
+    private static final int MODE_PLAYING_LOOPED = 2;
+    private static final int MODE_PLAYING_LOOPED_LIMIT = 3;
+    private static final int MODE_STOP_AT_END = 4;
+    private int m_Mode = MODE_NONE;
+
+
+
+    public Sound(ResourcePath soundResource)
+    {
+        this(soundResource, AUDIO_DEFAULT, ENVIRONMENT_NONE);
+    }
+    public Sound(ResourcePath soundResource, int audioFlags)
+    {
+        this(soundResource, audioFlags, ENVIRONMENT_NONE);
+    }
+    public Sound(ResourcePath soundResource, int audioFlags, int environmentFlags)
+    {
+        Simulator sim = NoLimits.getSimulator();
+        m_StaticSound = StaticSound.loadFromResource(soundResource, audioFlags);
+        m_StaticSound.setEnvironmentMode(environmentFlags);
+        m_AudioFlags = audioFlags;
+        m_EnvironmentFlags = environmentFlags;
+        m_AudioLength = (float)m_StaticSound.getLength();
+        m_Resource = soundResource;
+        Registry.GetInstance().Register(this);
+    }
+
+
+    public void PlaySoundOnce()
+    {
+        m_StaticSound.play();
+        m_Mode = MODE_PLAYING_ONCE;
+        m_CurrentTime = 0.0f;
+        m_IsPlaying = true;
+        SetShouldUpdate(true);
+    }
+    public void PlaySoundOnceCutoff(float time)
+    {
+        m_StaticSound.play();
+        m_PlayCutoffTime = time;
+        m_Mode = MODE_PLAYING_ONCE_CUTOFF;
+        m_CurrentTime = 0.0f;
+        m_IsPlaying = true;
+        SetShouldUpdate(true);
+    }
+    public void PlaySoundLooped()
+    {
+        m_StaticSound.playLoop();
+        m_CurrentTime = 0.0f;
+        m_Mode = MODE_PLAYING_LOOPED;
+        m_IsPlaying = true;
+        SetShouldUpdate(true);
+    }
+    public void PlaySoundLooped(int loops)
+    {
+        m_StaticSound.playLoop();
+        m_CurrentTime = 0.0f;
+        m_Mode = MODE_PLAYING_LOOPED_LIMIT;
+        m_PlayLoops = loops;
+        m_PlayLoopsCurrent = 0;
+        m_IsPlaying = true;
+        SetShouldUpdate(true);
+    }
+    public void Pause()
+    {
+        if(m_IsPaused == false)
+        {
+            SetShouldUpdate(false);
+            m_IsPaused = true;
+            m_StaticSound.stop();
+        }
+        else
+        {
+            SetShouldUpdate(true);
+            m_IsPaused = false;
+
+            switch(m_Mode)
+            {
+                case MODE_PLAYING_LOOPED:
+                case MODE_PLAYING_LOOPED_LIMIT:
+                    m_StaticSound.playLoop();
+                    break;
+                case MODE_PLAYING_ONCE:
+                case MODE_PLAYING_ONCE_CUTOFF:
+                    m_StaticSound.play();
+                    break;
+            }
+        }
+    }
+    public void Stop()
+    {
+        SetShouldUpdate(false);
+        m_IsPlaying = false;
+        m_StaticSound.stop();
+    }
+    public void StopAtEnd()
+    {
+        m_Mode = MODE_STOP_AT_END;
+    }
+
+
+    public int GetAudioFlags()
+    {
+        return m_AudioFlags;
+    }
+
+    public void SetEnvironmentFlags(int flags)
+    {
+        m_StaticSound.setEnvironmentMode(flags);
+        m_EnvironmentFlags = flags;
+    }
+    public int GetEnvironmentFlags()
+    {
+        return m_EnvironmentFlags;
+    }
+
+    public void SetPitch(float pitch)
+    {
+        m_StaticSound.setPitch(pitch); 
+        m_Pitch = pitch;   
+    }
+    public float GetPitch()
+    {
+        return m_Pitch;
+    }
+
+    public void SetGain(float gain)
+    {
+        m_StaticSound.setGain(gain);
+        m_Gain = gain;
+    }
+    public float GetGain()
+    {
+        return m_Gain;
+    }
+
+    public void SetShouldUseDoppler(bool useDoppler)
+    {
+        m_StaticSound.setDopplerMode(useDoppler);
+        m_IsUsingDoppler = useDoppler;
+    }
+
+
+    public void SetConstantDistance(float constantDistance)
+    {
+        m_AudioDistance = constantDistance;
+    }
+    public float GetConstantDistance()
+    {
+        return m_AudioDistance;
+    }
+    public void SetFalloffFactor(float falloff)
+    {
+        m_AudioFalloff = falloff;
+    }
+    public float GetFalloffFactor()
+    {
+        return m_AudioFalloff;
+    }
+
+
+    public int GetMode()
+    {
+        return m_Mode;
+    }
+    public float GetTimestamp()
+    {
+        return m_CurrentTime;
+    }
+
+    public static void Copy(Sound copyFrom, Sound copyTo)
+    {
+        copyTo.SetConstantDistance(copyFrom.m_AudioDistance);
+        copyTo.SetFalloffFactor(copyFrom.m_AudioFalloff);
+        copyTo.SetShouldUseDoppler(copyFrom.m_IsUsingDoppler);
+        copyTo.SetPitch(copyFrom.m_Pitch);
+        copyTo.SetGain(copyFrom.m_Gain);
+    }
+    public Object Instantiate()
+    {
+        Sound sound = new Sound(m_Resource, m_AudioFlags, m_EnvironmentFlags);
+        Sound.Copy(this, sound);
+        sound.SetName(GetName() + "Instance");
+        return sound;
+    }
+
+
+    public void Update(float tick)
+    {
+        switch(m_Mode)
+        {
+            case MODE_PLAYING_ONCE:
+            {
+                m_CurrentTime += m_Pitch * tick;
+                if(m_CurrentTime >= m_AudioLength)
+                {
+                    m_Mode = MODE_NONE;
+                    m_CurrentTime = 0.0f;
+                    SetShouldUpdate(false);
+                    m_IsPlaying = false;
+                }
+                break;
+            }
+            case MODE_PLAYING_ONCE_CUTOFF:
+            {
+                m_CurrentTime += m_Pitch * tick;
+                if(m_CurrentTime >= m_PlayCutoffTime)
+                    m_StaticSound.setGain(0);
+
+                if(m_CurrentTime >= m_AudioLength)
+                {
+                    m_StaticSound.setGain(m_Gain);
+                    m_Mode = MODE_NONE;
+                    m_CurrentTime = 0.0f;
+                    m_StaticSound.stop();
+                    SetShouldUpdate(false);
+                    m_IsPlaying = false;
+                }
+                break;
+            }
+            case MODE_PLAYING_LOOPED:
+            {
+                m_CurrentTime += m_Pitch * tick;
+                while(m_CurrentTime >= m_AudioLength)
+                    m_CurrentTime -= m_AudioLength;
+
+                break;
+            }
+            case MODE_PLAYING_LOOPED_LIMIT:
+            {
+                m_CurrentTime += m_Pitch * tick;
+                if(m_CurrentTime >= m_AudioLength)
+                {
+                    while(m_CurrentTime >= m_AudioLength)
+                        m_CurrentTime -= m_AudioLength;
+
+                    m_PlayLoopsCurrent++;
+
+                    if(m_PlayLoopsCurrent >= m_PlayLoops)
+                    {
+                        m_StaticSound.stop();
+                        m_Mode = MODE_NONE;
+                        m_CurrentTime = 0.0f;
+                        SetShouldUpdate(false);
+                        m_IsPlaying = false;
+                    }
+                }
+                break;
+            }
+            case MODE_STOP_AT_END:
+            {
+                m_CurrentTime += m_Pitch * tick;
+                if(m_CurrentTime >= m_AudioLength)
+                {
+                    m_Mode = MODE_NONE;
+                    m_CurrentTime = 0.0f;
+                    SetShouldUpdate(false);
+                    m_IsPlaying = false;
+                    m_StaticSound.stop();
+                }
+                break;
+            }
+        }
+    }
+    public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
+
+    public void SetName(String name)
+    {
+        m_Name = name;
+    }
+    public String GetName()
+    {
+        return m_Name;
+    }
+    public String GetType()
+    {
+        return "scripts.Sound";
+    }
+
+    public String toString()
+    {
+        return GetType() + " | " + GetName();
+    }
+}

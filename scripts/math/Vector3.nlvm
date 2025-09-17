@@ -285,6 +285,29 @@ public final class Vector3 extends Object
         return right.Sub(left).LengthSqr();
     }
 
+
+    public bool GreaterThan(Vector3 compare)
+    {
+        return X > compare.X && Y > compare.Y && Z > compare.Z;
+    }
+    public bool LessThan(Vector3 compare)
+    {
+        return X < compare.X && Y < compare.Y && Z < compare.Z;
+    }
+    public bool GreaterOrEqualsThan(Vector3 compare)
+    {
+        return X >= compare.X && Y >= compare.Y && Z >= compare.Z;
+    }
+    public bool LessOrEqualsThan(Vector3 compare)
+    {
+        return X <= compare.X && Y <= compare.Y && Z <= compare.Z;
+    }
+    public bool Equals(Vector3 compare)
+    {
+        return X == compare.X && Y == compare.Y && Z == compare.Z;
+    }
+
+
     /// <method>
     /// <desc>Swizzles all axis to one axis.</desc>
     /// <arg name="a">The axis to copy across.</arg>

@@ -2,8 +2,10 @@ package scripts;
 
 /// <class>
 /// <desc>Represents a value type.</desc>
-public abstract final class Enum extends Object
+public final class Enum extends Object
 {
+    private Enum() { }
+
     /// <method>
     /// <desc>Splits the flagged enum into its individual counterparts.</desc>
     /// <return>An array of all enum values found within the flag.</return>

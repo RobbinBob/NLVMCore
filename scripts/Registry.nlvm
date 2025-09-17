@@ -1,0 +1,79 @@
+package scripts;
+
+import scripts.containers.*;
+
+public final class Registry extends Object
+{
+    private static Registry m_Instance = null;
+    private Dictionary m_RegisteredEntities = null;
+
+    private Registry() 
+    {
+        m_RegisteredEntities = new Dictionary();
+    }
+
+    public static Registry GetInstance()
+    {
+        if(m_Instance == null)
+            m_Instance = new Registry();
+
+        return m_Instance;
+    }
+
+
+
+    public void Register(IReferenceable referenceable)
+    {
+        if(referenceable.GetType() == null || referenceable.GetType().equals(""))
+            Exception.Throw("IReferenceable instance has invalid type: " + referenceable.GetType());
+
+        String type = referenceable.GetType();
+        if(!m_RegisteredEntities.ContainsKey(type))
+            m_RegisteredEntities.Insert(type, new List());
+
+        List entityList = (List)m_RegisteredEntities.GetValue(type);
+        if(entityList.Contains(referenceable))
+            return;
+        
+        entityList.Insert(referenceable);
+        Debug.Print("Registered IReferenceable of type '" + referenceable.GetType() + "', and name '" + referenceable.GetName() + "'");
+    }
+
+    public IReferenceable GetReferenceFromName(String type, String name)
+    {
+        if(!m_RegisteredEntities.ContainsKey(type))
+            return null;
+
+        List entityList = (List)m_RegisteredEntities.GetValue(type);
+        IEnumerator enumerator = entityList.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            IReferenceable referenceable = (IReferenceable)enumerator.Get();
+            if(referenceable.GetName().equals(name))
+                return referenceable;
+        }
+        return null;
+    }
+    public IReferenceable[] GetReferencesFromName(String type, String name)
+    {
+        if(!m_RegisteredEntities.ContainsKey(type))
+            return null;
+
+        List foundEntities = new List();
+        List entityList = (List)m_RegisteredEntities.GetValue(type);
+        IEnumerator enumerator = entityList.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            IReferenceable referenceable = (IReferenceable)enumerator.Get();
+            if(referenceable.GetName().equals(name))
+                foundEntities.Insert(referenceable);
+        }
+
+        IReferenceable[] references = new IReferenceable[foundEntities.Count()];
+        enumerator = foundEntities.GetEnumerator();
+        int i = 0;
+        while(enumerator.MoveNext())
+            references[i++] = (IReferenceable)enumerator.Get();
+        return references;
+    }
+}

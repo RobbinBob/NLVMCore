@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="scripts/resources/UnitCube.glb"/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioFile</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type filetype="audio">resourcepath</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_file</id>
+      <description>The audio file that will be associated</description>
+      <label>Audio Clip</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio Snippet</defaultvalue>
+      <id>audio_name</id>
+      <description>Unique name of this audio snippet, used for referencing</description>
+      <label>Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>1</defaultvalue>
+      <id>audio_gain</id>
+      <description>Range of [0 - 1]</description>
+      <label>Gain</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>1</defaultvalue>
+      <id>audio_pitch</id>
+      <description>Range of [0.1 - 10]</description>
+      <label>Pitch</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_is_music</id>
+      <label>Audio Is Music</label>
+    </scriptparameter>
+  </sceneobject>
+</root>

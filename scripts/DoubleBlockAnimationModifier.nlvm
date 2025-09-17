@@ -38,10 +38,10 @@ public final class DoubleBlockAnimationModifier extends AnimationModifier implem
     private InterpolateTrainMatrixModifier m_InterpolateModifier = null;
     private BlockUtil m_BlockHandler = null;
 
-    public bool Start()
+    public bool Awake()
     {
             // Call super to setup the animation stuff for us
-        super.Start();
+        super.Awake();
 
         m_EnterBlock = GetBlockParameter("enter_block");
         m_EnterSection = m_EnterBlock.getSection();

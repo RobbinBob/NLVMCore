@@ -1,0 +1,47 @@
+package scripts.math;
+
+/// <class>
+/// <desc>Base type for volumes.</desc>
+public abstract class Volume extends Object
+{
+    protected Matrix4x4 m_VolumeMatrix = null;
+    protected Vector3 m_VolumeScale = null;
+
+    protected Volume()
+    {
+        m_VolumeMatrix = Matrix4x4.Identity;
+        m_VolumeScale = Vector3.One;
+    }
+    protected Volume(Matrix4x4 matrix, Vector3 scale)
+    {
+        m_VolumeMatrix = new Matrix4x4(matrix);
+        m_VolumeScale = new Vector3(scale);
+    }
+
+    /// <method>
+    /// <desc>Sets the volumes current matrix.</desc>
+    /// </method>
+    public void SetMatrix(Matrix4x4 matrix)
+    {
+        m_VolumeMatrix = new Matrix4x4(matrix);
+    }
+    /// <method>
+    /// <desc>Gets the current volume matrix.</desc>
+    /// </method>
+    public Matrix4x4 GetMatrix()
+    {
+        return new Matrix4x4(m_VolumeMatrix);
+    }
+
+    /// <method>
+    /// <desc>Checks whether a point is within this volume.</desc>
+    /// <return>True if point is within volume, otherwise False.</return>
+    /// </method>
+    public abstract bool IsPointWithinVolume(Vector3 point);
+    /// <method>
+    /// <desc>Checks whether a point is outside of the volume.</desc>
+    /// <return>True if point is outside volume, otherwise False.</return>
+    /// </method>
+    public abstract bool IsPointOutsideVolume(Vector3 point);
+}
+/// </class>

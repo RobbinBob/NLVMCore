@@ -39,7 +39,7 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
     private CoasterWheel[] m_WheelTable = new CoasterWheel[0];
     private SceneObjectElement[] m_Wheels = new SceneObjectElement[0];
 
-    public bool Start()
+    public bool Awake()
     {
         m_Coaster = m_SceneObject.getCoasterParameter("coaster");
         m_CoasterName = m_Coaster.getName();

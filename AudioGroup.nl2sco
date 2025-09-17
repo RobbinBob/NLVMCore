@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="scripts/resources/UnitCube.glb"/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioGroup</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio Snippet</defaultvalue>
+      <id>primary_audio_name</id>
+      <description>Name of this audio snippet, used for referencing</description>
+      <label>Primary Audio Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>None</defaultvalue>
+      <id>trigger_0_audio_name</id>
+      <label>Triggered Audio 1</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>None</defaultvalue>
+      <id>trigger_1_audio_name</id>
+      <label>Triggered Audio 2</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>None</defaultvalue>
+      <id>trigger_2_audio_name</id>
+      <label>Triggered Audio 2</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>None</defaultvalue>
+      <id>trigger_3_audio_name</id>
+      <label>Triggered Audio 3</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>None</defaultvalue>
+      <id>trigger_4_audio_name</id>
+      <label>Triggered Audio 4</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>None</defaultvalue>
+      <id>trigger_5_audio_name</id>
+      <label>Triggered Audio 5</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Group</defaultvalue>
+      <id>group_name</id>
+      <label>Group Name</label>
+    </scriptparameter>
+  </sceneobject>
+</root>
