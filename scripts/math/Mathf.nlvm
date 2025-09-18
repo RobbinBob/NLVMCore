@@ -91,6 +91,16 @@ public final class Mathf
     }
 
     /// <method>
+    /// <desc>Gets the sign of a number.</desc>
+    /// <return>-1 if negative, 1 is positive and 0 if neither.</return>
+    /// </method>
+    public static int Sign(float n)
+    {
+        return (n < 0 ? -1 : (n > 0 ? 1 : 0));
+    }
+
+
+    /// <method>
     /// <desc>Gets the minimum of two values.</desc>
     /// </method>
     public static float Min(float a, float b)

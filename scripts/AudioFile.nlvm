@@ -1,6 +1,5 @@
 package scripts;
 
-import scripts.math.*;
 import com.nolimitscoaster.*;
 
 public class AudioFile extends Behaviour
@@ -19,6 +18,8 @@ public class AudioFile extends Behaviour
         sound.SetGain(GetFloatParameter("audio_gain"));
         sound.SetPitch(GetFloatParameter("audio_pitch"));
         sound.SetName(GetStringParameter("audio_name"));
+
+        sound.SetFalloffFactor(10);
 
         return false;
     }

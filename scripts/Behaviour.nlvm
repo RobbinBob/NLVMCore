@@ -1,6 +1,7 @@
 package scripts;
 
 import com.nolimitscoaster.*;
+import nlvm.math3d.*;
 
 import scripts.containers.*;
 import scripts.math.*;
@@ -221,6 +222,14 @@ public abstract class Behaviour extends Script
     }
 
 
+    public Vector3 GetViewerPosition()
+    {
+        Vector3f pos = new Vector3f();
+        sim.getViewPos(pos);
+        return Vector3.FromNative(pos);
+    }
+
+
     public Vector3 GetPosition()
     {
         return Vector3.FromNative(m_SceneObject.getTranslation());
@@ -229,8 +238,22 @@ public abstract class Behaviour extends Script
     {
         m_SceneObject.setTranslation(position.GetNative());
     }
-
-
+    public Vector3 GetScale()
+    {
+        return Vector3.FromNative(m_SceneObject.getScale());
+    }
+    public void SetScale(Vector3 scale)
+    {
+        m_SceneObject.setScale(scale.GetNative());
+    }
+    public Matrix4x4 GetMatrix()
+    {
+        return Matrix4x4.FromNative(m_SceneObject.getMatrix());
+    }
+    public void SetMatrix(Matrix4x4 matrix)
+    {
+        m_SceneObject.setMatrix(matrix.GetNative());
+    }
 
 
     /// <method>

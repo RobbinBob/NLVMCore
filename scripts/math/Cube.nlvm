@@ -6,9 +6,12 @@ import scripts.*; // Temp
 /// <desc>Represents a Cuboid.</desc>
 public class Cube extends Volume
 {
+    private Matrix4x4 m_UnitScaleMatrix = null;
+
     public Cube(Matrix4x4 matrix, Vector3 scale)
     {
         super(matrix, scale);
+        m_UnitScaleMatrix = Matrix4x4.AsScale(1 / m_VolumeScale.X, 1 / m_VolumeScale.Y, 1 / m_VolumeScale.Z);
     }
     public Cube(Vector3 position, Vector3 rotation, Vector3 scale)
     {
@@ -23,6 +26,7 @@ public class Cube extends Volume
             m_VolumeMatrix = m_VolumeMatrix.RightMultiply(Matrix4x4.AsScale(scale));
 
         m_VolumeScale = scale == null ? Vector3.One : scale;
+        m_UnitScaleMatrix = Matrix4x4.AsScale(1 / m_VolumeScale.X, 1 / m_VolumeScale.Y, 1 / m_VolumeScale.Z);
     }
 
     private Bounds GetCorners()
@@ -50,10 +54,7 @@ public class Cube extends Volume
     {
         Vector3 center = m_VolumeMatrix.GetPosition();
         if(Vector3.Distance(center, point) > m_VolumeScale.Length() / 2.0f)
-        {
-            Debug.Print("Point is outside of sphere range, skipping calculations")
             return false;
-        }
 
 
         Matrix4x4 matrixInv = m_VolumeMatrix.Invert();
@@ -78,5 +79,36 @@ public class Cube extends Volume
         return (localPoint.X < minCorner.X || localPoint.Y < minCorner.Y || localPoint.Z < minCorner.Z) ||
                 (localPoint.X > maxCorner.X || localPoint.Y > maxCorner.Y || localPoint.Z > maxCorner.Z);
     }
+    public Vector3 GetNearestSurface(Vector3 point)
+    {
+        Matrix4x4 unitScale = m_VolumeMatrix.RightMultiply(m_UnitScaleMatrix);
+        Vector3 localSpacePoint = unitScale.Invert().TransformVector3One(point);
+        Vector3 halfExtents = m_VolumeScale.Div(2);
+
+        float x = Mathf.Clamp(localSpacePoint.X, -halfExtents.X, halfExtents.X);
+        float y = Mathf.Clamp(localSpacePoint.Y, -halfExtents.Y, halfExtents.Y);
+        float z = Mathf.Clamp(localSpacePoint.Z, -halfExtents.Z, halfExtents.Z);
+
+        if((localSpacePoint.X > -halfExtents.X && localSpacePoint.X < halfExtents.X) && 
+        (localSpacePoint.Y > -halfExtents.Y && localSpacePoint.Y < halfExtents.Y) &&
+        (localSpacePoint.Z > -halfExtents.Z && localSpacePoint.Z < halfExtents.Z))
+        {
+            float dx = halfExtents.X - Mathf.Abs(localSpacePoint.X);
+            float dy = halfExtents.Y - Mathf.Abs(localSpacePoint.Y);
+            float dz = halfExtents.Z - Mathf.Abs(localSpacePoint.Z);
+
+            if(dx <= dy && dx <= dz)
+                x = Mathf.Sign(localSpacePoint.X) * halfExtents.X;
+            else if(dy <= dx && dy <= dz)
+                y = Mathf.Sign(localSpacePoint.Y) * halfExtents.Y;
+            else
+                z = Mathf.Sign(localSpacePoint.Z) * halfExtents.Z;
+        }
+
+        localSpacePoint = new Vector3(x, y, z);
+        point = unitScale.TransformVector3One(localSpacePoint);
+        return point;
+    }
 }
+
 /// </class>

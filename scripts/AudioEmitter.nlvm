@@ -1,9 +1,14 @@
 package scripts;
 
 import scripts.containers.*;
+import scripts.math.*;
 
-public class AudioEmitter extends Behaviour implements IReferenceable
+public abstract class AudioEmitter extends Behaviour implements IReferenceable
 {
+    protected Volume m_EmitterWorldVolume = null;
+    
+    private static final float MAX_DIST_CALCULATIONS = 2;
+
     private List m_AudioClips = new List();
     private SpatialSound m_ActiveSound = null;
 
@@ -19,22 +24,70 @@ public class AudioEmitter extends Behaviour implements IReferenceable
     }
 
 
+    public void Update(float tick)
+    {
+        Vector3 viewPos = GetViewerPosition();
+        if(Vector3.Distance(m_EmitterWorldVolume.GetMatrix().GetPosition(), viewPos) > m_EmitterWorldVolume.GetScale().Length() * MAX_DIST_CALCULATIONS)
+            return;
+
+        Vector3 soundPosition = viewPos;
+        if(m_EmitterWorldVolume.IsPointOutsideVolume(viewPos))
+            soundPosition = m_EmitterWorldVolume.GetNearestSurface(viewPos);
+
+        IEnumerator enumerator = m_AudioClips.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            SpatialSound sound = (SpatialSound)enumerator.Get();
+            sound.SetPosition(soundPosition);
+        }
+    }
+
+
     public void CacheAudioClip(SpatialSound sound)
     {
+        Debug.Print("Caching sound " + sound.GetName());
         m_AudioClips.Insert(sound);
     }
 
-    public void PlayFromCache(int slot)
+    public SpatialSound GetCurrentSound()
     {
-        if(m_ActiveSound != null)
-        {
-            m_ActiveSound.Stop();
-            m_ActiveSound = null;
-        }
-        ((SpatialSound)m_AudioClips.At(slot)).PlaySoundLooped();
-        m_ActiveSound = (SpatialSound)m_AudioClips.At(slot);
-        m_ActiveSound.SetPosition(GetPosition());
+        return m_ActiveSound;
     }
+    public SpatialSound SetCurrentSound(String name)
+    {
+        //Debug.Print("Setting sound " + name);
+            // Try find the sound in the current emitter cache
+        m_ActiveSound = null;
+        IEnumerator enumerator = m_AudioClips.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            if(((SpatialSound)enumerator.Get()).GetName().equals(name))
+            {
+                m_ActiveSound = (SpatialSound)enumerator.Get();
+                break;
+            }
+        }
+
+            // Not in cache, we need to load it in
+        if(m_ActiveSound == null)
+        {
+            Debug.Print("Unable to find sound with name " + name + " in cache");
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.SpatialSound", name);
+            if(reference == null)
+                Exception.Throw("Unable to load SpatialSound file from registry with name '" + name + "'");
+
+            SpatialSound sound = (SpatialSound)((SpatialSound)reference).Instantiate();
+            m_AudioClips.Insert(sound);
+            m_ActiveSound = sound;
+        }
+
+        m_ActiveSound.SetPosition(GetPosition());
+
+        return m_ActiveSound;
+    }
+
+
+
 
         // IReferenceable
     public String GetType()

@@ -33,6 +33,11 @@ public abstract class Volume extends Object
         return new Matrix4x4(m_VolumeMatrix);
     }
 
+    public Vector3 GetScale()
+    {
+        return m_VolumeScale;
+    }
+
     /// <method>
     /// <desc>Checks whether a point is within this volume.</desc>
     /// <return>True if point is within volume, otherwise False.</return>
@@ -43,5 +48,12 @@ public abstract class Volume extends Object
     /// <return>True if point is outside volume, otherwise False.</return>
     /// </method>
     public abstract bool IsPointOutsideVolume(Vector3 point);
+
+
+    /// <method>
+    /// <desc>Finds the nearest point on the surface from the specified point.</desc>
+    /// <return>The world-space position on the volume surface.</return>
+    /// </method>
+    public abstract Vector3 GetNearestSurface(Vector3 point);
 }
 /// </class>

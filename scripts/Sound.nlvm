@@ -178,6 +178,13 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         return m_Gain;
     }
 
+    public void SetGainFaded(float gain, float time)
+    {
+        m_Gain = gain;
+        m_StaticSound.setGainFaded(gain, time);
+    }
+
+
     public void SetShouldUseDoppler(bool useDoppler)
     {
         m_StaticSound.setDopplerMode(useDoppler);
@@ -202,6 +209,11 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         return m_AudioFalloff;
     }
 
+    public bool IsPlaying()
+    {
+        return m_IsPlaying;
+    }
+
 
     public int GetMode()
     {
@@ -224,7 +236,7 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
     {
         Sound sound = new Sound(m_Resource, m_AudioFlags, m_EnvironmentFlags);
         Sound.Copy(this, sound);
-        sound.SetName(GetName() + "Instance");
+        sound.SetName(GetName() + "_Instance");
         return sound;
     }
 

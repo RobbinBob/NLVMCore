@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="scripts/resources/UnitSphere.glb"/>
+    <param customuniformscale="true"/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioEmitterSphere</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Group</defaultvalue>
+      <id>group_name</id>
+      <label>Group Name</label>
+    </scriptparameter>
+  </sceneobject>
+</root>
