@@ -2,25 +2,47 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
-public class AudioFile extends Behaviour
+public class AudioFile extends Behaviour implements IReferenceable
 {
+    private Sound m_Sound = null;
+    private String m_Name = "";
+    private float m_DefaultGain = 0;
+    private float m_DefaultPitch = 0;
+
     public bool Awake()
     {
         ResourcePath resource = GetResourcePathParameter("audio_file");
-
         int audioFlags = Sound.AUDIO_FLAG_SOUND | Sound.AUDIO_FLAG_MONO;
         bool isMusic = GetBoolParameter("audio_is_music");
         if(isMusic)
             audioFlags |= Sound.AUDIO_FLAG_MUSIC;
+        m_Sound = new SpatialSound(resource, audioFlags);
 
-        SpatialSound sound = new SpatialSound(resource, audioFlags);
+        m_Name = GetStringParameter("audio_name");
+        m_DefaultGain = GetFloatParameter("audio_gain");
+        m_DefaultPitch = GetFloatParameter("audio_pitch");
 
-        sound.SetGain(GetFloatParameter("audio_gain"));
-        sound.SetPitch(GetFloatParameter("audio_pitch"));
-        sound.SetName(GetStringParameter("audio_name"));
+        m_Sound.SetGain(m_DefaultGain);
+        m_Sound.SetPitch(m_DefaultPitch);
+        m_Sound.SetName(m_Name);
+        m_Sound.SetFalloffFactor(10);
 
-        sound.SetFalloffFactor(10);
+        Registry.GetInstance().Register(this);
 
         return false;
+    }
+
+    public String GetName()
+    {
+        return m_Name;
+    }
+    public void SetName(String name)
+    {
+        m_Name = name;
+        m_Sound.SetName(name);
+    }
+    public String GetType()
+    {
+        return "scripts.AudioFile";
     }
 }

@@ -2,6 +2,11 @@
 <root>
   <sceneobject>
     <model path="scripts/resources/UnitCube.glb"/>
+    <usercolor>
+      <label>Color</label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
     <script>
       <classpath></classpath>
       <class>scripts.AudioEmitterCube</class>

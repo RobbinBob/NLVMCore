@@ -1,0 +1,17 @@
+package scripts;
+
+public final class AudioConfig extends Object 
+{
+    public String SoundName = "";
+    public bool CanMuteLowerPriority = true;
+    public int Priority = 0;
+    public AudioFile FileReference;
+
+    public AudioConfig(AudioFile file, int priority, bool canMuteLowerPriority)
+    {
+        FileReference = file;
+        SoundName = file.GetName();
+        Priority = priority;
+        CanMuteLowerPriority = canMuteLowerPriority;
+    }
+}

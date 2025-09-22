@@ -1,0 +1,21 @@
+package scripts;
+
+public abstract class AudioQueue extends Behaviour
+{
+    protected AudioController m_AudioController = null;
+    protected String m_AudioName = "";
+    protected int m_Priority = 0;
+
+    public int GetOrder() { return -15; }
+    public bool Awake() { return true; }
+
+    public void Start()
+    {
+        m_AudioController = (AudioController)Registry.GetInstance().GetReferenceFromName("scripts.AudioController", GetStringParameter("audio_group"));
+        if(m_AudioController == null)
+            NullReferenceException.Throw("Unable to find AudioController with name '" + GetStringParameter("audio_group") + "'");
+    
+        m_AudioName = GetStringParameter("audio_name");
+        m_Priority = GetIntegerParameter("audio_priority");
+    }
+}

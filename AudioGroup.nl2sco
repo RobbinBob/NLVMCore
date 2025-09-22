@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <sceneobject>
-    <model path="scripts/resources/UnitCube.glb"/>
+    <model path="models/UnitCube.glb"/>
+    <preview>thumbs/Controller.png</preview>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioGroup</class>
+      <class>scripts.AudioController</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -16,45 +17,10 @@
     </scriptparameter>
     <scriptparameter>
       <type>string</type>
-      <defaultvalue>None</defaultvalue>
-      <id>trigger_0_audio_name</id>
-      <label>Triggered Audio 1</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>string</type>
-      <defaultvalue>None</defaultvalue>
-      <id>trigger_1_audio_name</id>
-      <label>Triggered Audio 2</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>string</type>
-      <defaultvalue>None</defaultvalue>
-      <id>trigger_2_audio_name</id>
-      <label>Triggered Audio 2</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>string</type>
-      <defaultvalue>None</defaultvalue>
-      <id>trigger_3_audio_name</id>
-      <label>Triggered Audio 3</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>string</type>
-      <defaultvalue>None</defaultvalue>
-      <id>trigger_4_audio_name</id>
-      <label>Triggered Audio 4</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>string</type>
-      <defaultvalue>None</defaultvalue>
-      <id>trigger_5_audio_name</id>
-      <label>Triggered Audio 5</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>string</type>
       <defaultvalue>My Group</defaultvalue>
       <id>group_name</id>
       <label>Group Name</label>
     </scriptparameter>
+    <materialpath name="Material">thumbs/Controller.nl2mat</materialpath>
   </sceneobject>
 </root>

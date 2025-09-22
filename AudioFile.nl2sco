@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <sceneobject>
-    <model path="scripts/resources/UnitCube.glb"/>
+    <model path="models/UnitCube.glb"/>
+    <preview>thumbs/File.png</preview>
     <script>
       <classpath></classpath>
       <class>scripts.AudioFile</class>
@@ -41,5 +42,6 @@
       <id>audio_is_music</id>
       <label>Audio Is Music</label>
     </scriptparameter>
+    <materialpath name="Material">thumbs/File.nl2mat</materialpath>
   </sceneobject>
 </root>

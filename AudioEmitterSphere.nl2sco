@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <sceneobject>
-    <model path="scripts/resources/UnitSphere.glb"/>
+    <model path="models/SphereEmitter.glb"/>
+    <param allowrot="false"/>
     <param customuniformscale="true"/>
+    <usercolor>
+      <label>Color</label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
     <script>
       <classpath></classpath>
       <class>scripts.AudioEmitterSphere</class>
@@ -14,5 +20,8 @@
       <id>group_name</id>
       <label>Group Name</label>
     </scriptparameter>
+    <materialpath name="Axis">materials/SphereAxis.nl2mat</materialpath>
+    <materialpath name="Collider">materials/Collider.nl2mat</materialpath>
+    <materialpath name="Material">materials/SphereEmitterOutline.nl2mat</materialpath>
   </sceneobject>
 </root>

@@ -4,11 +4,9 @@ import scripts.math.*;
 import scripts.utilities.*;
 import scripts.containers.*;
 
-public class AudioGroup extends Behaviour implements IReferenceable
+public class AudioController extends Behaviour implements IReferenceable
 {
     private SpatialSound m_PrimaryAudioLoop = null;
-    private SpatialSound[] m_TriggeredAudio = new SpatialSound[6];
-
     private AudioEmitter[] m_GroupEmitters = null;
 
     private List m_Queue = new List();
@@ -29,19 +27,6 @@ public class AudioGroup extends Behaviour implements IReferenceable
         m_PrimaryAudioLoop = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", GetStringParameter("primary_audio_name"));
         if(m_PrimaryAudioLoop == null)
             Exception.Throw("Unable to find scripts.SpatialSound with name '" + GetStringParameter("primary_audio_name") + "'");
-
-            // Fetch triggered audios
-        for(int i = 0; i < m_TriggeredAudio.length; ++i)
-        {
-            String audioName = GetStringParameter("trigger_" + i + "_audio_name");
-            String parsedName = StringUtil.ToLower(audioName);
-            if(parsedName.equals("none") || parsedName.equals(""))
-                continue;
-
-            m_TriggeredAudio[i] = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", audioName);
-            if(m_TriggeredAudio[i] == null)
-                Exception.Throw("Unable to find scripts.SpatialSound with name '" + audioName + "'");
-        }
 
             // Fetch the audio group name and register it
         String groupName = GetStringParameter("group_name");
@@ -131,7 +116,7 @@ public class AudioGroup extends Behaviour implements IReferenceable
     }
 
 
-    public void EnqueSound(String name, int priority)
+    public void EnqueSound(AudioConfig config)
     {
             // No Audio in queue
         if(m_Queue.Count() == 0)
@@ -182,29 +167,10 @@ public class AudioGroup extends Behaviour implements IReferenceable
         }
     }
 
-
-
-    private float m_PreviousSoundGain = 0.0f;
-    private String m_PreviousSound = "";
-    public void BeginInterruptMainLoop(String name)
-    {
-        for(int i = 0; i < m_GroupEmitters.length; ++i)
-        {
-            SpatialSound activeSound = m_GroupEmitters[i].GetCurrentSound();
-            m_PreviousSoundGain = activeSound.GetGain();
-            m_PreviousSound = activeSound.GetName();
-            activeSound.SetGain(0);
-
-            activeSound = m_GroupEmitters[i].SetCurrentSound(name);
-            activeSound.SetGain(1);
-            activeSound.PlaySoundLooped();
-        }
-    }
-
         // IReferenceable
     public String GetType()
     {
-        return "scripts.AudioGroup";
+        return "scripts.AudioController";
     }
     public String GetName()
     {

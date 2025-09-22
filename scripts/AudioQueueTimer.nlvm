@@ -1,0 +1,28 @@
+package scripts;
+
+public class AudioQueueTimer extends AudioQueue
+{
+    private Timer m_IntervalTimer = null;
+
+    public void Start()
+    {
+        super.Start();
+
+        float interval = GetFloatParameter("audio_interval");
+        if(interval <= 0)
+            Exception.Throw("Not a valid interval specified, must be > 0, '" + interval + "'");
+
+        m_IntervalTimer = new Timer(interval);
+        m_IntervalTimer.Start();
+    }
+
+    public void Update(float tick)
+    {
+        if(m_IntervalTimer.WaitForComplete())
+            return;
+
+        m_AudioController.EnqueSound(m_AudioName, m_Priority);
+        m_IntervalTimer.Reset();
+        m_IntervalTimer.Start();
+    }
+}

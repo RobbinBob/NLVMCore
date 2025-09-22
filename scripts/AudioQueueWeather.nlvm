@@ -1,30 +1,16 @@
 package scripts;
 
-public class AudioQueueWeather extends Behaviour
+public class AudioQueueWeather extends AudioQueue
 {
-    private AudioGroup m_AudioGroup = null;
-
-    public int GetOrder() { return -15; }
-    public bool Awake() { return true; }
-
     private float m_WeatherThreshold = 0;
     private bool m_HasPlayed = false;
-
     private int m_WeatherType = 0;
-    private String m_AudioName = "";
-    private int m_Priority = 0;
 
     public void Start()
     {
-        m_AudioGroup = (AudioGroup)Registry.GetInstance().GetReferenceFromName("scripts.AudioGroup", GetStringParameter("audio_group"));
-        if(m_AudioGroup == null)
-            NullReferenceException.Throw("Unable to find AudioGroup with name " + GetStringParameter("audio_group"));
-    
+        super.Start();
         m_WeatherType = GetIntegerParameter("weather_type");
         m_WeatherThreshold = GetFloatParameter("weather_threshold");
-
-        m_AudioName = GetStringParameter("audio_name");
-        m_Priority = GetIntegerParameter("audio_priority");
     }
 
 
@@ -66,7 +52,7 @@ public class AudioQueueWeather extends Behaviour
                 return;
 
             m_HasPlayed = true;
-            m_AudioGroup.EnqueSound(m_AudioName, m_Priority);
+            m_AudioController.EnqueSound(m_AudioName, m_Priority);
         }
     }
 

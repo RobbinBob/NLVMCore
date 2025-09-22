@@ -49,11 +49,11 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
         m_AudioClips.Insert(sound);
     }
 
-    public SpatialSound GetCurrentSound()
+    public final SpatialSound GetCurrentSound()
     {
         return m_ActiveSound;
     }
-    public SpatialSound SetCurrentSound(String name)
+    public final SpatialSound SetCurrentSound(String name)
     {
         //Debug.Print("Setting sound " + name);
             // Try find the sound in the current emitter cache
@@ -94,11 +94,11 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     {
         return "scripts.AudioEmitter";
     }
-    public String GetName()
+    public final String GetName()
     {
         return m_Name;
     }
-    public void SetName(String name)
+    public final void SetName(String name)
     {
         m_Name = name;
     }

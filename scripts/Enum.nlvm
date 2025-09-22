@@ -29,7 +29,7 @@ public final class Enum extends Object
                 flags.Insert(new Integer(largestFlagSection));
 
             itterations++;
-            argestFlagSection /= 2;
+            largestFlagSection /= 2;
         }
 
         if(itterations >= 500)

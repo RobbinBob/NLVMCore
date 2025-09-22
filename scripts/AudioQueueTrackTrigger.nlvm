@@ -1,0 +1,24 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public class AudioQueueTrackTrigger extends AudioQueue implements TrackTriggerListener
+{
+    private TrackTrigger m_TrackTrigger = null;
+
+    public void Start()
+    {
+        super.Start();
+        m_TrackTrigger = GetTriggerParameter("audio_trigger");
+        if(m_TrackTrigger == null)
+            NullReferenceException.Throw("No TrackTrigger specified");
+
+        m_TrackTrigger.addTrackTriggerListener(this);
+    }
+
+    public void onTrainEntering(TrackTrigger trigger, Train train)
+    {
+        m_AudioController.EnqueSound(m_AudioName, m_Priority);
+    }
+    public void onTrainLeaving(TrackTrigger trigger, Train train) { }
+}
