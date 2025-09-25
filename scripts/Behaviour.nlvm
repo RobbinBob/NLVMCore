@@ -126,8 +126,6 @@ public abstract class Behaviour extends Script
     {
         if(m_OrderList == null)
             Exception.Throw("Trying to register Behaviour for Start on wrong behaviour");
-
-        Debug.Print("Registering behaviour with order " + behaviour.GetOrder());
         
         if(m_OrderList.Count() == 0)
         {
@@ -148,9 +146,7 @@ public abstract class Behaviour extends Script
         }
 
         if(!success)
-        {
             m_OrderList.Insert(behaviour);
-        }
     }
 
     /// <method>

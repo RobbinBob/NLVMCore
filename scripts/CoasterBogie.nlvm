@@ -11,7 +11,7 @@ import scripts.containers.*;
 /// <desc>Type used for custom coaster bogies; Allows customisation of wheel rotation speeds based on the diameter,\nThis implementation uses the common separated pitch/yaw bogies found on gerst,mack,vekoma.</desc>
 public class CoasterBogie extends Behaviour implements ISetableBogie
 {
-    private TrainHandler m_Handler = null;
+    private CoasterTrain m_Handler = null;
     private TrainHandlerManager m_HandlerManager = null;
 
     private Coaster m_Coaster;
@@ -55,8 +55,7 @@ public class CoasterBogie extends Behaviour implements ISetableBogie
         m_Handler = m_HandlerManager.GetHandler(handlerName);
         if(m_Handler == null)
         {
-            System.out.println(handlerName);
-            m_Handler = new TrainHandler(handlerName);
+            m_Handler = new CoasterTrain(handlerName);
             m_HandlerManager.RegisterHandler(m_Handler);
             m_Handler.SetBogieModifier(m_HandlerManager.GetDefaultBogieModifier());
         }

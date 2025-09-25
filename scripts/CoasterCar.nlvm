@@ -13,7 +13,7 @@ import scripts.math.*;
 /// <desc>Type used for custom coaster cars; Allows customisation of restraint animations using the descriptor files, has g-force trackers placed for each camera which can be visualised and cameras can be cycled through like in-game counterparts.</desc>
 public class CoasterCar extends Behaviour implements ISetableCar
 {
-    private TrainHandler m_Handler = null;
+    private CoasterTrain m_Handler = null;
     private TrainHandlerManager m_HandlerManager = null;
 
     private Coaster m_Coaster;
@@ -30,7 +30,8 @@ public class CoasterCar extends Behaviour implements ISetableCar
 
     public int GetOrder() { return 25; }
 
-    public bool Awake()
+    public bool Awake() { return true; }
+    public void Start()
     {
         m_Coaster = GetCoasterParameter("coaster");
         String coasterName = m_Coaster.getName();
@@ -86,7 +87,7 @@ public class CoasterCar extends Behaviour implements ISetableCar
         m_Handler = m_HandlerManager.GetHandler(handlerName);
         if(m_Handler == null)
         {
-            m_Handler = new TrainHandler(handlerName);
+            m_Handler = new CoasterTrain(handlerName);
             m_HandlerManager.RegisterHandler(m_Handler);
             m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
             m_Handler.SetCarSeats(m_Descriptor.Cameras);
@@ -96,7 +97,6 @@ public class CoasterCar extends Behaviour implements ISetableCar
         if(m_Handler.GetCarModifier() == null) m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
 
         m_Handler.RegisterCar(this);
-        return true;
     }
 
 

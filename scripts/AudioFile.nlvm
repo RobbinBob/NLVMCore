@@ -32,6 +32,16 @@ public class AudioFile extends Behaviour implements IReferenceable
         return false;
     }
 
+    public float GetDefaultGain()
+    {
+        return m_DefaultGain;
+    }
+    public float GetDefaultPitch()
+    {
+        return m_DefaultPitch;
+    }
+
+
     public String GetName()
     {
         return m_Name;

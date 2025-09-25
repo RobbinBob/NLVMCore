@@ -15,7 +15,7 @@ import scripts.utilities.*;
 import scripts.modifiers.*;
 import scripts.math.*;
 
-public class TrainHandler extends Object
+public class CoasterTrain extends Object
 {
         // TODO - make this dynamic with the registered train
     public static final int BOGIES_PER_CAR = 1;
@@ -40,7 +40,7 @@ public class TrainHandler extends Object
     private int m_SeatsPerCar = 0;
 
         // Constructors
-    public TrainHandler(String name)
+    public CoasterTrain(String name)
     {
         m_Cars = new Vector();
         m_Bogies = new Vector();
@@ -48,7 +48,7 @@ public class TrainHandler extends Object
         m_TrainHandled = GetTrainFromString(name);
         GetTrackPosForTrain(m_TrainHandled);
     }
-    public TrainHandler(String name, int cars)
+    public CoasterTrain(String name, int cars)
     {
         m_Cars = new Vector(cars);
         m_Bogies = new Vector(cars);
@@ -56,7 +56,7 @@ public class TrainHandler extends Object
         m_TrainHandled = GetTrainFromString(name);
         GetTrackPosForTrain(m_TrainHandled);
     }
-    public TrainHandler(String name, int cars, int bogies)
+    public CoasterTrain(String name, int cars, int bogies)
     {
         m_Cars = new Vector(cars);
         m_Bogies = new Vector(bogies);
@@ -64,7 +64,7 @@ public class TrainHandler extends Object
         m_TrainHandled = GetTrainFromString(name);
         GetTrackPosForTrain(m_TrainHandled);
     }
-    public TrainHandler(String name, int cars, int bogies, int carSeats)
+    public CoasterTrain(String name, int cars, int bogies, int carSeats)
     {
         m_Cars = new Vector(cars);
         m_Bogies = new Vector(bogies);

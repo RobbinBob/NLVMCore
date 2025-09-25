@@ -32,6 +32,12 @@
       <id>audio_trigger</id>
       <label>Audio Trigger</label>
     </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority</label>
+    </scriptparameter>
     <materialpath name="Material">thumbs/TrackTrigger.nl2mat</materialpath>
   </sceneobject>
 </root>

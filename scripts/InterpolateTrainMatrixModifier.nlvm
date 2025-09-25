@@ -7,7 +7,7 @@ import nlvm.math3d.*;
 
 public class InterpolateTrainMatrixModifier extends InterpolateMatrixModifier implements ICarModifier, IBogieModifier
 {
-    public InterpolateTrainMatrixModifier(TrainHandler handler, TrainWrapper wrapper, float timespan)
+    public InterpolateTrainMatrixModifier(CoasterTrain handler, TrainWrapper wrapper, float timespan)
     {
         super(handler, wrapper, timespan);
     }

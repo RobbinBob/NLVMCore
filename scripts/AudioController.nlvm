@@ -1,7 +1,7 @@
 package scripts;
 
-import scripts.math.*;
-import scripts.utilities.*;
+//import scripts.math.*;
+//import scripts.utilities.*;
 import scripts.containers.*;
 
 public class AudioController extends Behaviour implements IReferenceable
@@ -74,19 +74,14 @@ public class AudioController extends Behaviour implements IReferenceable
         else
         {
             m_Debounce = false;
-            for(int i = 0; i < m_GroupEmitters.length; ++i)
-            {
-                SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
-                sound.SetGainFaded(0.05f, 0.5f);
-            }
 
                 // We need to step through the sounds and find any that are completed, remove them from the queue
             List toRemove = new List();
             IEnumerator enumerator = m_Queue.GetEnumerator();
             while(enumerator.MoveNext())
             {
-                AudioPriority audio = (AudioPriority)enumerator.Get();
-                SpatialSound sound = m_GroupEmitters[0].SetCurrentSound(audio.GetAudioName());
+                AudioConfig audio = (AudioConfig)enumerator.Get();
+                SpatialSound sound = m_GroupEmitters[0].SetCurrentSound(audio.SoundName);
                 if(sound.IsPlaying() == false)
                     toRemove.Insert(audio);
             }
@@ -94,38 +89,62 @@ public class AudioController extends Behaviour implements IReferenceable
             enumerator = toRemove.GetEnumerator();
             while(enumerator.MoveNext())
             {
-                Debug.Print("Removing completed sound " + ((AudioPriority)enumerator.Get()).GetAudioName());
-                m_Queue.Remove((AudioPriority)enumerator.Get());
+                Debug.Print("Removing completed sound " + ((AudioConfig)enumerator.Get()).SoundName);
+                m_Queue.Remove((AudioConfig)enumerator.Get());
                 for(int i = 0; i < m_GroupEmitters.length; ++i)
                 {
-                    SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(((AudioPriority)enumerator.Get()).GetAudioName());
+                    SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(((AudioConfig)enumerator.Get()).SoundName);
                     sound.SetGain(0);
                 }
             }
 
-            for(int i = 0; i < m_Queue.Count(); ++i)
+
+
+
+            bool isMutingLower = false;
+            for(int i = m_Queue.Count() - 1; i >= 0; --i)
             {
-                AudioPriority currentAudio = (AudioPriority)m_Queue.At(i);
+                AudioConfig currentAudio = (AudioConfig)m_Queue.At(i);
+                AudioFile currentFile = currentAudio.FileReference;
+
                 for(int j = 0; j < m_GroupEmitters.length; ++j)
                 {
-                    SpatialSound sound = m_GroupEmitters[j].SetCurrentSound(currentAudio.GetAudioName());
-                    sound.SetGain(i == m_Queue.Count() - 1 ? 1 : 0);
+                    SpatialSound sound = m_GroupEmitters[j].SetCurrentSound(currentAudio.SoundName);
+                    sound.SetGain(!isMutingLower ? currentAudio.FileReference.GetDefaultGain() : 0);
+                }
+                
+                if(currentAudio.CanMuteLowerPriority)
+                    isMutingLower = true;
+            }
+
+            for(int i = 0; i < m_GroupEmitters.length; ++i)
+            {
+                SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
+                if (isMutingLower)
+                {
+                    sound.SetGainFaded(0.05f, 0.5f);
+                }
+                else
+                {
+                    sound.SetGainFaded(1, 0.5f);
                 }
             }
         }
     }
 
 
-    public void EnqueSound(AudioConfig config)
+    public void EnqueSound(AudioConfig properties)
     {
             // No Audio in queue
         if(m_Queue.Count() == 0)
         {
-            m_Queue.Insert(new AudioPriority(name, priority));
+            m_Queue.Insert(properties);
 
             for(int i = 0; i < m_GroupEmitters.length; ++i)
             {
-                SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(name);
+                SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(properties.SoundName);
+                spatialSound.SetGain(properties.FileReference.GetDefaultGain());
+                spatialSound.SetPitch(properties.FileReference.GetDefaultPitch());
                 spatialSound.PlaySoundOnce();
             }
 
@@ -137,17 +156,17 @@ public class AudioController extends Behaviour implements IReferenceable
         bool success = false;
         while(enumerator.MoveNext())
         {
-            AudioPriority sound = (AudioPriority)enumerator.Get();
-            if(sound.GetAudioName().equals(name))
+            AudioConfig sound = (AudioConfig)enumerator.Get();
+            if(sound.SoundName.equals(properties.SoundName))
                 Exception.Throw("Trying to enque the same sound with a different priority");
 
-            if(priority <= sound.GetPriority())
+            if(properties.Priority <= sound.Priority)
             {
-                m_Queue.InsertAt(new AudioPriority(name, priority), index);
+                m_Queue.InsertAt(properties, index);
                 success = true;
                 for(int i = 0; i < m_GroupEmitters.length; ++i)
                 {
-                    SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(name);
+                    SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(properties.SoundName);
                     spatialSound.PlaySoundOnce();
                 }
 
@@ -158,10 +177,10 @@ public class AudioController extends Behaviour implements IReferenceable
         if(!success)
         {
             //Debug.Print("Failed to enque sound, im lazy to implement this right now");
-            m_Queue.Insert(new AudioPriority(name, priority));
+            m_Queue.Insert(properties);
             for(int i = 0; i < m_GroupEmitters.length; ++i)
             {
-                SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(name);
+                SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(properties.SoundName);
                 spatialSound.PlaySoundOnce();
             }
         }

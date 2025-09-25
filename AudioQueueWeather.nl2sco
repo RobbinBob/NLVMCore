@@ -40,6 +40,12 @@
       <id>audio_priority</id>
       <label>Audio Priority [Advanced]</label>
     </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>true</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority</label>
+    </scriptparameter>
     <materialpath name="Material">thumbs/Weather.nl2mat</materialpath>
   </sceneobject>
 </root>

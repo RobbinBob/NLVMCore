@@ -2,10 +2,10 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
-    <preview>thumbs/Timer.png</preview>
+    <preview>thumbs/Gate.png</preview>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioQueueTimer</class>
+      <class>scripts.AudioQueueStationGate</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -28,17 +28,23 @@
       <label>Audio Priority [Advanced]</label>
     </scriptparameter>
     <scriptparameter>
-      <type>double</type>
-      <defaultvalue>25</defaultvalue>
-      <id>audio_interval</id>
-      <label>Audio Interval (seconds)</label>
-    </scriptparameter>
-    <scriptparameter>
       <type>bool</type>
       <defaultvalue>false</defaultvalue>
       <id>audio_mutelower</id>
       <label>Mute Lower Priority Audio</label>
     </scriptparameter>
-    <materialpath name="Material">thumbs/Timer.nl2mat</materialpath>
+    <scriptparameter>
+      <type>blocksection</type>
+      <id>audio_station</id>
+      <label>Station</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <enums>Opening,Closing,Both</enums>
+      <id>audio_activation</id>
+      <label>Activation</label>
+    </scriptparameter>
+    <materialpath name="Material">thumbs/Gate.nl2mat</materialpath>
   </sceneobject>
 </root>

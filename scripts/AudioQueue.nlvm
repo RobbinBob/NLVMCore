@@ -5,6 +5,8 @@ public abstract class AudioQueue extends Behaviour
     protected AudioController m_AudioController = null;
     protected String m_AudioName = "";
     protected int m_Priority = 0;
+    protected bool m_MuteLowerPriority = false;
+    protected AudioConfig m_SoundConfig = null;
 
     public int GetOrder() { return -15; }
     public bool Awake() { return true; }
@@ -17,5 +19,11 @@ public abstract class AudioQueue extends Behaviour
     
         m_AudioName = GetStringParameter("audio_name");
         m_Priority = GetIntegerParameter("audio_priority");
+        m_MuteLowerPriority = GetBoolParameter("audio_mutelower");
+
+        m_SoundConfig = new AudioConfig(
+            (AudioFile)Registry.GetInstance().GetReferenceFromName("scripts.AudioFile", m_AudioName),
+            m_Priority,
+            m_MuteLowerPriority);
     }
 }

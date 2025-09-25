@@ -1,0 +1,53 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public class AudioQueueStationState extends AudioQueue
+{
+    protected Section m_Station = null;
+
+    protected static final int ACTIVATION_OPENING_OR_RAISING = 0;
+    protected static final int ACTIVATION_CLOSING_OR_LOWERING = 1;
+    protected static final int ACTIVATION_OPEN_OR_RAISE_AND_CLOSE_OR_LOWER = 2;
+    protected int m_ActivationType = ACTIVATION_OPENING_OR_RAISING;
+    protected float m_Activation = 0;
+    private float m_PreviousActivation = 0;
+
+    public void Start()
+    {
+        super.Start();
+
+        m_Station = GetSectionParameter("audio_station");
+        if(m_Station == null)
+            NullReferenceException.Throw("No Station specified");
+        if (m_Station.isStation() == false)
+            Exception.Throw("Section specified is not a station");
+
+        m_ActivationType = GetIntegerParameter("audio_activation");
+    }
+
+    public void Update(float deltaTime)
+    {
+        float diff = m_Activation - m_PreviousActivation;
+        if(diff == 0)
+            return;
+
+        switch(m_ActivationType)
+        {
+            case ACTIVATION_OPENING_OR_RAISING:
+                if(m_PreviousActivation == 0 && m_Activation > 0)
+                    m_AudioController.EnqueSound(m_SoundConfig);
+                break;
+            case ACTIVATION_CLOSING_OR_LOWERING:
+                if(m_PreviousActivation == 1 && m_Activation < 1)
+                    m_AudioController.EnqueSound(m_SoundConfig);
+                break;
+            case ACTIVATION_OPEN_OR_RAISE_AND_CLOSE_OR_LOWER:
+                if((m_PreviousActivation == 0 && m_Activation > 0) || (m_PreviousActivation == 1 && m_Activation < 1))
+                    m_AudioController.EnqueSound(m_SoundConfig);
+                break;
+        }
+
+        m_PreviousActivation = m_Activation;
+    }
+}

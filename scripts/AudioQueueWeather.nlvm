@@ -11,6 +11,7 @@ public class AudioQueueWeather extends AudioQueue
         super.Start();
         m_WeatherType = GetIntegerParameter("weather_type");
         m_WeatherThreshold = GetFloatParameter("weather_threshold");
+        m_SoundConfig.CanMuteLowerPriority = true;
     }
 
 
@@ -52,7 +53,7 @@ public class AudioQueueWeather extends AudioQueue
                 return;
 
             m_HasPlayed = true;
-            m_AudioController.EnqueSound(m_AudioName, m_Priority);
+            m_AudioController.EnqueSound(m_SoundConfig);
         }
     }
 

@@ -43,11 +43,11 @@ public class TrainHandlerManager extends UpdateableObject
 
 
         // Attempts to find a TrainHandler for the given name
-    public TrainHandler GetHandler(String name)
+    public CoasterTrain GetHandler(String name)
     {
         for(int i = 0; i < m_RegisteredHandlers.size(); i++)
         {
-            TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
+            CoasterTrain handler = (CoasterTrain)m_RegisteredHandlers.elementAt(i);
             if(handler.GetName().equals(name)) return handler;
         }
 
@@ -55,12 +55,12 @@ public class TrainHandlerManager extends UpdateableObject
     }
 
         // Attempts to find a TrainHandler for the given Train
-    public TrainHandler GetHandler(Train train)
+    public CoasterTrain GetHandler(Train train)
     {
         Simulator sim = NoLimits.getSimulator();
         for(int i = 0; i < m_RegisteredHandlers.size(); i++)
         {
-            TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
+            CoasterTrain handler = (CoasterTrain)m_RegisteredHandlers.elementAt(i);
             Train _train = handler.GetTrain();
             if(_train.equals(train)) return handler;
         }
@@ -70,7 +70,7 @@ public class TrainHandlerManager extends UpdateableObject
 
 
 
-    public void RegisterHandler(TrainHandler handler)
+    public void RegisterHandler(CoasterTrain handler)
     {
         if(m_RegisteredHandlers.contains(handler))
         {
@@ -92,7 +92,7 @@ public class TrainHandlerManager extends UpdateableObject
 
         for(int i = 0; i < m_RegisteredHandlers.size(); i++)
         {
-            TrainHandler handler = (TrainHandler)m_RegisteredHandlers.elementAt(i);
+            CoasterTrain handler = (CoasterTrain)m_RegisteredHandlers.elementAt(i);
             handler.UpdateTrainPosition(tick);
             handler.HandleCars();
             handler.HandleBogies();

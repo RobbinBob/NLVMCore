@@ -12,13 +12,13 @@ public class AudioQueueTrackTrigger extends AudioQueue implements TrackTriggerLi
         m_TrackTrigger = GetTriggerParameter("audio_trigger");
         if(m_TrackTrigger == null)
             NullReferenceException.Throw("No TrackTrigger specified");
-
         m_TrackTrigger.addTrackTriggerListener(this);
+        m_SoundConfig.CanMuteLowerPriority = false;
     }
 
     public void onTrainEntering(TrackTrigger trigger, Train train)
     {
-        m_AudioController.EnqueSound(m_AudioName, m_Priority);
+        m_AudioController.EnqueSound(m_SoundConfig);
     }
     public void onTrainLeaving(TrackTrigger trigger, Train train) { }
 }

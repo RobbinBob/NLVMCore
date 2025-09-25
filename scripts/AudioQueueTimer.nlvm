@@ -21,7 +21,7 @@ public class AudioQueueTimer extends AudioQueue
         if(m_IntervalTimer.WaitForComplete())
             return;
 
-        m_AudioController.EnqueSound(m_AudioName, m_Priority);
+        m_AudioController.EnqueSound(m_SoundConfig);
         m_IntervalTimer.Reset();
         m_IntervalTimer.Start();
     }

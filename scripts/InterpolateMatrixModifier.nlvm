@@ -9,7 +9,7 @@ import nlvm.math3d.*;
 public class InterpolateMatrixModifier extends Object implements ICarModifier, IBogieModifier
 {
     protected TrainWrapper m_TrainWrapper = new TrainWrapper();
-    protected TrainHandler m_ActiveHandler = null;
+    protected CoasterTrain m_ActiveHandler = null;
 
     protected Matrix4x4f[] m_CarStartMatrices = null;
     protected Matrix4x4f[] m_BogieStartMatrices = null;
@@ -18,7 +18,7 @@ public class InterpolateMatrixModifier extends Object implements ICarModifier, I
     
     protected Timer m_Timer = null;
 
-    public InterpolateMatrixModifier(TrainHandler handler, TrainWrapper wrapper, float timespan)
+    public InterpolateMatrixModifier(CoasterTrain handler, TrainWrapper wrapper, float timespan)
     {
         m_TrainWrapper = wrapper;
         m_ActiveHandler = handler;
