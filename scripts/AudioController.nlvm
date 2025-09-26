@@ -8,6 +8,7 @@ public class AudioController extends Behaviour implements IReferenceable
 {
     private SpatialSound m_PrimaryAudioLoop = null;
     private AudioEmitter[] m_GroupEmitters = null;
+    private bool m_MutePrimaryTrack = false;
 
     private List m_Queue = new List();
 
@@ -46,6 +47,9 @@ public class AudioController extends Behaviour implements IReferenceable
 
         registry.Register(this);
 
+        if(m_MutePrimaryTrack)
+            return;
+
         for(int i = 0; i < m_GroupEmitters.length; ++i)
         {
             if(m_GroupEmitters[i] == null)
@@ -66,7 +70,7 @@ public class AudioController extends Behaviour implements IReferenceable
                 for(int i = 0; i < m_GroupEmitters.length; ++i)
                 {
                     SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
-                    sound.SetGainFaded(1, 0.5f);
+                    sound.SetGainFaded(m_MutePrimaryTrack ? 0 : 1, 0.5f);
                 }
                 m_Debounce = true;
             }
@@ -120,6 +124,14 @@ public class AudioController extends Behaviour implements IReferenceable
             for(int i = 0; i < m_GroupEmitters.length; ++i)
             {
                 SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
+                if(m_MutePrimaryTrack)
+                {
+                    sound.SetGainFaded(0, 0.5f);
+                    return;                
+                }
+                else
+                    sound.SetGainFaded(1, 0.5f);
+
                 if (isMutingLower)
                 {
                     sound.SetGainFaded(0.05f, 0.5f);
@@ -158,7 +170,10 @@ public class AudioController extends Behaviour implements IReferenceable
         {
             AudioConfig sound = (AudioConfig)enumerator.Get();
             if(sound.SoundName.equals(properties.SoundName))
-                Exception.Throw("Trying to enque the same sound with a different priority");
+            {
+                Debug.Warn("Trying to enque the same sound with a different priority");
+                return;
+            }
 
             if(properties.Priority <= sound.Priority)
             {
@@ -183,6 +198,15 @@ public class AudioController extends Behaviour implements IReferenceable
                 SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(properties.SoundName);
                 spatialSound.PlaySoundOnce();
             }
+        }
+    }
+    public void SetPrimaryTrackMuted(bool isMuted)
+    {
+        m_MutePrimaryTrack = isMuted;
+        for(int i = 0; i < m_GroupEmitters.length; ++i)
+        {
+            SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
+            sound.SetGainFaded(m_MutePrimaryTrack ? 0 : 1, 0.5f);
         }
     }
 

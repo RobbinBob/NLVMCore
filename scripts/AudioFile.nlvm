@@ -41,7 +41,6 @@ public class AudioFile extends Behaviour implements IReferenceable
         return m_DefaultPitch;
     }
 
-
     public String GetName()
     {
         return m_Name;

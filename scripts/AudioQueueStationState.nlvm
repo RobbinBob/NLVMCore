@@ -18,8 +18,6 @@ public class AudioQueueStationState extends AudioQueue
         super.Start();
 
         m_Station = GetSectionParameter("audio_station");
-        if(m_Station == null)
-            NullReferenceException.Throw("No Station specified");
         if (m_Station.isStation() == false)
             Exception.Throw("Section specified is not a station");
 

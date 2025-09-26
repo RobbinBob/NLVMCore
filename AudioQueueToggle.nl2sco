@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/SiemensButtons/Plastic.glb">
+      <content>models</content>
+      <clip distance="10"/>
+    </model>
+    <usercolor>
+      <label>Color</label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioToggleMute</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_group</id>
+      <label>Audio Group</label>
+    </scriptparameter>
+    <materialpath name="Button">materials/SiemensButtons/PlasticButton.nl2mat</materialpath>
+  </sceneobject>
+</root>

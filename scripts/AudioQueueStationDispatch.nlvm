@@ -1,0 +1,34 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public class AudioQueueStationDispatch extends AudioQueue
+{
+    private Section m_Station = null;
+    private Train m_TrainAtStation = null;
+    private float m_PreviousTrainSpeed = 0;
+
+    public void Start()
+    {
+        super.Start();
+        m_Station = GetSectionParameter("audio_station");
+        if(m_Station.isStation() == false)
+            Exception.Throw("Section specified is not a station");
+
+        m_PreviousTrainSpeed = m_Station.isTrainOnSection() ? 0 : 1;
+    }
+    
+    public void Update(float deltaTime)
+    {
+        if(!m_Station.isTrainOnSection())
+            return;
+
+        m_TrainAtStation = m_Station.getTrainOnSection();
+        float trainSpeed = (float)m_TrainAtStation.getSpeed();
+
+        if(m_PreviousTrainSpeed == 0 && trainSpeed > 0)
+            m_AudioController.EnqueSound(m_SoundConfig);
+
+        m_PreviousTrainSpeed = trainSpeed;
+    }
+}

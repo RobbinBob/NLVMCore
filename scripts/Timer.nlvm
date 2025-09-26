@@ -61,6 +61,12 @@ public final class Timer extends Object implements FrameListener
         Reset();
     }
 
+    public void SetComplete()
+    {
+        m_IsTimerComplete = true;
+        Stop();
+    }
+
     /// <method>
     /// <desc>Gets the current state of the timer.</desc>
     /// <return>True if timer has not completed, otherwise False.</return>

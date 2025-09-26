@@ -139,6 +139,10 @@ public final class Debug extends Object
     {
         System.out.println(GetTimeDataSequence() + obj);
     }
+    public static final void Warn(String obj)
+    {
+        System.err.println(GetTimeDataSequence() + obj);
+    }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
