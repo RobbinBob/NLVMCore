@@ -20,8 +20,6 @@
       <id>group_name</id>
       <label>Group Name</label>
     </scriptparameter>
-    <materialpath name="Axis">materials/SphereAxis.nl2mat</materialpath>
-    <materialpath name="Collider">materials/Collider.nl2mat</materialpath>
-    <materialpath name="Material">materials/SphereEmitterOutline.nl2mat</materialpath>
+    <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
   </sceneobject>
 </root>

@@ -34,6 +34,8 @@ public final class AudioToggleMute extends Behaviour implements InteractionActio
         {
             m_Debounce = false;
             m_Interaction.setEnabled(true);
+            if(!m_IsToggled)
+                m_SceneObject.getElementAt(1).setTextureAnimationIndex(0);
         }
     }
 
@@ -47,6 +49,8 @@ public final class AudioToggleMute extends Behaviour implements InteractionActio
 
         m_IsToggled = !m_IsToggled;
         m_AudioController.SetPrimaryTrackMuted(m_IsToggled);
-        m_SceneObject.getElementAt(1).setTextureAnimationIndex(m_IsToggled ? 1 : 0);
+
+        if(m_IsToggled)
+            m_SceneObject.getElementAt(1).setTextureAnimationIndex(1);
     }
 }

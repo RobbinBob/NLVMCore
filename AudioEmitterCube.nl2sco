@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <sceneobject>
-    <model path="scripts/resources/UnitCube.glb"/>
+    <model path="models/CubeEmitter.glb"/>
     <usercolor>
       <label>Color</label>
       <index>0</index>
@@ -18,5 +18,9 @@
       <id>group_name</id>
       <label>Group Name</label>
     </scriptparameter>
+    <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
+    <materialpath name="StretchX">materials/Emitters/StretchX.nl2mat</materialpath>
+    <materialpath name="StretchY">materials/Emitters/StretchY.nl2mat</materialpath>
+    <materialpath name="StretchZ">materials/Emitters/StretchZ.nl2mat</materialpath>
   </sceneobject>
 </root>

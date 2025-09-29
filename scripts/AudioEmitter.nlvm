@@ -82,6 +82,8 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
         }
 
         m_ActiveSound.SetPosition(GetPosition());
+        m_ActiveSound.SetConstantDistance(1);
+        m_ActiveSound.SetFalloffFactor(1);
 
         return m_ActiveSound;
     }

@@ -195,6 +195,7 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
     public void SetConstantDistance(float constantDistance)
     {
         m_AudioDistance = constantDistance;
+        m_StaticSound.setDistanceParameters(m_AudioDistance, m_AudioFalloff);
     }
     public float GetConstantDistance()
     {
@@ -203,6 +204,7 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
     public void SetFalloffFactor(float falloff)
     {
         m_AudioFalloff = falloff;
+        m_StaticSound.setDistanceParameters(m_AudioDistance, m_AudioFalloff);
     }
     public float GetFalloffFactor()
     {
