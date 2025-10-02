@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/CubeEmitter.glb"/>
+    <usercolor>
+      <label>Color</label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioQueueVolumeTriggerCube</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio Group</defaultvalue>
+      <id>audio_group</id>
+      <description>The audio group that will be triggered</description>
+      <label>Audio Group</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio File</defaultvalue>
+      <id>audio_name</id>
+      <label>Audio Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority Audio</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <enums>On Entry,On Exit</enums>
+      <id>audio_play_state</id>
+      <label>Activation</label>
+    </scriptparameter>
+    <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
+    <materialpath name="StretchX">materials/Emitters/StretchX.nl2mat</materialpath>
+    <materialpath name="StretchY">materials/Emitters/StretchY.nl2mat</materialpath>
+    <materialpath name="StretchZ">materials/Emitters/StretchZ.nl2mat</materialpath>
+  </sceneobject>
+</root>

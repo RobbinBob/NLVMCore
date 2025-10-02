@@ -2,7 +2,7 @@ package scripts;
 
 import scripts.math.*;
 
-public class AudioEmitterCube extends AudioEmitter
+public class AudioEmitterCube extends AudioEmitterVolume
 {
     public void Start()
     {

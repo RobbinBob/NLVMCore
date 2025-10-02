@@ -1,0 +1,28 @@
+package scripts;
+
+import scripts.containers.*;
+import scripts.math.*;
+
+public abstract class AudioEmitterVolume extends AudioEmitter implements IReferenceable
+{
+    protected Volume m_EmitterWorldVolume = null;
+    private static final float MAX_DIST_CALCULATIONS = 2;
+
+    public void Update(float tick)
+    {
+        Vector3 viewPos = GetViewerPosition();
+        if(Vector3.Distance(m_EmitterWorldVolume.GetMatrix().GetPosition(), viewPos) > m_EmitterWorldVolume.GetScale().Length() * MAX_DIST_CALCULATIONS)
+            return;
+
+        Vector3 soundPosition = viewPos;
+        if(m_EmitterWorldVolume.IsPointOutsideVolume(viewPos))
+            soundPosition = m_EmitterWorldVolume.GetNearestSurface(viewPos);
+
+        IEnumerator enumerator = m_AudioClips.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            SpatialSound sound = (SpatialSound)enumerator.Get();
+            sound.SetPosition(soundPosition);
+        }
+    }
+}

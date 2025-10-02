@@ -1,16 +1,11 @@
 package scripts;
 
 import scripts.containers.*;
-import scripts.math.*;
 
 public abstract class AudioEmitter extends Behaviour implements IReferenceable
 {
-    protected Volume m_EmitterWorldVolume = null;
-    
-    private static final float MAX_DIST_CALCULATIONS = 2;
-
-    private List m_AudioClips = new List();
-    private SpatialSound m_ActiveSound = null;
+    protected List m_AudioClips = new List();
+    protected SpatialSound m_ActiveSound = null;
 
     public int GetOrder() { return -30; }
     public bool Awake()
@@ -21,25 +16,6 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     {
         SetName(GetStringParameter("group_name"));
         Registry.GetInstance().Register(this);
-    }
-
-
-    public void Update(float tick)
-    {
-        Vector3 viewPos = GetViewerPosition();
-        if(Vector3.Distance(m_EmitterWorldVolume.GetMatrix().GetPosition(), viewPos) > m_EmitterWorldVolume.GetScale().Length() * MAX_DIST_CALCULATIONS)
-            return;
-
-        Vector3 soundPosition = viewPos;
-        if(m_EmitterWorldVolume.IsPointOutsideVolume(viewPos))
-            soundPosition = m_EmitterWorldVolume.GetNearestSurface(viewPos);
-
-        IEnumerator enumerator = m_AudioClips.GetEnumerator();
-        while(enumerator.MoveNext())
-        {
-            SpatialSound sound = (SpatialSound)enumerator.Get();
-            sound.SetPosition(soundPosition);
-        }
     }
 
 

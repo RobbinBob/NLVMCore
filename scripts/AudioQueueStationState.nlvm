@@ -2,7 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
-public class AudioQueueStationState extends AudioQueue
+public abstract class AudioQueueStationState extends AudioQueue
 {
     protected Section m_Station = null;
 
