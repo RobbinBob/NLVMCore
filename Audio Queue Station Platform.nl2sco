@@ -2,10 +2,10 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
-    <preview>thumbs/Dispatch.png</preview>
+    <preview>thumbs/Platform.png</preview>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioQueueStationDispatch</class>
+      <class>scripts.AudioQueueStationPlatform</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -22,22 +22,29 @@
       <label>Audio Name</label>
     </scriptparameter>
     <scriptparameter>
+      <type>blocksection</type>
+      <id>audio_station</id>
+      <label>Station</label>
+    </scriptparameter>
+    <scriptparameter>
       <type>int</type>
-      <defaultvalue>2</defaultvalue>
-      <id>audio_priority</id>
-      <label>Audio Priority [Advanced]</label>
+      <defaultvalue>0</defaultvalue>
+      <enums>Raising,Lowering,Both</enums>
+      <id>audio_activation</id>
+      <label>Activation</label>
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>
       <defaultvalue>false</defaultvalue>
       <id>audio_mutelower</id>
-      <label>Mute Lower Priority Audio</label>
+      <label>Mute Lower Priority Audio [Advanced]</label>
     </scriptparameter>
     <scriptparameter>
-      <type>blocksection</type>
-      <id>audio_station</id>
-      <label>Station</label>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <label>Audio Priority [Advanced]</label>
     </scriptparameter>
-    <materialpath name="Material">thumbs/Dispatch.nl2mat</materialpath>
+    <materialpath name="Material">thumbs/Platform.nl2mat</materialpath>
   </sceneobject>
 </root>

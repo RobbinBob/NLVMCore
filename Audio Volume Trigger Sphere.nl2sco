@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
   <sceneobject>
-    <model path="models/CubeEmitter.glb"/>
+    <model path="models/SphereTrigger.glb"/>
+    <preview>thumbs/SphereTrigger.png</preview>
+    <param customuniformscale="true"/>
     <usercolor>
       <label>Color</label>
       <index>0</index>
@@ -9,7 +11,7 @@
     </usercolor>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioQueueVolumeTriggerCube</class>
+      <class>scripts.AudioQueueVolumeTriggerSphere</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -27,26 +29,24 @@
     </scriptparameter>
     <scriptparameter>
       <type>int</type>
-      <defaultvalue>2</defaultvalue>
-      <id>audio_priority</id>
-      <label>Audio Priority [Advanced]</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>bool</type>
-      <defaultvalue>false</defaultvalue>
-      <id>audio_mutelower</id>
-      <label>Mute Lower Priority Audio</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>int</type>
       <defaultvalue>0</defaultvalue>
       <enums>On Entry,On Exit</enums>
       <id>audio_play_state</id>
       <label>Activation</label>
     </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <materialpath name="Bolt">materials/Emitters/Bolt.nl2mat</materialpath>
     <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
-    <materialpath name="StretchX">materials/Emitters/StretchX.nl2mat</materialpath>
-    <materialpath name="StretchY">materials/Emitters/StretchY.nl2mat</materialpath>
-    <materialpath name="StretchZ">materials/Emitters/StretchZ.nl2mat</materialpath>
   </sceneobject>
 </root>

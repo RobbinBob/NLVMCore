@@ -2,10 +2,10 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
-    <preview>thumbs/Weather.png</preview>
+    <preview>thumbs/EmergencyStop.png</preview>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioQueueWeather</class>
+      <class>scripts.AudioQueueEStop</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -16,23 +16,27 @@
       <label>Audio Group</label>
     </scriptparameter>
     <scriptparameter>
-      <type>int</type>
-      <defaultvalue>0</defaultvalue>
-      <enums>Rain,Snow,Wind,Thunder</enums>
-      <id>weather_type</id>
-      <label>Weather</label>
-    </scriptparameter>
-    <scriptparameter>
-      <type>double</type>
-      <defaultvalue>0.5</defaultvalue>
-      <id>weather_threshold</id>
-      <label>Threshold</label>
-    </scriptparameter>
-    <scriptparameter>
       <type>string</type>
       <defaultvalue>My Audio File</defaultvalue>
       <id>audio_name</id>
       <label>Audio Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>coaster</type>
+      <id>audio_coaster</id>
+      <label>Coaster</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>60</defaultvalue>
+      <id>audio_interval</id>
+      <label>Interval (Seconds)</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority Audio [Advanced]</label>
     </scriptparameter>
     <scriptparameter>
       <type>int</type>
@@ -40,12 +44,6 @@
       <id>audio_priority</id>
       <label>Audio Priority [Advanced]</label>
     </scriptparameter>
-    <scriptparameter>
-      <type>bool</type>
-      <defaultvalue>true</defaultvalue>
-      <id>audio_mutelower</id>
-      <label>Mute Lower Priority</label>
-    </scriptparameter>
-    <materialpath name="Material">thumbs/Weather.nl2mat</materialpath>
+    <materialpath name="Material">thumbs/EmergencyStop.nl2mat</materialpath>
   </sceneobject>
 </root>

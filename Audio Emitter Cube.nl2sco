@@ -2,6 +2,7 @@
 <root>
   <sceneobject>
     <model path="models/CubeEmitter.glb"/>
+    <preview>thumbs/Cube.png</preview>
     <usercolor>
       <label>Color</label>
       <index>0</index>
@@ -17,6 +18,18 @@
       <defaultvalue>My Group</defaultvalue>
       <id>group_name</id>
       <label>Group Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>1</defaultvalue>
+      <id>audio_falloff</id>
+      <label>Fall Off</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>1</defaultvalue>
+      <id>audio_distance</id>
+      <label>Constant Distance</label>
     </scriptparameter>
     <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
     <materialpath name="StretchX">materials/Emitters/StretchX.nl2mat</materialpath>

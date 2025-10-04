@@ -1,0 +1,65 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public final class AudioToggleShutOff extends Behaviour implements InteractionActionListener
+{
+    private AudioController m_AudioController = null;
+    private InteractionObject m_Interaction = null;
+    private Animation m_Animation = null;
+    private bool m_IsToggled = false;
+    private bool m_Debounce = false;
+
+    public int GetOrder() { return -15; }
+    public bool Awake() { return true; }
+
+    public void Start()
+    {
+        m_AudioController = (AudioController)Registry.GetInstance().GetReferenceFromName("scripts.AudioController", GetStringParameter("audio_group"));
+        if(m_AudioController == null)
+            NullReferenceException.Throw("Unable to find AudioController with name '" + GetStringParameter("audio_group") + "'");
+    
+        m_Interaction = InteractionObject.createSimpleButton();
+        m_Interaction.setActive(true);
+        m_Interaction.setEnabled(true);
+        m_Interaction.setPosition(m_SceneObject.getTranslation());
+        m_Interaction.setRadius(0.05f);
+        m_Interaction.addActionListener(this);
+        m_Animation = new Animation(m_SceneObject);
+
+        m_IsToggled = true;
+        m_Animation.Play(0, 10);
+        m_SceneObject.getElementAt(1).setTextureAnimationIndex(1);
+    }
+
+    public void Update(float deltaTime)
+    {
+        if(m_Debounce && !m_Animation.IsPlaying())
+        {
+            m_Debounce = false;
+            m_Interaction.setEnabled(true);
+            if(!m_IsToggled)
+                m_SceneObject.getElementAt(1).setTextureAnimationIndex(0);
+        }
+    }
+
+    public void onInteractionAction(InteractionObject object)
+    {
+        if(m_Debounce)
+            return;
+        m_Debounce = true;
+        m_Interaction.setEnabled(false);
+
+        if(m_IsToggled)
+        {
+            m_Animation.Play(10, 20);
+        }
+        else
+        {
+            m_Animation.Play(0, 10);
+            m_SceneObject.getElementAt(1).setTextureAnimationIndex(1);
+        }
+        m_IsToggled = !m_IsToggled;
+        m_AudioController.SetControllerOn(m_IsToggled);
+    }
+}

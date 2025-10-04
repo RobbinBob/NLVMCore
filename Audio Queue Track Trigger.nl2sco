@@ -2,10 +2,10 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
-    <preview>thumbs/Timer.png</preview>
+    <preview>thumbs/TrackTrigger.png</preview>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioQueueTimer</class>
+      <class>scripts.AudioQueueTrackTrigger</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -22,23 +22,29 @@
       <label>Audio Name</label>
     </scriptparameter>
     <scriptparameter>
+      <type>trigger</type>
+      <id>audio_trigger</id>
+      <label>Audio Trigger</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
       <type>int</type>
       <defaultvalue>2</defaultvalue>
       <id>audio_priority</id>
       <label>Audio Priority [Advanced]</label>
     </scriptparameter>
     <scriptparameter>
-      <type>double</type>
-      <defaultvalue>25</defaultvalue>
-      <id>audio_interval</id>
-      <label>Audio Interval (seconds)</label>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_train_whitelist</id>
+      <description>Specify the train index [0..] of each train this will trigger for. Indexes must be separated by a comma</description>
+      <label>Train Whitelist [Advanced]</label>
     </scriptparameter>
-    <scriptparameter>
-      <type>bool</type>
-      <defaultvalue>false</defaultvalue>
-      <id>audio_mutelower</id>
-      <label>Mute Lower Priority Audio</label>
-    </scriptparameter>
-    <materialpath name="Material">thumbs/Timer.nl2mat</materialpath>
+    <materialpath name="Material">thumbs/TrackTrigger.nl2mat</materialpath>
   </sceneobject>
 </root>

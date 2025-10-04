@@ -17,6 +17,7 @@ Result.A = Tex0.R;</shadercore>
       </custommaterial>
       <texunit>
         <map>Dash.png</map>
+        <nearestfilter/>
         <tcgen mode="base"/>
       </texunit>
     </renderpass>

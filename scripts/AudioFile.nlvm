@@ -12,7 +12,7 @@ public class AudioFile extends Behaviour implements IReferenceable
     public bool Awake()
     {
         ResourcePath resource = GetResourcePathParameter("audio_file");
-        int audioFlags = Sound.AUDIO_FLAG_SOUND | Sound.AUDIO_FLAG_MONO;
+        int audioFlags = Sound.AUDIO_FLAG_SOUND;
         bool isMusic = GetBoolParameter("audio_is_music");
         if(isMusic)
             audioFlags |= Sound.AUDIO_FLAG_MUSIC;

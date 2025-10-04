@@ -3,13 +3,25 @@
   <sceneobject>
     <model path="models/SiemensButtons/Plastic.glb">
       <content>models</content>
-      <clip distance="10"/>
+      <clip mesh="Cylinder" distance="10"/>
+      <clip mesh="Cylinder.001" distance="10"/>
+      <clip distance="25"/>
     </model>
     <usercolor>
       <label>Color</label>
       <index>0</index>
       <defaultcolor r="1" g="1" b="1"/>
     </usercolor>
+    <usercolor>
+      <label>Plaque Color</label>
+      <index>1</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <usertexture>
+      <label>Plaque Texture</label>
+      <description></description>
+      <defaultpath>materials/SiemensButtons/Plaques/Template.png</defaultpath>
+    </usertexture>
     <script>
       <classpath></classpath>
       <class>scripts.AudioQueueButton</class>
@@ -28,17 +40,19 @@
       <label>Audio File</label>
     </scriptparameter>
     <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>true</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
       <type>int</type>
       <defaultvalue>5</defaultvalue>
       <id>audio_priority</id>
       <label>Priority [Advanced]</label>
     </scriptparameter>
-    <scriptparameter>
-      <type>bool</type>
-      <defaultvalue>true</defaultvalue>
-      <id>audio_mutelower</id>
-      <label>Mute Lower Priority</label>
-    </scriptparameter>
     <materialpath name="Button">materials/SiemensButtons/PlasticButton.nl2mat</materialpath>
+    <materialpath name="Plaque">materials/SiemensButtons/Plaque.nl2mat</materialpath>
+    <materialpath name="PlaqueText">materials/SiemensButtons/PlaqueText.nl2mat</materialpath>
   </sceneobject>
 </root>

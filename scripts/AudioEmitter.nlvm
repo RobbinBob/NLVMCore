@@ -7,6 +7,9 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     protected List m_AudioClips = new List();
     protected SpatialSound m_ActiveSound = null;
 
+    protected float m_FallOff = 1;
+    protected float m_Distance = 1;
+
     public int GetOrder() { return -30; }
     public bool Awake()
     {
@@ -15,6 +18,8 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     public void Start()
     {
         SetName(GetStringParameter("group_name"));
+        m_FallOff = GetFloatParameter("audio_falloff");
+        m_Distance = GetFloatParameter("audio_distance");
         Registry.GetInstance().Register(this);
     }
 
@@ -57,14 +62,18 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
             m_ActiveSound = sound;
         }
 
-        m_ActiveSound.SetPosition(GetPosition());
-        m_ActiveSound.SetConstantDistance(1);
-        m_ActiveSound.SetFalloffFactor(1);
+        //m_ActiveSound.SetPosition(GetPosition());
+        m_ActiveSound.SetConstantDistance(m_Distance);
+        m_ActiveSound.SetFalloffFactor(m_FallOff);
+        //m_ActiveSound.SetShouldUseDoppler(false);
 
         return m_ActiveSound;
     }
 
-
+    public List GetAllSounds()
+    {
+        return m_AudioClips;
+    }
 
 
         // IReferenceable

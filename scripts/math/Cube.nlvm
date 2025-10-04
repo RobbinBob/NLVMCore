@@ -1,7 +1,5 @@
 package scripts.math;
 
-import scripts.*; // Temp
-
 /// <class>
 /// <desc>Represents a Cuboid.</desc>
 public class Cube extends Volume
@@ -58,7 +56,6 @@ public class Cube extends Volume
 
 
         Matrix4x4 matrixInv = m_VolumeMatrix.Invert();
-        Debug.DrawMatrix(m_VolumeMatrix, 0.2f);
         Bounds bounds = GetCorners();
         Vector3 minCorner = bounds.Min;
         Vector3 maxCorner = bounds.Max;

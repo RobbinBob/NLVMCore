@@ -1,0 +1,35 @@
+package scripts;
+
+import scripts.math.*;
+import scripts.containers.*;
+
+import com.nolimitscoaster.*;
+import nlvm.math3d.*;
+
+public class AudioEmitterCar extends AudioEmitter
+{
+    private Coaster m_Coaster = null;
+    private Train m_Train = null;
+    private int m_CarIndex = 0;
+    private Vector3f m_CarPos = new Vector3f();
+
+    public void Start()
+    {
+        super.Start();
+        m_Coaster = GetCoasterParameter("audio_coaster");
+        m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 15.0f);
+        m_CarIndex = GetIntegerParameter("audio_car");
+    }
+
+    public void Update(float tick)
+    {
+        m_Train.getCarOrientationAndPosition(m_CarIndex, null, null, null, m_CarPos);
+        Vector3 carPos = Vector3.FromNative(m_CarPos);
+        IEnumerator enumerator = m_AudioClips.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            SpatialSound sound = (SpatialSound)enumerator.Get();
+            sound.SetPosition(carPos);
+        }
+    }
+}

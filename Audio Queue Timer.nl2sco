@@ -2,10 +2,10 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
-    <preview>thumbs/EmergencyStop.png</preview>
+    <preview>thumbs/Timer.png</preview>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioQueueEStop</class>
+      <class>scripts.AudioQueueTimer</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
@@ -22,28 +22,23 @@
       <label>Audio Name</label>
     </scriptparameter>
     <scriptparameter>
-      <type>int</type>
-      <defaultvalue>2</defaultvalue>
-      <id>audio_priority</id>
-      <label>Audio Priority [Advanced]</label>
+      <type>double</type>
+      <defaultvalue>25</defaultvalue>
+      <id>audio_interval</id>
+      <label>Audio Interval (seconds)</label>
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>
       <defaultvalue>false</defaultvalue>
       <id>audio_mutelower</id>
-      <label>Mute Lower Priority Audio</label>
+      <label>Mute Lower Priority Audio [Advanced]</label>
     </scriptparameter>
     <scriptparameter>
-      <type>coaster</type>
-      <id>audio_coaster</id>
-      <label>Coaster</label>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <label>Audio Priority [Advanced]</label>
     </scriptparameter>
-    <scriptparameter>
-      <type>double</type>
-      <defaultvalue>60</defaultvalue>
-      <id>audio_interval</id>
-      <label>Interval (Seconds)</label>
-    </scriptparameter>
-    <materialpath name="Material">thumbs/EmergencyStop.nl2mat</materialpath>
+    <materialpath name="Material">thumbs/Timer.nl2mat</materialpath>
   </sceneobject>
 </root>

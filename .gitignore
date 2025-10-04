@@ -4,12 +4,16 @@
 
 # Ignore model files
 *.[Bb]lend
+*.[Bb]lend1
 *.[Oo]bj
 *.[Dd]ae
 
 # Ingore misc
 *.[Bb]in
 *.[Xx]ml
+*.[Ss]pp
+*.[Aa]fdesign
+*.[Aa]fphoto
 
 # Ignore image files
 *.[Pp]ng
@@ -26,6 +30,5 @@ ParticleTest/
 build/__pycache__/
 UnitTesting/
 SingleBlockAnimationModifier.nl2sco
-scripts/GForceTracker.nlvm
 unnittest/Cube.glb
 unnittest/UnitTest-Math.nl2sco
