@@ -1,0 +1,12 @@
+package scripts;
+
+import scripts.math.*;
+
+public class AudioEmitterCube extends AudioEmitterVolume
+{
+    public void Start()
+    {
+        super.Start();
+        m_EmitterWorldVolume = new Cube(GetMatrix(), GetScale());
+    }
+}

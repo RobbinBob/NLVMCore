@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/UnitCube.glb"/>
+    <preview>thumbs/Controller.png</preview>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioController</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio Snippet</defaultvalue>
+      <id>primary_audio_name</id>
+      <description>Name of this audio snippet, used for referencing</description>
+      <label>Primary Audio Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Group</defaultvalue>
+      <id>group_name</id>
+      <label>Group Name</label>
+    </scriptparameter>
+    <materialpath name="Material">thumbs/Controller.nl2mat</materialpath>
+  </sceneobject>
+</root>

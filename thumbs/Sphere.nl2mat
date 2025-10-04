@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result.RGB = Entity0;
+
+Roughness = 0;
+Metallic = 0;
+
+Tmp0 = Saturate(Color.A);
+Tmp0 = Sub(1, Tmp0);
+Tmp0 = Add(Tmp0, 0.35);
+Result.A = Tmp0;</shadercore>
+      <transparency mode="fade"/>
+      <blend srcfactor="srcalpha" dstfactor="oneminussrcalpha"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <zfeather fadedist="0.5" autoscale="false"/>
+      <alphagen mode="depth" factor="-0.05" offset="3"/>
+      <rgbgen mode="lighting"/>
+    </renderpass>
+    <option norender="true"/>
+    <option nonsolid="true"/>
+    <option noshadowcast="true"/>
+    <option noshadowreceive="true"/>
+  </material>
+</root>

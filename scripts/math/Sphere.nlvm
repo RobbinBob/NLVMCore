@@ -1,0 +1,26 @@
+package scripts.math;
+
+public class Sphere extends Volume
+{
+    public Sphere(Matrix4x4 matrix, float radius)
+    {
+        super(matrix, new Vector3(radius, radius, radius));
+    }
+
+    public bool IsPointWithinVolume(Vector3 point)
+    {
+        Vector3 center = m_VolumeMatrix.GetPosition();
+        return Vector3.Distance(center, point) < m_VolumeScale.X / 2.0f;
+    }
+    public bool IsPointOutsideVolume(Vector3 point)
+    {
+        Vector3 center = m_VolumeMatrix.GetPosition();
+        return Vector3.Distance(center, point) > m_VolumeScale.X / 2.0f;
+    }
+    public Vector3 GetNearestSurface(Vector3 point)
+    {
+        Vector3 center = m_VolumeMatrix.GetPosition();
+        Vector3 v = point.Sub(center).Normalized(); // Vector to point
+        return center.Add(v.Mul(m_VolumeScale.X / 2.0f));
+    }
+}

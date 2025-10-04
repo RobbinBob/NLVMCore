@@ -1,0 +1,6 @@
+package scripts;
+
+public interface IInstantiateable
+{
+    public Object Instantiate();
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result.RGB = Entity0;
+Result.A = Tex0.R;</shadercore>
+      <transparency mode="transparency"/>
+      <premultiplyalpha/>
+      <blend srcfactor="one" dstfactor="oneminussrcalpha"/>
+      <polygonoffset/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <texunit>
+        <map>Dash.png</map>
+        <nearestfilter/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option norender="true"/>
+    <option nonsolid="true"/>
+  </material>
+</root>

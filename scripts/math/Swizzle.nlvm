@@ -2,8 +2,10 @@ package scripts.math;
 
 /// <class>
 /// <desc>Swizzle macros for Vector/Color types.</desc>
-public abstract final class Swizzle extends Object
+public final class Swizzle extends Object
 {
+    private Swizzle() { }
+
     /// <member>
     /// <desc>X axis (Read Only).</desc>
     /// </member>

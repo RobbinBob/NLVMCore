@@ -320,6 +320,13 @@ public final class Matrix4x4 extends Object
         return copy;
     }
 
+    public Vector3 Multiply3x3(Vector3 vector)
+    {
+        Vector3f nativeVector = new Vector3f(vector.X, vector.Y, vector.Z);
+        m_NativeMatrix.multVector3x3(nativeVector, nativeVector);
+        return Vector3.FromNative(nativeVector);
+    }
+
     /// <method>
     /// <desc>Transforms the vector by the matrix with the virtual 4th component being 0.</desc>
     /// <return>The resulting vector.</return>

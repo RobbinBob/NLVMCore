@@ -1,0 +1,12 @@
+package scripts;
+
+import scripts.math.*;
+
+public final class AudioQueueVolumeTriggerSphere extends AudioQueueVolumeTrigger
+{
+    public void Start()
+    {
+        super.Start();
+        m_TriggerVolume = new Sphere(GetMatrix(), GetScale().X);
+    }
+}

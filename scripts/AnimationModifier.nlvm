@@ -13,7 +13,7 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
     protected IBogieModifier m_PreviousBogieModifier = null;
 
     protected TrainWrapper m_TrainWrapper = new TrainWrapper();
-    protected TrainHandler m_ActiveHandler = null;
+    protected CoasterTrain m_ActiveHandler = null;
 
     public static final String ANIMATED_ROOT_ELEMENT = "root";
 
@@ -36,7 +36,7 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
     protected int m_AnimationMode = ANIMATION_SINGLE;
 
 
-    public bool Start()
+    public bool Awake()
     {
             // Fetch the SceneObject that has the animation, *self means this script instance
         String animatedObjectName = GetStringParameter(PARAM_SCENEOBJECT_NAME);
@@ -111,7 +111,7 @@ public abstract class AnimationModifier extends Behaviour implements ICarModifie
     {
         SetActiveModifiers(this, this);
     }
-    protected final TrainHandler GetOccupyingTrainHandler(Train train)
+    protected final CoasterTrain GetOccupyingTrainHandler(Train train)
     {
         return TrainHandlerManager.GetInstance().GetHandler(train);
     }

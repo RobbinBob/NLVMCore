@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <shadercore>Result.RGB = Mul(Tex0, Entity1);
+
+Roughness = 0.5;
+Metallic = 0;</shadercore>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <rgbgen mode="bumplighting"/>
+      <texunit>
+        <map>Plaque_Color.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+      <texunit>
+        <map>Plaque_Normal.png</map>
+        <bump mode="normalgloss"/>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option nonsolid="true"/>
+    <option noshadowcast="true"/>
+  </material>
+</root>

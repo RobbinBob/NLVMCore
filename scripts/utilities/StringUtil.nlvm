@@ -84,12 +84,12 @@ public class StringUtil
     public static bool IsCharLower(char c)
     {
         int dec = (int)c;
-        return dec > 64 && dec < 91;
+        return dec > 96 && dec < 123;
     }
     public static bool IsCharUpper(char c)
     {
         int dec = (int)c;
-        return dec > 96 && dec < 123;
+        return dec > 64 && dec < 91;
     }
 
     public static bool Contains(String string, char c)
@@ -138,9 +138,7 @@ public class StringUtil
     {
         int dec = (int)c;
         if(IsCharUpper(c))
-        {
-            return (char)(dec - 32);
-        }
+            return (char)(dec + 32);
         return c;
     }
 

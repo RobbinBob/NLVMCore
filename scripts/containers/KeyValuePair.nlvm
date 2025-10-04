@@ -1,0 +1,27 @@
+package scripts.containers;
+
+public final class KeyValuePair extends Object
+{
+    private Object m_Key = null;
+    private Object m_Value = null;
+
+    public KeyValuePair(Object key, Object value)
+    {
+        m_Key = key;
+        m_Value = value;
+    }
+
+    public Object GetKey()
+    {
+        return m_Key;
+    }
+    public Object GetValue()
+    {
+        return m_Value;
+    }
+
+    public String toString()
+    {
+        return "Key: " + m_Key.toString() + ", Value: " + m_Value.toString();
+    }
+}

@@ -93,8 +93,8 @@ public final class Animation extends UpdateableObject
         startTime /= FRAME_RATE;
         stopTime /= FRAME_RATE;
 
-        if(startTime > m_AnimationLength || startTime < 0) InvalidAnimationException.Throw("Argument 'startTime' is out of range of animation length");
-        if(stopTime > m_AnimationLength || stopTime < startTime) InvalidAnimationException.Throw("Argument 'stopTime' is out of range, argument needs to be within range " + startTime + " to " + m_AnimationLength);
+        if(startTime > m_AnimationLength || startTime < 0) InvalidAnimationException.Throw("Argument 'startTime': " + startTime + ", is out of range of animation 0 to " + m_AnimationLength);
+        if(stopTime > m_AnimationLength || stopTime < startTime) InvalidAnimationException.Throw("Argument 'stopTime': " + stopTime + " is out of range, argument needs to be within range " + startTime + " to " + m_AnimationLength);
         SetShouldUpdate(true);
         m_CurrentAnimationTime = startTime;
         m_AnimationStartTime = startTime;

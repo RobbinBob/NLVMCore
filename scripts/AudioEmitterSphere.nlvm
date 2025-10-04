@@ -1,0 +1,13 @@
+package scripts;
+
+import scripts.math.*;
+
+public class AudioEmitterSphere extends AudioEmitterVolume
+{
+    public void Start()
+    {
+        super.Start();
+        Vector3 scale = GetScale();
+        m_EmitterWorldVolume = new Sphere(GetMatrix(), Mathf.Min(scale.X, Mathf.Min(scale.Y, scale.Z)));
+    }
+}

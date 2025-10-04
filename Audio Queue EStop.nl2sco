@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/UnitCube.glb"/>
+    <preview>thumbs/EmergencyStop.png</preview>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioQueueEStop</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio Group</defaultvalue>
+      <id>audio_group</id>
+      <description>The audio group that will be triggered</description>
+      <label>Audio Group</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue>My Audio File</defaultvalue>
+      <id>audio_name</id>
+      <label>Audio Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>coaster</type>
+      <id>audio_coaster</id>
+      <label>Coaster</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>60</defaultvalue>
+      <id>audio_interval</id>
+      <label>Interval (Seconds)</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <materialpath name="Material">thumbs/EmergencyStop.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,10 @@
+package scripts;
+
+public final class AudioQueueStationGate extends AudioQueueStationState
+{
+    public void Update(float deltaTime)
+    {
+        m_Activation = m_Station.getStationGateState();
+        super.Update(deltaTime);
+    }
+}

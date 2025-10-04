@@ -1,0 +1,25 @@
+package scripts.math;
+
+/// <class>
+/// <desc>Represents an axis-aligned box.</desc>
+public class Bounds extends Object
+{
+    /// <member>
+    /// <desc>The minimum of the box.</desc>
+    /// </member>
+    public Vector3 Min;
+    /// <member>
+    /// <desc>The maximum of the box.</desc>
+    /// </member>
+    public Vector3 Max;
+
+    /// <constructor>
+    /// <desc>Creates a new axis-aligned box.</desc>
+    /// </constructor>
+    public Bounds(Vector3 min, Vector3 max)
+    {
+        Min = min;
+        Max = max;
+    }
+}
+/// </class>

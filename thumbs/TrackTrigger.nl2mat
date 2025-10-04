@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <material>
+    <renderpass>
+      <transparency mode="opaque"/>
+      <linearshading/>
+      <custommaterial>
+        <diffuse r="1" g="1" b="1"/>
+        <ambient r="1" g="1" b="1"/>
+        <specular r="1" g="1" b="1"/>
+        <shininess exponent="42"/>
+      </custommaterial>
+      <rgbgen mode="lighting"/>
+      <texunit>
+        <map>TrackTrigger.png</map>
+        <tcgen mode="base"/>
+      </texunit>
+    </renderpass>
+    <option norender="true"/>
+    <option nonsolid="true"/>
+  </material>
+</root>
