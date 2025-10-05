@@ -8,8 +8,6 @@ public abstract class AudioEmitterVolume extends AudioEmitter implements IRefere
     protected Volume m_EmitterWorldVolume = null;
     private static final float MAX_DIST_CALCULATIONS = 2;
 
-
-
     private Color[] colors = new Color[]
     {
         Color.Red,

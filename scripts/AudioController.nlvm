@@ -7,9 +7,15 @@ import scripts.containers.*;
 public class AudioController extends Behaviour implements IReferenceable
 {
     private SpatialSound m_PrimaryAudioLoop = null;
+    private AudioFile m_PrimaryAudioFile = null;
+
     private AudioEmitter[] m_GroupEmitters = null;
     private bool m_MutePrimaryTrack = false;
     private bool m_IsEnabled = true;
+
+    private String m_GroupName = "";
+
+    private float m_MuteGain = 0.05f;
 
     private List m_Queue = new List();
 
@@ -29,20 +35,23 @@ public class AudioController extends Behaviour implements IReferenceable
         String audioName = GetStringParameter("primary_audio_name");
         if(audioName.length() != 0)
         {
-            m_PrimaryAudioLoop = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", GetStringParameter("primary_audio_name"));
+            m_PrimaryAudioFile = (AudioFile)registry.GetReferenceFromName("scripts.AudioFile", GetStringParameter("primary_audio_name"));
+            m_PrimaryAudioLoop = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", m_PrimaryAudioFile.GetName());
             if(m_PrimaryAudioLoop == null)
                 Exception.Throw("Unable to find scripts.SpatialSound with name '" + GetStringParameter("primary_audio_name") + "'");
         }
 
             // Fetch the audio group name and register it
-        String groupName = GetStringParameter("group_name");
-        if(groupName == null || groupName.equals(""))
+        m_GroupName = GetStringParameter("group_name");
+        if(m_GroupName == null || m_GroupName.equals(""))
             Exception.Throw("Audio group name is invalid, please make sure to specify a valid name");
-        SetName(groupName);
+        SetName(m_GroupName);
+
+        m_MuteGain = GetFloatParameter("audio_mute_gain");
 
             // Fetch all AudioEmitters with the same group name
-        IReferenceable[] references = registry.GetReferencesFromName("scripts.AudioEmitter", groupName);
-        Debug.Print("Found '" + references.length + "' AudioEmitters associated with group '" + groupName + "'");
+        IReferenceable[] references = registry.GetReferencesFromName("scripts.AudioEmitter", m_GroupName);
+        Debug.Print("Found '" + references.length + "' AudioEmitters associated with group '" + m_GroupName + "'");
         m_GroupEmitters = new AudioEmitter[references.length];
         for(int i = 0; i < references.length; ++i)
         {
@@ -63,6 +72,8 @@ public class AudioController extends Behaviour implements IReferenceable
                 continue;
 
             SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
+            sound.SetGain(m_PrimaryAudioFile.GetDefaultGain());
+            sound.SetPitch(m_PrimaryAudioFile.GetDefaultPitch());
             sound.PlaySoundLooped();
         }
     }
@@ -85,17 +96,16 @@ public class AudioController extends Behaviour implements IReferenceable
                     sound.SetGain(0);
                 }
 
-                IEnumerator enumerator = m_Queue.GetEnumerator();
-                while(enumerator.MoveNext())
-                {
-                    AudioConfig audio = (AudioConfig)enumerator.Get();
-                    sound = m_GroupEmitters[i].SetCurrentSound(((AudioConfig)enumerator.Get()).SoundName);
-                    sound.SetGain(0);
-                    sound.Stop();
-                }
-                m_Queue.Clear();
-                return;
             }
+            IEnumerator enumerator = m_Queue.GetEnumerator();
+            while(enumerator.MoveNext())
+            {
+                AudioConfig audio = (AudioConfig)enumerator.Get();
+                DequeueSound(audio.SoundName);
+                Debug.Print("Removing sound '" + audio.SoundName + "' from emitter group '" + m_GroupName + "'");
+            }
+            m_Queue.Clear();
+            return;
         }
         else
             m_EnableDebounce = false;
@@ -109,7 +119,7 @@ public class AudioController extends Behaviour implements IReferenceable
                     for(int i = 0; i < m_GroupEmitters.length; ++i)
                     {
                         SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
-                        sound.SetGainFaded(m_MutePrimaryTrack ? 0 : 1, 0.5f);
+                        sound.SetGainFaded(m_MutePrimaryTrack ? 0 : m_PrimaryAudioFile.GetDefaultGain(), 0.5f);
                     }
                 }
                 m_Debounce = true;
@@ -172,15 +182,15 @@ public class AudioController extends Behaviour implements IReferenceable
                     return;                
                 }
                 else
-                    sound.SetGainFaded(1, 0.5f);
+                    sound.SetGainFaded(m_PrimaryAudioFile.GetDefaultGain(), 0.5f);
 
                 if (isMutingLower)
                 {
-                    sound.SetGainFaded(0.05f, 0.5f);
+                    sound.SetGainFaded(m_MuteGain, 0.5f);
                 }
                 else
                 {
-                    sound.SetGainFaded(1, 0.5f);
+                    sound.SetGainFaded(m_PrimaryAudioFile.GetDefaultGain(), 0.5f);
                 }
             }
         }
@@ -196,7 +206,6 @@ public class AudioController extends Behaviour implements IReferenceable
         if(m_Queue.Count() == 0)
         {
             m_Queue.Insert(properties);
-
             for(int i = 0; i < m_GroupEmitters.length; ++i)
             {
                 SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(properties.SoundName);
@@ -214,12 +223,20 @@ public class AudioController extends Behaviour implements IReferenceable
         while(enumerator.MoveNext())
         {
             AudioConfig sound = (AudioConfig)enumerator.Get();
+
+                // If this is already found in the queue, then we just need to restart it from the beginning
             if(sound.SoundName.equals(properties.SoundName))
             {
-                Debug.Warn("Trying to enque the same sound with a different priority");
+                for(int i = 0; i < m_GroupEmitters.length; ++i)
+                {
+                    SpatialSound spatialSound = m_GroupEmitters[i].SetCurrentSound(properties.SoundName);
+                    spatialSound.Stop();
+                    spatialSound.PlaySoundOnce();
+                }
                 return;
             }
 
+                // If this was not found in the queue then we need to begin playing it and add it to the queue
             if(properties.Priority <= sound.Priority)
             {
                 m_Queue.InsertAt(properties, index);
@@ -230,13 +247,21 @@ public class AudioController extends Behaviour implements IReferenceable
                     spatialSound.PlaySoundOnce();
                 }
 
+                    // If they both equal the same property then we need to remove the old audio
+                while(properties.Priority == ((AudioConfig)enumerator.Get()).Priority)
+                {
+                    DequeueSound(((AudioConfig)enumerator.Get()).SoundName);
+                    if(!enumerator.MoveNext())
+                        break;
+                }
+
                 break;
             }
         }
 
+            // If it was unsuccessful at adding this new audio clip to the queue (usually occurs from an empty queue)
         if(!success)
         {
-            //Debug.Print("Failed to enque sound, im lazy to implement this right now");
             m_Queue.Insert(properties);
             for(int i = 0; i < m_GroupEmitters.length; ++i)
             {
@@ -245,27 +270,58 @@ public class AudioController extends Behaviour implements IReferenceable
             }
         }
     }
+    public void DequeueSound(String soundName)
+    {
+        if(m_Queue.Count() == 0)
+            return;
+
+        IEnumerator enumerator = m_Queue.GetEnumerator();
+        int i = 0;
+        while(enumerator.MoveNext())
+        {
+            AudioConfig sound = (AudioConfig)enumerator.Get();
+            if(!sound.SoundName.equals(soundName))
+            {
+                i++;
+                continue;
+            }
+
+            Debug.Print("Found sound with name '" + soundName + "' stopping sound and removing it from queue");
+            for(int j = 0; j < m_GroupEmitters.length; ++j)
+            {
+                SpatialSound spatialSound = m_GroupEmitters[j].SetCurrentSound(sound.SoundName);
+                spatialSound.Stop();
+            }
+
+            m_Queue.RemoveAt(i);
+            break;
+        }
+    }
+    
+    
     public void SetPrimaryTrackMuted(bool isMuted)
     {
         m_MutePrimaryTrack = isMuted;
+        if(m_PrimaryAudioLoop == null)
+            return;
+
         for(int i = 0; i < m_GroupEmitters.length; ++i)
         {
             SpatialSound sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
             if(m_IsEnabled)
-                sound.SetGainFaded(m_MutePrimaryTrack ? 0 : 1, 0.5f);
+                sound.SetGainFaded(m_MutePrimaryTrack ? 0 : m_PrimaryAudioFile.GetDefaultGain(), 0.5f);
         }
     }
     public void SetControllerOn(bool isEnabled)
     {
         m_IsEnabled = isEnabled;
-
-        for(int i = 0; i < m_GroupEmitters.length; ++i)
+        if(m_PrimaryAudioLoop != null)
         {
-            SpatialSound sound;
-            if(m_PrimaryAudioLoop != null)
+            for(int i = 0; i < m_GroupEmitters.length; ++i)
             {
+                SpatialSound sound;
                 sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
-                sound.SetGain(m_IsEnabled ? 1 : 0);
+                sound.SetGain(m_IsEnabled ? m_PrimaryAudioFile.GetDefaultGain() : 0);
             }
         }
 

@@ -6,6 +6,7 @@ public class AudioQueueEStop extends AudioQueue
 {
     private Coaster m_Coaster = null;
     private Timer m_IntervalTimer = null;
+    private bool m_Debounce = false;
 
     public void Start()
     {
@@ -20,12 +21,18 @@ public class AudioQueueEStop extends AudioQueue
         if(m_Coaster.isEmergencyStop())
         {
             if(m_IntervalTimer.IsRunning() && m_IntervalTimer.WaitForComplete())
-            {
                 return;
-            }
+
             m_AudioController.EnqueSound(m_SoundConfig);
             m_IntervalTimer.StopAndReset();
             m_IntervalTimer.Start();
+            m_Debounce = false;
         }
+        else
+            if(!m_Debounce)
+            {
+                m_IntervalTimer.StopAndReset();
+                m_Debounce = true;
+            }
     }
 }

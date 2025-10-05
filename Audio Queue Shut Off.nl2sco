@@ -8,7 +8,7 @@
       <clip distance="25"/>
     </model>
     <usercolor>
-      <label>Color</label>
+      <label>Switch Color</label>
       <index>0</index>
       <defaultcolor r="1" g="1" b="1"/>
     </usercolor>
@@ -19,8 +19,8 @@
     </usercolor>
     <usertexture>
       <label>Plaque Texture</label>
-      <description></description>
-      <defaultpath>materials/SiemensButtons/Plaques/Template.png</defaultpath>
+      <description>Sepcifies what plaque text should be displayed</description>
+      <defaultpath>materials/SiemensButtons/Plaques/Audio Controller.png</defaultpath>
     </usertexture>
     <script>
       <classpath></classpath>
@@ -31,7 +31,15 @@
       <type>string</type>
       <defaultvalue></defaultvalue>
       <id>audio_group</id>
+      <description>The group that this button should be associated with</description>
       <label>Audio Group</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>hide_plaque</id>
+      <description>Disables the rendering of the plaque when in play mode</description>
+      <label>Hide Plaque</label>
     </scriptparameter>
     <materialpath name="Plaque">materials/SiemensButtons/Plaque.nl2mat</materialpath>
     <materialpath name="PlaqueText">materials/SiemensButtons/PlaqueText.nl2mat</materialpath>

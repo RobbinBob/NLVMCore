@@ -45,6 +45,12 @@
       <description>Specify the train index [0..] of each train this will trigger for. Indexes must be separated by a comma</description>
       <label>Train Whitelist [Advanced]</label>
     </scriptparameter>
+    <scriptparameter>
+      <type>trigger</type>
+      <id>audio_stop_trigger</id>
+      <description>Used to stop playing the audio file [Can be empty]</description>
+      <label>Stop Trigger [Optional]</label>
+    </scriptparameter>
     <materialpath name="Material">thumbs/TrackTrigger.nl2mat</materialpath>
   </sceneobject>
 </root>
