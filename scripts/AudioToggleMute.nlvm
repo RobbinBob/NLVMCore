@@ -26,6 +26,7 @@ public final class AudioToggleMute extends Behaviour implements InteractionActio
         m_Interaction.setRadius(0.05f);
         m_Interaction.addActionListener(this);
         m_Animation = new Animation(m_SceneObject);
+        m_SceneObject.getElementForName("Plaque").setVisible(!GetBoolParameter("hide_plaque"));
     }
 
     public void Update(float deltaTime)

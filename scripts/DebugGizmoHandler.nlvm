@@ -23,6 +23,7 @@ public final class DebugGizmoHandler extends UpdateableObject
     private bool m_IsActive = false;
 
     private static bool m_IsInstanced = false;
+    private static bool m_IsValid = true;
 
     public DebugGizmoHandler()
     {
@@ -30,6 +31,13 @@ public final class DebugGizmoHandler extends UpdateableObject
             Exception.Throw("Attempting to instantiate DebugGizmoHandler more than once, this is not allowed");
 
         SceneObject symbols = NoLimits.getSimulator().getSceneObject(GIZMO_SYMBOL_NAME);
+        if(symbols == null)
+        {
+            Debug.Print("No debug gizmos SceneObject found, you will be unable to use debug gizmos!");
+            m_IsValid = false;
+            return;
+        }
+
         symbols.setMatrix(new Matrix4x4f());
 
         SceneObjectElement[] lineElements = GetElementsWithName(symbols, GIZMO_SYMBOL_LINE);
@@ -53,9 +61,19 @@ public final class DebugGizmoHandler extends UpdateableObject
         m_IsInstanced = true;
     }
 
+    private void DisplayDebugGizmoError()
+    {
+        Debug.Warn("Trying to use gizmos when they have not been found in the park!");
+    }
 
     public void DrawLine(Matrix4x4 matrix, float timespan, Color color)
     {
+        if(!m_IsValid)
+        {
+            DisplayDebugGizmoError();
+            return;
+        }
+
         if(m_SpherePool.Count() < 1)
             return;
             
@@ -75,6 +93,12 @@ public final class DebugGizmoHandler extends UpdateableObject
 
     public void DrawSphere(Matrix4x4 matrix, float timespan, Color color)
     {
+        if(!m_IsValid)
+        {
+            DisplayDebugGizmoError();
+            return;
+        }
+
         if(m_SpherePool.Count() < 1)
             return;
 

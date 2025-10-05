@@ -21,6 +21,13 @@
       <id>group_name</id>
       <label>Group Name</label>
     </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0.05</defaultvalue>
+      <id>audio_mute_gain</id>
+      <description>The gain used when triggered audio is overlayed with primary track [0-1]</description>
+      <label>Background Gain</label>
+    </scriptparameter>
     <materialpath name="Material">thumbs/Controller.nl2mat</materialpath>
   </sceneobject>
 </root>

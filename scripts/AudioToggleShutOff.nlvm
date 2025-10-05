@@ -30,6 +30,8 @@ public final class AudioToggleShutOff extends Behaviour implements InteractionAc
         m_IsToggled = true;
         m_Animation.Play(0, 10);
         m_SceneObject.getElementAt(1).setTextureAnimationIndex(1);
+
+        m_SceneObject.getElementForName("Plaque").setVisible(!GetBoolParameter("hide_plaque"));
     }
 
     public void Update(float deltaTime)
