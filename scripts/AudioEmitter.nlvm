@@ -23,13 +23,6 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
         Registry.GetInstance().Register(this);
     }
 
-
-    public void CacheAudioClip(SpatialSound sound)
-    {
-        Debug.Print("Caching sound " + sound.GetName());
-        m_AudioClips.Insert(sound);
-    }
-
     public final SpatialSound GetCurrentSound()
     {
         return m_ActiveSound;

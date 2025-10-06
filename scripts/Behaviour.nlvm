@@ -14,8 +14,6 @@ public abstract class Behaviour extends Script
     private static Behaviour m_Caller = null;
     private static List m_OrderList = new List(1);
 
-    private static Vector3 m_ViewerPosition = null;
-
     /// <member>
     /// <desc>Reference to the SceneObject this Behaviour is attached to.</desc>
     /// </member>
@@ -84,10 +82,6 @@ public abstract class Behaviour extends Script
 
         if(m_Caller != this)
             return;
-
-        Vector3f pos = new Vector3f();
-        sim.getViewPos(pos);
-        m_ViewerPosition = Vector3.FromNative(pos);
         
             // Loop over the updateables and call their updates
         IEnumerator enumerator = m_Updateables.GetEnumerator();
@@ -228,7 +222,9 @@ public abstract class Behaviour extends Script
     /// </method>
     public final Vector3 GetViewerPosition()
     {
-        return m_ViewerPosition;
+        Vector3f pos = new Vector3f();
+        sim.getViewPos(pos);
+        return Vector3.FromNative(pos);
     }
 
     /// <method>
