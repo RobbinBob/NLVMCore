@@ -58,7 +58,7 @@ public class AudioController extends Behaviour implements IReferenceable
             m_GroupEmitters[i] = (AudioEmitter)references[i];
 
             if(m_PrimaryAudioLoop != null)
-                m_GroupEmitters[i].CacheAudioClip((SpatialSound)m_PrimaryAudioLoop.Instantiate());
+                m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
         }
 
         registry.Register(this);
