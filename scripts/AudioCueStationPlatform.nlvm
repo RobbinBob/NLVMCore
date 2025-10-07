@@ -1,0 +1,10 @@
+package scripts;
+
+public final class AudioCueStationPlatform extends AudioCueStationState
+{
+    public void Update(float deltaTime)
+    {
+        m_Activation = m_Station.getStationPlatformState();
+        super.Update(deltaTime);
+    }
+}

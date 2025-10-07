@@ -1,0 +1,12 @@
+package scripts;
+
+import scripts.math.*;
+
+public final class AudioCueVolumeTriggerSphere extends AudioCueVolumeTrigger
+{
+    public void Start()
+    {
+        super.Start();
+        m_TriggerVolume = new Sphere(GetMatrix(), GetScale().X);
+    }
+}

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/UnitCube.glb"/>
+    <description>Plays an assigned Audio ID to a Group ID when the ride is dispatched.</description>
+    <preview>thumbs/Dispatch.png</preview>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <param baseroty="-90"/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioCueStationDispatch</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_group</id>
+      <description>Links all emitters/cues to a certain group.</description>
+      <label>Group Id</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_name</id>
+      <description>Audio id that links to audio file.</description>
+      <label>Audio Id [Must be unique]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>blocksection</type>
+      <id>audio_station</id>
+      <description>The Station that will trigger this cue upon dispatching.</description>
+      <label>Station</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <description>Sets wether this audio cue will mute lower priority audio cues. Used along-side the audio priority parameter.</description>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>3</defaultvalue>
+      <id>audio_priority</id>
+      <description>Sets the priority of this audio cue which determines what cues will silence others. Used along-side mute lower parameter.</description>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <materialpath name="Material">thumbs/Dispatch.nl2mat</materialpath>
+  </sceneobject>
+</root>

@@ -1,0 +1,51 @@
+package scripts;
+
+public abstract class AudioCue extends Behaviour
+{
+    protected AudioController m_AudioController = null;
+    protected String m_AudioName = "";
+    protected int m_Priority = 0;
+    protected bool m_MuteLowerPriority = false;
+    protected AudioConfig m_SoundConfig = null;
+
+    public int GetOrder() { return -15; }
+    public bool Awake() 
+    {
+        String groupId = GetStringParameter("audio_group");
+        if(groupId.length() == 0)
+        {
+            Debug.Warn("Cue Trigger | No Group Id specified");
+            return false;
+        }
+        String audioId = GetStringParameter("audio_name");
+        if(audioId.length() == 0)
+        {
+            Debug.Warn("Cue Trigger | No Audio Id specified");
+            return false;
+        }
+        return true;
+    }
+
+    public void Start()
+    {
+        m_AudioController = (AudioController)Registry.GetInstance().GetReferenceFromName("scripts.AudioController", GetStringParameter("audio_group"));
+        if(m_AudioController == null)
+            NullReferenceException.Throw("Unable to find AudioController with name '" + GetStringParameter("audio_group") + "'");
+    
+        m_AudioName = GetStringParameter("audio_name");
+        m_Priority = GetIntegerParameter("audio_priority");
+        m_MuteLowerPriority = GetBoolParameter("audio_mutelower");
+
+        IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioFile", m_AudioName);
+        if(reference == null)
+        {
+            Debug.Warn("Cue Trigger | Unable to find Audio File with name '" + m_AudioName + "'");
+            return;
+        }
+
+        m_SoundConfig = new AudioConfig(
+            (AudioFile)reference,
+            m_Priority,
+            m_MuteLowerPriority);
+    }
+}
