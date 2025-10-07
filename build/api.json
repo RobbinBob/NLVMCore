@@ -257,7 +257,9 @@
             "package": "scripts",
             "libraries": [
                 "com.nolimitscoaster",
-                "scripts.containers"
+                "nlvm.math3d",
+                "scripts.containers",
+                "scripts.math"
             ],
             "accessor": "public abstract",
             "name": "Behaviour",
@@ -280,12 +282,48 @@
             ],
             "methods": [
                 {
+                    "args": [
+                        {
+                            "type": "IUpdateable",
+                            "name": "updateable",
+                            "description": "The interface to be registered."
+                        }
+                    ],
+                    "name": "RegisterUpdateable",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Registers an IUpdateable interface to be called each frame."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "IUpdateable",
+                            "name": "updateable",
+                            "description": "The interface to be removed."
+                        }
+                    ],
+                    "name": "RemoveUpdateable",
+                    "return": "void",
+                    "accessor": "public static final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Removes an IUpdateable interface from the registry."
+                },
+                {
                     "args": [],
-                    "name": "Start",
+                    "name": "Awake",
                     "return": "bool",
                     "accessor": "public abstract",
                     "return_desc": "Pass True to allow it to continue excecution, otherwise False to cancel.",
                     "description": "Called once to initialize the object."
+                },
+                {
+                    "args": [],
+                    "name": "Start",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called once to signify start of update cycle, order can be configured if overriding GetOrder."
                 },
                 {
                     "args": [
@@ -317,6 +355,14 @@
                 },
                 {
                     "args": [],
+                    "name": "LateUnblockedUpdate",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Called each frame unaffected by pausing."
+                },
+                {
+                    "args": [],
                     "name": "Destroy",
                     "return": "void",
                     "accessor": "public",
@@ -330,6 +376,99 @@
                     "accessor": "public",
                     "return_desc": "No Description Supplied.",
                     "description": "A String representation of this Behaviour."
+                },
+                {
+                    "args": [],
+                    "name": "GetViewerPosition",
+                    "return": "Vector3",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the current world-space position of the player."
+                },
+                {
+                    "args": [],
+                    "name": "GetPosition",
+                    "return": "Vector3",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets this Behaviour's world-space position."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "position",
+                            "description": "The world-space position to set."
+                        }
+                    ],
+                    "name": "SetPosition",
+                    "return": "void",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets this Behaviour's world-space position."
+                },
+                {
+                    "args": [],
+                    "name": "GetScale",
+                    "return": "Vector3",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets this Behaviour's local-space scale."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "scale",
+                            "description": "The local-space scale to set."
+                        }
+                    ],
+                    "name": "SetScale",
+                    "return": "void",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets this Behaviour's local-space scale."
+                },
+                {
+                    "args": [],
+                    "name": "GetMatrix",
+                    "return": "Matrix4x4",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets this Behaviour's world-space matrix."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Matrix4x4",
+                            "name": "matrix",
+                            "description": "The world-space matrix to set."
+                        }
+                    ],
+                    "name": "SetMatrix",
+                    "return": "void",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets this Behaviour's world-space matrix."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetFloatParameter",
+                    "return": "float",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a float parameter, throws an exception if no parameter is found with the given id."
                 },
                 {
                     "args": [
@@ -351,6 +490,11 @@
                             "type": "nlvm.lang.String",
                             "name": "name",
                             "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
                         }
                     ],
                     "name": "GetDoubleParameter",
@@ -358,6 +502,39 @@
                     "accessor": "protected final",
                     "return_desc": "No Description Supplied.",
                     "description": "Attempts to retrieve a double parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetDoubleParameter",
+                    "return": "double",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a double parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetIntegerParameter",
+                    "return": "int",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a int parameter, throws an exception if no parameter is found with the given id."
                 },
                 {
                     "args": [
@@ -379,6 +556,11 @@
                             "type": "nlvm.lang.String",
                             "name": "name",
                             "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
                         }
                     ],
                     "name": "GetStringParameter",
@@ -386,6 +568,39 @@
                     "accessor": "protected final",
                     "return_desc": "No Description Supplied.",
                     "description": "Attempts to retrieve a String parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetStringParameter",
+                    "return": "nlvm.lang.String",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a String parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetBoolParameter",
+                    "return": "bool",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a bool parameter, throws an exception if no parameter is found with the given id."
                 },
                 {
                     "args": [
@@ -407,6 +622,11 @@
                             "type": "nlvm.lang.String",
                             "name": "name",
                             "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
                         }
                     ],
                     "name": "GetCoasterParameter",
@@ -414,6 +634,39 @@
                     "accessor": "protected final",
                     "return_desc": "No Description Supplied.",
                     "description": "Attempts to retrieve a Coaster parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetCoasterParameter",
+                    "return": "com.nolimitscoaster.Coaster",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a Coaster parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetTriggerParameter",
+                    "return": "com.nolimitscoaster.TrackTrigger",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a TrackTrigger parameter, throws an exception if no parameter is found with the given id."
                 },
                 {
                     "args": [
@@ -435,6 +688,11 @@
                             "type": "nlvm.lang.String",
                             "name": "name",
                             "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
                         }
                     ],
                     "name": "GetBlockParameter",
@@ -442,6 +700,39 @@
                     "accessor": "protected final",
                     "return_desc": "No Description Supplied.",
                     "description": "Attempts to retrieve a Block parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetBlockParameter",
+                    "return": "com.nolimitscoaster.Block",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a Block parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetSectionParameter",
+                    "return": "com.nolimitscoaster.Section",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a Section parameter, throws an exception if no parameter is found with the given id."
                 },
                 {
                     "args": [
@@ -463,6 +754,11 @@
                             "type": "nlvm.lang.String",
                             "name": "name",
                             "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
                         }
                     ],
                     "name": "GetSpecialTrackParameter",
@@ -470,6 +766,39 @@
                     "accessor": "protected final",
                     "return_desc": "No Description Supplied.",
                     "description": "Attempts to retrieve a SpecialTrack parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        }
+                    ],
+                    "name": "GetSpecialTrackParameter",
+                    "return": "com.nolimitscoaster.SpecialTrack",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a SpecialTrack parameter, throws an exception if no parameter is found with the given id."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "Parameter id."
+                        },
+                        {
+                            "type": "bool",
+                            "name": "throwIfNotFound",
+                            "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetResourcePathParameter",
+                    "return": "com.nolimitscoaster.ResourcePath",
+                    "accessor": "protected final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to retrieve a ResourcePath parameter, throws an exception if no parameter is found with the given id."
                 },
                 {
                     "args": [
@@ -496,6 +825,20 @@
                             "type": "bool",
                             "name": "throwIfNotFound",
                             "description": "If true, will raise an error if unable to find a SceneObject."
+                        }
+                    ],
+                    "name": "GetSceneObject",
+                    "return": "com.nolimitscoaster.SceneObject",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Attempts to fetch a SceneObject with a given name."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "The id of the SceneObject to fetch."
                         }
                     ],
                     "name": "GetSceneObject",
