@@ -30,7 +30,7 @@
       <type>double</type>
       <defaultvalue>1</defaultvalue>
       <id>audio_gain</id>
-      <description>The default pitch of this audio file.</description>
+      <description>The default gain of this audio file.</description>
       <label>Gain [Range 0 - 1]</label>
     </scriptparameter>
     <scriptparameter>
