@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/DebugSymbols.glb">
+      <clip distance="250"/>
+    </model>
+    <description>Enables debugging information to be displayed in simulator.</description>
+    <defaultinstancename>DebugSymbols</defaultinstancename>
+    <preview>thumbs/Bug.png</preview>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <usercolor>
+      <label></label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <materialpath name="Material">materials/Unlit.nl2mat</materialpath>
+    <materialpath name="Thumb">thumbs/Bug.nl2mat</materialpath>
+  </sceneobject>
+</root>

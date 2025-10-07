@@ -1,0 +1,49 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public class AudioCueEStop extends AudioCue
+{
+    private Coaster m_Coaster = null;
+    private Timer m_IntervalTimer = null;
+    private bool m_Debounce = false;
+
+    public bool Awake()
+    {
+        m_Coaster = GetCoasterParameter("audio_coaster", false);
+        if(m_Coaster == null)
+        {
+            Debug.Warn("Cue Trigger - Emergency Stop | No coaster specified");
+            return false;
+        }
+
+        float interval = GetFloatParameter("audio_interval");
+        if(interval < 0.1f)
+        {
+            Debug.Warn("Cue Trigger - Emergency Stop | Specified interval '" + interval + "' is outside of bounds, must be >= 0.1");
+            return false;
+        }
+        m_IntervalTimer = new Timer(GetFloatParameter("audio_interval"));
+        return super.Awake();
+    }
+
+    public void Update(float deltaTime)
+    {
+        if(m_Coaster.isEmergencyStop())
+        {
+            if(m_IntervalTimer.IsRunning() && m_IntervalTimer.WaitForComplete())
+                return;
+
+            m_AudioController.EnqueSound(m_SoundConfig);
+            m_IntervalTimer.StopAndReset();
+            m_IntervalTimer.Start();
+            m_Debounce = false;
+        }
+        else
+            if(!m_Debounce)
+            {
+                m_IntervalTimer.StopAndReset();
+                m_Debounce = true;
+            }
+    }
+}

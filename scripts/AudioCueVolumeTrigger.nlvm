@@ -1,0 +1,55 @@
+package scripts;
+
+import scripts.math.*;
+
+public abstract class AudioCueVolumeTrigger extends AudioCue
+{
+    protected Volume m_TriggerVolume = null;
+    private static final float MAX_DIST_CALCULATIONS = 2;
+
+    private bool m_IsViewerInside = false;
+    private bool m_IsViewerInsidePrevious = false;
+
+    private static final int PLAY_ON_ENTRY = 0;
+    private static final int PLAY_ON_EXIT = 1;
+    private int m_PlayState = PLAY_ON_ENTRY;
+
+    public void Start()
+    {
+        super.Start();
+        m_PlayState = GetIntegerParameter("audio_play_state");
+    }
+
+    public void Update(float tick)
+    {
+        m_IsViewerInsidePrevious = m_IsViewerInside;
+        Vector3 viewPos = GetViewerPosition();
+        if(Vector3.Distance(m_TriggerVolume.GetMatrix().GetPosition(), viewPos) > m_TriggerVolume.GetScale().Length() * MAX_DIST_CALCULATIONS)
+        {
+            m_IsViewerInside = false;
+            CheckTriggerStateAndFire();
+            return;
+        }
+
+        m_IsViewerInside = m_TriggerVolume.IsPointWithinVolume(viewPos);
+        CheckTriggerStateAndFire();
+    }
+
+    private void CheckTriggerStateAndFire()
+    {
+            // Gaurd clause to ignore states where no updates have happened
+        if(m_IsViewerInside == m_IsViewerInsidePrevious)
+            return;
+
+        if(m_IsViewerInside)
+        {
+            if(m_PlayState == PLAY_ON_ENTRY)
+                m_AudioController.EnqueSound(m_SoundConfig);
+        }
+        else
+        {
+            if(m_PlayState == PLAY_ON_EXIT)
+                m_AudioController.EnqueSound(m_SoundConfig);
+        }
+    }
+}

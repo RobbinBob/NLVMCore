@@ -11,14 +11,27 @@ public final class AudioToggleShutOff extends Behaviour implements InteractionAc
     private bool m_Debounce = false;
 
     public int GetOrder() { return -15; }
-    public bool Awake() { return true; }
+    public bool Awake() 
+    {
+        String groupId = GetStringParameter("audio_group");
+        if(groupId.length() == 0)
+        {
+            Debug.Warn("Button - Master Switch | No Group Id specified");
+            return false;
+        }
+        return true;
+    }
 
     public void Start()
     {
-        m_AudioController = (AudioController)Registry.GetInstance().GetReferenceFromName("scripts.AudioController", GetStringParameter("audio_group"));
-        if(m_AudioController == null)
-            NullReferenceException.Throw("Unable to find AudioController with name '" + GetStringParameter("audio_group") + "'");
-    
+        String groupId = GetStringParameter("audio_group");
+        IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioController", groupId);
+        if(reference == null)
+        {
+            Debug.Warn("Button - Master Switch | Could not find Audio Group with Group Id '" + groupId + "'");
+            return;
+        }
+        m_AudioController = (AudioController)reference;
         m_Interaction = InteractionObject.createSimpleButton();
         m_Interaction.setActive(true);
         m_Interaction.setEnabled(true);

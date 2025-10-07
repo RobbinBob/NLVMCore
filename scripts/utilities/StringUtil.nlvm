@@ -9,6 +9,9 @@ public class StringUtil
 
     public static String[] SplitString(String string, char _char)
     {
+        if(string.length() == 0)
+            return new String[0];
+
         Vector vector = new Vector();
         SplitString(string, _char, vector);
         String[] strings = new String[vector.size()];

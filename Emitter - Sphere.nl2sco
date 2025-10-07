@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/SphereEmitter.glb"/>
+    <description>Defines a spherical zone where a sound plays, ideal for indoor areas, enclosed spaces, or specific sections of a ride.</description>
+    <preview>thumbs/Sphere.png</preview>
+    <param allowrot="false"/>
+    <param customuniformscale="true"/>
+    <usercolor>
+      <label>Color</label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioEmitterSphere</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>group_name</id>
+      <label>Group Name</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>1</defaultvalue>
+      <id>audio_falloff</id>
+      <label>Fall Off</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>1</defaultvalue>
+      <id>audio_distance</id>
+      <label>Constant Distance</label>
+    </scriptparameter>
+    <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
+  </sceneobject>
+</root>

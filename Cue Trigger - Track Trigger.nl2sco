@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/UnitCube.glb"/>
+    <description>Plays an assigned Audio ID to a Group ID when a train passes a track trigger.</description>
+    <preview>thumbs/TrackTrigger.png</preview>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <param baseroty="-90"/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioCueTrackTrigger</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_group</id>
+      <description>Links all emitters/cues to a certain group.</description>
+      <label>Group Id</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_name</id>
+      <description>Audio id that links to audio file.</description>
+      <label>Audio Id [Must be unique]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>trigger</type>
+      <id>audio_trigger</id>
+      <description>The Track Trigger that will trigger this cue upon activation.</description>
+      <label>Audio Trigger</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>trigger</type>
+      <id>audio_trigger_Stop</id>
+      <description>The Track Trigger that will trigger this cue to terminate upon activation.</description>
+      <label>Terminate Audio Trigger [Optional]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <description>Sets wether this audio cue will mute lower priority audio cues. Used along-side the audio priority parameter.</description>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <description>Sets the priority of this audio cue which determines what cues will silence others. Used along-side mute lower parameter.</description>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_train_whitelist</id>
+      <description>A comma separated list which specifies the train indexes to allow triggering this cue.</description>
+      <label>Train Whitelist [Optional] (Range 0 - MaxTrains-1)</label>
+    </scriptparameter>
+    <materialpath name="Material">thumbs/TrackTrigger.nl2mat</materialpath>
+  </sceneobject>
+</root>

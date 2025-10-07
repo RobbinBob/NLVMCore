@@ -17,6 +17,15 @@ public final class Debug extends Object
 
     private static DebugGizmoHandler m_GizmoHandler = new DebugGizmoHandler();
 
+    private static PrintStream m_TextStream = System.out;
+    private static PrintStream m_ErrorStream = System.err;
+
+    private static bool IsDebugMode()
+    {
+        if(m_GizmoHandler == null)
+            return false;
+        return m_GizmoHandler.IsSetupAndValid();
+    }
 
     /// <method>
     /// <desc>Draw a Matrix.</desc>
@@ -34,6 +43,9 @@ public final class Debug extends Object
     /// </method>
     public static void DrawMatrix(Matrix4x4 matrix, float timespan, float size)
     {
+        if(!IsDebugMode())
+            return;
+
         Vector3 pos = matrix.GetPosition();
         float scale = Mathf.Abs(size);
 
@@ -77,6 +89,9 @@ public final class Debug extends Object
     /// </method>
     public static void DrawSphere(Vector3 position, float timespan, Color color, float diameter)
     {
+        if(!IsDebugMode())
+            return;
+
         Matrix4x4 matrix = Matrix4x4.AsTranslation(position);
         Matrix4x4 scale = Matrix4x4.AsScale(diameter, diameter, diameter);
         matrix = matrix.RightMultiply(scale);
@@ -116,6 +131,9 @@ public final class Debug extends Object
     /// </method>
     public static void DrawLine(Vector3 from, Vector3 to, float timespan, Color color, float diameter)
     {
+        if(!IsDebugMode())
+            return;
+
         Matrix4x4 matrix = Matrix4x4.LookTo(from, to, new Vector3(0, 1, 0));
         Matrix4x4 scale = Matrix4x4.AsScale(diameter, Vector3.Distance(from, to), diameter);
         Matrix4x4 rotation = Matrix4x4.AsRotation(Mathf.DegToRad * -90.0f, 0, 0);
@@ -126,7 +144,16 @@ public final class Debug extends Object
         m_GizmoHandler.DrawLine(matrix, timespan, color);
     }
 
-
+    private static void InternalPrintln(String str)
+    {
+        if(!IsDebugMode())
+            return;
+        m_TextStream.println(str);
+    }
+    private static void InternalWarnln(String str)
+    {
+        m_ErrorStream.println(str);
+    }
 
     private static String GetTimeDataSequence()
     {
@@ -137,53 +164,53 @@ public final class Debug extends Object
     /// </method>
     public static final void Print(String obj)
     {
-        System.out.println(GetTimeDataSequence() + obj);
+        InternalPrintln(GetTimeDataSequence() + obj);
     }
     public static final void Warn(String obj)
     {
-        System.err.println(GetTimeDataSequence() + obj);
+        InternalWarnln(GetTimeDataSequence() + obj);
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(float obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(int obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(bool obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(double obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(long obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(char obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
@@ -191,9 +218,9 @@ public final class Debug extends Object
     public static final void Print(Object obj)
     {
         if(obj == null)
-            System.out.println(GetTimeDataSequence() + " null");
+            InternalPrintln(GetTimeDataSequence() + " null");
         else
-            System.out.println(GetTimeDataSequence() + obj.toString());
+            InternalPrintln(GetTimeDataSequence() + obj.toString());
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
@@ -211,7 +238,7 @@ public final class Debug extends Object
         }
 
 
-        System.out.println(GetTimeDataSequence() + builder.toString());
+        InternalPrintln(GetTimeDataSequence() + builder.toString());
     }
 }
 /// </class>

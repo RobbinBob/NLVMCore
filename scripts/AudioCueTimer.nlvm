@@ -1,0 +1,34 @@
+package scripts;
+
+public class AudioCueTimer extends AudioCue
+{
+    private Timer m_IntervalTimer = null;
+
+    public bool Awake()
+    {
+        float interval = GetFloatParameter("audio_interval");
+        if(interval < 0.1f)
+        {
+            Debug.Warn("Cue Trigger - Timer | Time interval specified is invalid, must be > 0.1");
+            return false;
+        }
+        m_IntervalTimer = new Timer(interval);    
+        return super.Awake();
+    }
+
+    public void Start()
+    {
+        super.Start();
+        m_IntervalTimer.Start();
+    }
+
+    public void Update(float tick)
+    {
+        if(m_IntervalTimer.WaitForComplete())
+            return;
+
+        m_AudioController.EnqueSound(m_SoundConfig);
+        m_IntervalTimer.Reset();
+        m_IntervalTimer.Start();
+    }
+}

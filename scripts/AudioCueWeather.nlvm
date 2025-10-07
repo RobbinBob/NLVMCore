@@ -1,0 +1,60 @@
+package scripts;
+
+public class AudioCueWeather extends AudioCue
+{
+    private float m_WeatherThreshold = 0;
+    private bool m_HasPlayed = false;
+    private int m_WeatherType = 0;
+
+    public void Start()
+    {
+        super.Start();
+        m_WeatherType = GetIntegerParameter("weather_type");
+        m_WeatherThreshold = GetFloatParameter("weather_threshold");
+        m_SoundConfig.CanMuteLowerPriority = true;
+    }
+
+
+    public void Update(float tick)
+    {
+        float currentWeatherState = 0;
+        switch(m_WeatherType)
+        {
+                // Rain
+            case 0:
+                currentWeatherState = sim.getRainIntensity();
+                break;
+                // Snow
+            case 1:
+                currentWeatherState = sim.getSnowIntensity();
+                break;
+                // Wind
+            case 2:
+                currentWeatherState = sim.getWindIntensity();
+                break;
+                // Thunder
+            case 3:
+                currentWeatherState = sim.getThunderIntensity();
+                break;
+        }
+
+        if(m_HasPlayed)
+        {
+                // If weather is still above threshold skip
+            if(currentWeatherState >= m_WeatherThreshold)
+                return;
+
+            m_HasPlayed = false;
+        }
+        else
+        {
+                // If weather is below threshold skip
+            if(currentWeatherState < m_WeatherThreshold)
+                return;
+
+            m_HasPlayed = true;
+            m_AudioController.EnqueSound(m_SoundConfig);
+        }
+    }
+
+}

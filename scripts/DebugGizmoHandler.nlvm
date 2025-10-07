@@ -33,7 +33,7 @@ public final class DebugGizmoHandler extends UpdateableObject
         SceneObject symbols = NoLimits.getSimulator().getSceneObject(GIZMO_SYMBOL_NAME);
         if(symbols == null)
         {
-            Debug.Print("No debug gizmos SceneObject found, you will be unable to use debug gizmos!");
+            System.out.println("No debug tool found in scene, debugging outputs are disabled");
             m_IsValid = false;
             return;
         }
@@ -116,9 +116,10 @@ public final class DebugGizmoHandler extends UpdateableObject
     }
 
 
-
-
-
+    public bool IsSetupAndValid()
+    {
+        return m_IsValid;
+    }
 
 
     private SceneObjectElement[] GetElementsWithName(SceneObject sceneObject, String name)

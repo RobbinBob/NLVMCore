@@ -24,6 +24,14 @@ public class AudioController extends Behaviour implements IReferenceable
 
     public bool Awake()
     {
+        m_GroupName = GetStringParameter("group_name", false);
+        if(m_GroupName.length() == 0)
+        {
+            Debug.Warn("Audio Group | No Group Id specified");
+            return false;
+        }
+        SetName(m_GroupName);
+
         return true;
     }
 
@@ -32,7 +40,7 @@ public class AudioController extends Behaviour implements IReferenceable
         Registry registry = Registry.GetInstance();
 
             // Fetch the main audio loop
-        String audioName = GetStringParameter("primary_audio_name");
+        String audioName = GetStringParameter("primary_audio_name", false);
         if(audioName.length() != 0)
         {
             m_PrimaryAudioFile = (AudioFile)registry.GetReferenceFromName("scripts.AudioFile", GetStringParameter("primary_audio_name"));
@@ -41,17 +49,11 @@ public class AudioController extends Behaviour implements IReferenceable
                 Exception.Throw("Unable to find scripts.SpatialSound with name '" + GetStringParameter("primary_audio_name") + "'");
         }
 
-            // Fetch the audio group name and register it
-        m_GroupName = GetStringParameter("group_name");
-        if(m_GroupName == null || m_GroupName.equals(""))
-            Exception.Throw("Audio group name is invalid, please make sure to specify a valid name");
-        SetName(m_GroupName);
-
         m_MuteGain = GetFloatParameter("audio_mute_gain");
 
             // Fetch all AudioEmitters with the same group name
         IReferenceable[] references = registry.GetReferencesFromName("scripts.AudioEmitter", m_GroupName);
-        Debug.Print("Found '" + references.length + "' AudioEmitters associated with group '" + m_GroupName + "'");
+        Debug.Print("Audio Group | Found '" + references.length + "' AudioEmitters associated with group '" + m_GroupName + "'");
         m_GroupEmitters = new AudioEmitter[references.length];
         for(int i = 0; i < references.length; ++i)
         {
