@@ -2,8 +2,8 @@
 <root>
   <sceneobject>
     <model path="models/PointEmitter.glb"/>
-    <description>Defines a cubic zone where a sound plays, ideal for indoor areas, enclosed spaces, or specific sections of a ride.</description>
-    <preview>thumbs/Cube.png</preview>
+    <description>Defines a point where a sound plays from, ideal for outdoor open spaces and speakers.</description>
+    <preview>thumbs/Point.png</preview>
     <param allowrot="false"/>
     <param allowscale="false"/>
     <usercolor>
