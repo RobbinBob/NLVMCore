@@ -37,7 +37,7 @@
       <defaultvalue>60</defaultvalue>
       <id>audio_interval</id>
       <description>Interval that this will be cued when activated.</description>
-      <label>Interval (Seconds) [Range 0.1 - inf]</label>
+      <label>Audio Interval (Seconds) [Range 0.1 - inf]</label>
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>

@@ -6,6 +6,7 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
 {
     protected List m_AudioClips = new List();
     protected SpatialSound m_ActiveSound = null;
+    private AudioController m_AudioGroup = null;
 
     protected float m_FallOff = 1;
     protected float m_Distance = 1;
@@ -34,7 +35,7 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     {
         return m_ActiveSound;
     }
-    public final SpatialSound SetCurrentSound(String name)
+    public SpatialSound SetCurrentSound(String name)
     {
         //Debug.Print("Setting sound " + name);
             // Try find the sound in the current emitter cache
@@ -65,7 +66,7 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
         //m_ActiveSound.SetPosition(GetPosition());
         m_ActiveSound.SetConstantDistance(m_Distance);
         m_ActiveSound.SetFalloffFactor(m_FallOff);
-        m_ActiveSound.SetPosition(GetPosition());
+        //m_ActiveSound.SetPosition(GetPosition());
         //m_ActiveSound.SetShouldUseDoppler(false);
 
         return m_ActiveSound;
@@ -75,6 +76,14 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     {
         return m_AudioClips;
     }
+
+    public AudioController GetAudioController()
+    {
+        if(m_AudioGroup == null)
+            m_AudioGroup = (AudioController)Registry.GetInstance().GetReferenceFromName("scripts.AudioController", GetStringParameter("group_name"));
+        return m_AudioGroup;
+    }
+
 
 
         // IReferenceable

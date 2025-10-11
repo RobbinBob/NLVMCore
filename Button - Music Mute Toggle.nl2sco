@@ -34,7 +34,7 @@
       <defaultvalue></defaultvalue>
       <id>audio_group</id>
       <description>The group that this button should be associated with</description>
-      <label>Audio Group</label>
+      <label>Group Id</label>
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>
