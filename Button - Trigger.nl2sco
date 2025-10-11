@@ -34,14 +34,14 @@
       <defaultvalue></defaultvalue>
       <id>audio_group</id>
       <description>The group that this button should be associated with</description>
-      <label>Audio Group</label>
+      <label>Group Id</label>
     </scriptparameter>
     <scriptparameter>
       <type>string</type>
       <defaultvalue></defaultvalue>
       <id>audio_name</id>
       <description>Name of the audio file that will be played when triggered</description>
-      <label>Audio File</label>
+      <label>Audio Id</label>
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>

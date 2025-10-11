@@ -10,14 +10,17 @@ public class SpatialSound extends Sound implements IReferenceable, IInstantiatea
     public SpatialSound(ResourcePath soundResource)
     {
         super(soundResource, AUDIO_DEFAULT, ENVIRONMENT_NONE);
+        SetPosition(new Vector3(0, -200000, 0));
     }
     public SpatialSound(ResourcePath soundResource, int audioFlags)
     {
         super(soundResource, audioFlags, ENVIRONMENT_NONE);
+        SetPosition(new Vector3(0, -200000, 0));
     }
     public SpatialSound(ResourcePath soundResource, int audioFlags, int environmentFlags)
     {
         super(soundResource, audioFlags, environmentFlags);
+        SetPosition(new Vector3(0, -200000, 0));
     }
 
     public void SetPosition(Vector3 position)
@@ -39,7 +42,7 @@ public class SpatialSound extends Sound implements IReferenceable, IInstantiatea
     {
         SpatialSound sound = new SpatialSound(m_Resource, GetAudioFlags(), GetEnvironmentFlags());
         SpatialSound.Copy(this, sound);
-        //sound.SetName(GetName() + "_Instance");
+        sound.SetName(GetName() + "_Instance");
         sound.SetName(GetName());
         return sound;
     }

@@ -10,7 +10,7 @@
     <param allowrot="false"/>
     <param allowscale="false"/>
     <usercolor>
-      <label></label>
+      <label>.</label>
       <index>0</index>
       <defaultcolor r="1" g="1" b="1"/>
     </usercolor>

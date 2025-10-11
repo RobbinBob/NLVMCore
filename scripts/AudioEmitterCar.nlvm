@@ -15,8 +15,6 @@ public class AudioEmitterCar extends AudioEmitter
 
     public bool Awake()
     {
-        super.Awake();
-
         m_Coaster = GetCoasterParameter("audio_coaster", false);
         if(m_Coaster == null)
         {
@@ -41,8 +39,7 @@ public class AudioEmitterCar extends AudioEmitter
             Debug.Warn("Emitter - Car | The car index '" + m_CarIndex + "' is invalid for coaster '" + m_Coaster.getName() + "', must be <= " + m_Train.getCarCount());
             return false;
         }
-
-        return true;
+        return super.Awake();
     }
 
     public void Update(float tick)

@@ -22,7 +22,7 @@ public class AudioFile extends Behaviour implements IReferenceable
         bool isMusic = GetBoolParameter("audio_is_music");
         if(isMusic)
             audioFlags |= Sound.AUDIO_FLAG_MUSIC;
-        m_Sound = new SpatialSound(resource, audioFlags);
+        m_Sound = new SpatialSound(resource, audioFlags, Sound.ENVIRONMENT_WORLD);
 
         m_Name = GetStringParameter("audio_name", false);
         if(m_Name == null || m_Name.length() == 0)
@@ -34,7 +34,7 @@ public class AudioFile extends Behaviour implements IReferenceable
         m_DefaultGain = GetFloatParameter("audio_gain");
         m_DefaultPitch = GetFloatParameter("audio_pitch");
 
-        m_Sound.SetGain(m_DefaultGain);
+        m_Sound.SetGain(0);
         m_Sound.SetPitch(m_DefaultPitch);
         m_Sound.SetName(m_Name);
 
