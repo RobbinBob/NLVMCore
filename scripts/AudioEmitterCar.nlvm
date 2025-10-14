@@ -6,7 +6,7 @@ import scripts.containers.*;
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
 
-public class AudioEmitterCar extends AudioEmitter
+public final class AudioEmitterCar extends AudioEmitter
 {
     private Coaster m_Coaster = null;
     private Train m_Train = null;

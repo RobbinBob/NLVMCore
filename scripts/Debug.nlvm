@@ -17,6 +17,19 @@ public final class Debug extends Object
 
     private static DebugGizmoHandler m_GizmoHandler = new DebugGizmoHandler();
 
+    private static PrintStream m_TextStream = System.out;
+    private static PrintStream m_ErrorStream = System.err;
+
+    /// <method>
+    /// <desc>Gets the debug state.</desc>
+    /// <return>True if debugging is enabled, otherwise False.</return>
+    /// </method>
+    public static bool IsDebugMode()
+    {
+        if(m_GizmoHandler == null)
+            return false;
+        return m_GizmoHandler.IsSetupAndValid();
+    }
 
     /// <method>
     /// <desc>Draw a Matrix.</desc>
@@ -128,6 +141,17 @@ public final class Debug extends Object
 
 
 
+    private static void InternalPrintln(String str)
+    {
+        if(!IsDebugMode())
+            return;
+        m_TextStream.println(str);
+    }
+    private static void InternalWarnln(String str)
+    {
+        m_ErrorStream.println(str);
+    }
+
     private static String GetTimeDataSequence()
     {
         return "Elapsed Time: " + String.valueOf((float)GetSimulator().getCurAbsSimulationTimeSec()) + " | ";
@@ -137,53 +161,77 @@ public final class Debug extends Object
     /// </method>
     public static final void Print(String obj)
     {
-        System.out.println(GetTimeDataSequence() + obj);
+        InternalPrintln(GetTimeDataSequence() + obj);
     }
     public static final void Warn(String obj)
     {
-        System.err.println(GetTimeDataSequence() + obj);
+        InternalWarnln(GetTimeDataSequence() + obj);
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(float obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    public static final void Warn(float obj)
+    {
+        InternalWarnln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(int obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    public static final void Warn(int obj)
+    {
+        InternalWarnln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(bool obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    public static final void Warn(bool obj)
+    {
+        InternalWarnln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(double obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    public static final void Warn(double obj)
+    {
+        InternalWarnln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(long obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    public static final void Warn(long obj)
+    {
+        InternalWarnln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
     /// </method>
     public static final void Print(char obj)
     {
-        System.out.println(GetTimeDataSequence() + String.valueOf(obj));
+        InternalPrintln(GetTimeDataSequence() + String.valueOf(obj));
+    }
+    public static final void Warn(char obj)
+    {
+        InternalWarnln(GetTimeDataSequence() + String.valueOf(obj));
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
@@ -191,9 +239,16 @@ public final class Debug extends Object
     public static final void Print(Object obj)
     {
         if(obj == null)
-            System.out.println(GetTimeDataSequence() + " null");
+            InternalPrintln(GetTimeDataSequence() + " null");
         else
-            System.out.println(GetTimeDataSequence() + obj.toString());
+            InternalPrintln(GetTimeDataSequence() + obj.toString());
+    }
+    public static final void Warn(Object obj)
+    {
+        if(obj == null)
+            InternalWarnln(GetTimeDataSequence() + " null");
+        else
+            InternalWarnln(GetTimeDataSequence() + obj.toString());
     }
     /// <method>
     /// <desc>Creates a time stamped output to the console.</desc>
@@ -209,9 +264,20 @@ public final class Debug extends Object
             builder.append("\n" + i + " : ");
             builder.append(obj[i].toString());
         }
-
-
-        System.out.println(GetTimeDataSequence() + builder.toString());
+        InternalPrintln(GetTimeDataSequence() + builder.toString());
+    }
+    public static final void Warn(Object[] obj)
+    {
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < obj.length; ++i)
+        {
+            if(i > 0)
+                builder.append(',');
+            
+            builder.append("\n" + i + " : ");
+            builder.append(obj[i].toString());
+        }
+        InternalWarnln(GetTimeDataSequence() + builder.toString());
     }
 }
 /// </class>

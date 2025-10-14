@@ -2,7 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
-public class AudioFile extends Behaviour implements IReferenceable
+public final class AudioFile extends Behaviour implements IReferenceable
 {
     private Sound m_Sound = null;
     private String m_Name = "";

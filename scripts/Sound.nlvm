@@ -2,6 +2,8 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
+/// <class>
+/// <desc>A wrapper for the base StaticSound type which implements more user friendly features.</desc>
 public class Sound extends UpdateableObject implements IUpdateable, IReferenceable, IInstantiateable
 {
     protected StaticSound m_StaticSound = null;
@@ -13,16 +15,40 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
     private bool m_IsPlaying = true;
     private bool m_IsPaused = false;
 
+    /// <member>
+    /// <desc>No world audio effects are applied (Read Only).</desc>
+    /// </member>
     public static final int ENVIRONMENT_WORLD = StaticSound.E_ENVMODE_GLOBAL;
+    /// <member>
+    /// <desc>Copies the audio effects at its current position (Read Only).</desc>
+    /// </member>
     public static final int ENVIRONMENT_LOCAL = StaticSound.E_ENVMODE_LOCAL;
+    /// <member>
+    /// <desc>Copies the audio effects the player is experiencing (Read Only).</desc>
+    /// </member>
     public static final int ENVIRONMENT_COPY = StaticSound.E_ENVMODE_SAME_AS_LISTENER;
+    /// <member>
+    /// <desc>No audio effects are applied (Read Only).</desc>
+    /// </member>
     public static final int ENVIRONMENT_NONE = StaticSound.E_ENVMODE_PLAIN;
 
          // Fake enum because it uses sound by default
-         // I just wanted it because unless you know the inner workings you dont know itll use sound
+         // I just wanted it because unless you know the inner workings you dont know it'll use sound
+    /// <member>
+    /// <desc>Specifies that the file should be treated as sound (Read Only).</desc>
+    /// </member>
     public static final int AUDIO_FLAG_SOUND = 0;
+    /// <member>
+    /// <desc>Specifies that the file should be treated as music (Read Only).</desc>
+    /// </member>
     public static final int AUDIO_FLAG_MUSIC = StaticSound.FLAG_MUSIC;
+    /// <member>
+    /// <desc>Specifies that the file should convert the stereo audio down to mono (Read Only).</desc>
+    /// </member>
     public static final int AUDIO_FLAG_MONO = StaticSound.FLAG_MIXDOWN_MONO;
+    /// <member>
+    /// <desc>Specifies that the audio should be shared across all instances for syncronisation (Read Only).</desc>
+    /// </member>
     public static final int AUDIO_FLAG_SHARED = StaticSound.FLAG_SHARED;
 
     public static final int AUDIO_DEFAULT = AUDIO_FLAG_SOUND | AUDIO_FLAG_MONO;
@@ -48,15 +74,29 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
     private int m_Mode = MODE_NONE;
 
 
-
+    /// <constructor>
+    /// <desc>Creates a new Sound using the specified resource file and default audio settings.</desc>
+    /// <arg name="soundResource">The resource file to load.</arg>
+    /// </constructor>
     public Sound(ResourcePath soundResource)
     {
         this(soundResource, AUDIO_DEFAULT, ENVIRONMENT_NONE);
     }
+    /// <constructor>
+    /// <desc>Creates a new Sound using the specified resource file with audio flags and default environment settings.</desc>
+    /// <arg name="soundResource">The resource file to load.</arg>
+    /// <arg name="audioFlags">The audio flags to apply to this sound.</arg>
+    /// </constructor>
     public Sound(ResourcePath soundResource, int audioFlags)
     {
         this(soundResource, audioFlags, ENVIRONMENT_NONE);
     }
+    /// <constructor>
+    /// <desc>Creates a new Sound using the specified resource file with audio flags and environment settings.</desc>
+    /// <arg name="soundResource">THe resource file to load.</arg>
+    /// <arg name="audioFlags">The audio flags to apply to this sound.</arg>
+    /// <arg name="environmentFlags">The environment mode to use.</arg>
+    /// </constructor>
     public Sound(ResourcePath soundResource, int audioFlags, int environmentFlags)
     {
         Simulator sim = NoLimits.getSimulator();
@@ -69,7 +109,9 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         Registry.GetInstance().Register(this);
     }
 
-
+    /// <method>
+    /// <desc>Plays the sound once before stopping.</desc>
+    /// </method>
     public void PlaySoundOnce()
     {
         m_StaticSound.play();
@@ -78,6 +120,10 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         m_IsPlaying = true;
         SetShouldUpdate(true);
     }
+    /// <method>
+    /// <desc>Plays the sound once and will cut-off after a time-limit.</desc>
+    /// <arg name="time">The time(seconds) to wait before stopping.</arg>
+    /// </method>
     public void PlaySoundOnceCutoff(float time)
     {
         m_StaticSound.play();
@@ -87,6 +133,9 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         m_IsPlaying = true;
         SetShouldUpdate(true);
     }
+    /// <method>
+    /// <desc>Plays the sound looped until another call is made to stop it.</desc>
+    /// </method>
     public void PlaySoundLooped()
     {
         m_StaticSound.playLoop();
@@ -95,6 +144,10 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         m_IsPlaying = true;
         SetShouldUpdate(true);
     }
+    /// <method>
+    /// <desc>Plays the sound looped a set amount of times before stopping.</desc>
+    /// <arg name="loops">The amount of times before stopping.</arg>
+    /// </method>
     public void PlaySoundLooped(int loops)
     {
         m_StaticSound.playLoop();
@@ -105,6 +158,9 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         m_IsPlaying = true;
         SetShouldUpdate(true);
     }
+    /// <method>
+    /// <desc>Pauses/Unpauses the sound.</desc>
+    /// </method>
     public void Pause()
     {
         if(m_IsPaused == false)
@@ -131,101 +187,161 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
             }
         }
     }
+    /// <method>
+    /// <desc>Stops the audio from playing.</desc>
+    /// </method>
     public void Stop()
     {
         SetShouldUpdate(false);
         m_IsPlaying = false;
         m_StaticSound.stop();
     }
+    /// <method>
+    /// <desc>Stops the audio after it reaches the end.</desc>
+    /// </method>
     public void StopAtEnd()
     {
         m_Mode = MODE_STOP_AT_END;
     }
 
-
+    /// <method>
+    /// <desc>Gets the current audio flags this sound has.</desc>
+    /// <return>Returns an integer flag.</return>
+    /// </method>
     public int GetAudioFlags()
     {
         return m_AudioFlags;
     }
-
+    /// <method>
+    /// <desc>Sets the environment flags the sound will use.</desc>
+    /// <arg name="flags">The environment mode to use.</arg>
+    /// </method>
     public void SetEnvironmentFlags(int flags)
     {
         m_StaticSound.setEnvironmentMode(flags);
         m_EnvironmentFlags = flags;
     }
+    /// <method>
+    /// <desc>Gets the current audio environment this sound has.</desc>
+    /// <return>The environment mode as an in integer enum.</return>
+    /// </method>
     public int GetEnvironmentFlags()
     {
         return m_EnvironmentFlags;
     }
 
+    /// <method>
+    /// <desc>Sets the pitch of the sound.</desc>
+    /// <arg name="pitch">The pitch to set, between (0.1 - 1).</arg>
+    /// </method>
     public void SetPitch(float pitch)
     {
         m_StaticSound.setPitch(pitch); 
         m_Pitch = pitch;   
     }
+    /// <method>
+    /// <desc>Gets the current pitch of this sound.</desc>
+    /// </method>
     public float GetPitch()
     {
         return m_Pitch;
     }
 
+    /// <method>
+    /// <desc>Sets the gain of the sound.</desc>
+    /// <arg name="gain">The gain to set, between (0 - 10).</arg>
+    /// </method>
     public void SetGain(float gain)
     {
         m_StaticSound.setGain(gain);
         m_Gain = gain;
     }
+    /// <method>
+    /// <desc>Gets the current gain of this sound.</desc>
+    /// </method>
     public float GetGain()
     {
         return m_Gain;
     }
 
+    /// <method>
+    /// <desc>Sets the gain of the sound which fades over a duration.</desc>
+    /// <arg name="gain">The gain to set, between (0 - 10).</arg>
+    /// <arg name="time">The time(seconds) to fade to the new gain.</arg>
+    /// </method>
     public void SetGainFaded(float gain, float time)
     {
         m_Gain = gain;
         m_StaticSound.setGainFaded(gain, time);
     }
 
-
+    /// <method>
+    /// <desc>Sets if this sound should apply doppler effect.</desc>
+    /// <arg name="useDoppler">True to use doppler effect, otherwise False.</arg>
+    /// </method>
     public void SetShouldUseDoppler(bool useDoppler)
     {
         m_StaticSound.setDopplerMode(useDoppler);
         m_IsUsingDoppler = useDoppler;
     }
 
-
+    /// <method>
+    /// <desc>Sets the constant distance before fall-off occurs.</desc>
+    /// <arg name="constantDistance">The distance(meters) before fall-off.</arg>
+    /// </method>
     public void SetConstantDistance(float constantDistance)
     {
         m_AudioDistance = constantDistance;
         m_StaticSound.setDistanceParameters(m_AudioDistance, m_AudioFalloff);
     }
+    /// <method>
+    /// <desc>Gets the current constant distance.</desc>
+    /// <return>The distance(meters).</return>
+    /// </method>
     public float GetConstantDistance()
     {
         return m_AudioDistance;
     }
+    /// <method>
+    /// <desc>Sets the fall-off factor.</desc>
+    /// <arg name="falloff">The factor of fall-off to apply when outside of padding.</arg>
+    /// </method>
     public void SetFalloffFactor(float falloff)
     {
         m_AudioFalloff = falloff;
         m_StaticSound.setDistanceParameters(m_AudioDistance, m_AudioFalloff);
     }
+    /// <method>
+    /// <desc>Gets the current fall-off factor.</desc>
+    /// </method>
     public float GetFalloffFactor()
     {
         return m_AudioFalloff;
     }
 
+    /// <method>
+    /// <desc>Gets the current play-state of this sound.</desc>
+    /// <return>True if playing, otherwise False.</return>
+    /// </method>
     public bool IsPlaying()
     {
         return m_IsPlaying;
     }
 
-
-    public int GetMode()
-    {
-        return m_Mode;
-    }
+    /// <method>
+    /// <desc>Gets the current timestamp of the sound.</desc>
+    /// <return>Current time(seconds).</return>
+    /// </method>
     public float GetTimestamp()
     {
         return m_CurrentTime;
     }
 
+    /// <method>
+    /// <desc>Copies data from one sound to another.</desc>
+    /// <arg name="copyFrom">The sound to copy data from.</arg>
+    /// <arg name="copyTo">The sound to apply settings to.</arg>
+    /// </method>
     public static void Copy(Sound copyFrom, Sound copyTo)
     {
         copyTo.SetConstantDistance(copyFrom.m_AudioDistance);
@@ -234,6 +350,10 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         copyTo.SetPitch(copyFrom.m_Pitch);
         copyTo.SetGain(copyFrom.m_Gain);
     }
+    /// <method>
+    /// <desc>Instantiates a new instance of sound copying data from instancer.</desc>
+    /// <return>The instantiated Sound instance.</return>
+    /// </method>
     public Object Instantiate()
     {
         Sound sound = new Sound(m_Resource, m_AudioFlags, m_EnvironmentFlags);
@@ -341,3 +461,4 @@ public class Sound extends UpdateableObject implements IUpdateable, IReferenceab
         return GetType() + " | " + GetName();
     }
 }
+/// </class>

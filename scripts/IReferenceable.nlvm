@@ -1,9 +1,22 @@
 package scripts;
 
+/// <interface>
+/// <desc>Represents a referenceable data type that can be accessed across scripts.</desc>
 public interface IReferenceable
 {
+    /// <method>
+    /// <desc>Gets the name of the reference.</desc>
+    /// </method>
     public String GetName();
+    /// <method>
+    /// <desc>Sets the name of the reference.</desc>
+    /// </method>
     public void SetName(String name);
 
+    /// <method>
+    /// <desc>Gets the referenceable type.</desc>
+    /// <return>String representation of the script identifier.</return>
+    /// </method>
     public String GetType();
 }
+/// </interface>

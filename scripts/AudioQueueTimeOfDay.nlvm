@@ -2,7 +2,7 @@ package scripts;
 
 import scripts.math.*;
 
-public class AudioQueueTimeOfDay extends AudioQueue
+public final class AudioQueueTimeOfDay extends AudioQueue
 {
     private int m_Hour = 0;
     private int m_Minute = 0;

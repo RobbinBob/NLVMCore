@@ -2,7 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
-public class AudioQueueEStop extends AudioQueue
+public final class AudioQueueEStop extends AudioQueue
 {
     private Coaster m_Coaster = null;
     private Timer m_IntervalTimer = null;

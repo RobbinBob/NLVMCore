@@ -4,7 +4,7 @@ package scripts;
 //import scripts.utilities.*;
 import scripts.containers.*;
 
-public class AudioController extends Behaviour implements IReferenceable
+public final class AudioController extends Behaviour implements IReferenceable
 {
     private SpatialSound m_PrimaryAudioLoop = null;
     private AudioEmitter[] m_GroupEmitters = null;
