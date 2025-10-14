@@ -1,6 +1,6 @@
 package scripts;
 
-public final class AudioQueueTimer extends AudioQueue
+public final class AudioCueTimer extends AudioCue
 {
     private Timer m_IntervalTimer = null;
 
