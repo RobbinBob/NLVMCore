@@ -1,0 +1,126 @@
+package scripts;
+
+import scripts.utilities.StringUtil;
+import scripts.containers.*;
+
+public abstract class AudioCue extends Behaviour
+{
+    protected AudioController[] m_AudioControllers = null;
+    protected String m_AudioName = "";
+    protected int m_Priority = 0;
+    protected bool m_MuteLowerPriority = false;
+    protected AudioConfig m_SoundConfig = null;
+
+    public int GetOrder() { return -15; }
+    public bool Awake() 
+    {
+        String groupId = GetStringParameter("audio_group");
+        if(groupId.length() == 0)
+        {
+            Debug.Warn("Cue Trigger | No Group Id/s specified");
+            return false;
+        }
+        String audioId = GetStringParameter("audio_name");
+        if(audioId.length() == 0)
+        {
+            Debug.Warn("Cue Trigger | No Audio Id specified");
+            return false;
+        }
+        if(!Debug.IsDebugMode())
+            SetIsVisible(false);
+        return true;
+    }
+
+    public void Start()
+    {
+        String controllerParams = GetStringParameter("audio_group");
+        String[] params = StringUtil.SplitString(controllerParams, ',');
+        if(params.length == 0)
+        {
+            Debug.Warn("Cue Trigger | Internal error when parsing Group Id/s, '" + controllerParams + "' is not a valid parameter entry");
+            return;
+        }
+        List tempControllers = new List(params.length);
+        for(int i = 0; i < params.length; ++i)
+        {
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioController", params[i]);
+            if(reference == null)
+            {
+                Debug.Warn("Cue Trigger | Unable to find Audio Group with id '" + params[i] + "'");
+                continue;
+            }
+            tempControllers.Insert(reference);
+        }
+        m_AudioControllers = new AudioController[tempControllers.Count()];
+        IEnumerator enumerator = tempControllers.GetEnumerator();
+        int l = 0;
+        while(enumerator.MoveNext())
+            m_AudioControllers[l++] = (AudioController)enumerator.Get();
+    
+        m_AudioName = GetStringParameter("audio_name");
+        m_Priority = GetIntegerParameter("audio_priority");
+        m_MuteLowerPriority = GetBoolParameter("audio_mutelower");
+
+        IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioFile", m_AudioName);
+        if(reference == null)
+        {
+            Debug.Warn("Cue Trigger | Unable to find Audio File with name '" + m_AudioName + "'");
+            return;
+        }
+
+        m_SoundConfig = new AudioConfig(
+            (AudioFile)reference,
+            m_Priority,
+            m_MuteLowerPriority);
+    }
+
+    protected void BroadcastSoundToAll(AudioConfig config)
+    {
+        for(int i = 0; i < m_AudioControllers.length; ++i)
+            m_AudioControllers[i].EnqueSound(config);
+    }
+    protected void BroadcastSoundToWhitelist(AudioConfig config, String[] whitelist)
+    {
+        for(int i = 0; i < m_AudioControllers.length; ++i)
+        {
+            String audioGroupId = m_AudioControllers[i].GetName();
+            bool success = true;
+            for(int l = 0; l < whitelist.length; ++l)
+            {
+                if(whitelist[l].equals(audioGroupId) == false)
+                {
+                    success = false;
+                    break;
+                }
+            }
+            if(!success)
+                continue;
+            m_AudioControllers[i].EnqueSound(config);        
+        }
+    }
+    protected void BroadcastSoundToBlacklist(AudioConfig config, String[] blacklist)
+    {
+        for(int i = 0; i < m_AudioControllers.length; ++i)
+        {
+            String audioGroupId = m_AudioControllers[i].GetName();
+            bool success = true;
+            for(int l = 0; l < blacklist.length; ++l)
+            {
+                if(blacklist[l].equals(audioGroupId) == true)
+                {
+                    success = false;
+                    break;
+                }
+            }
+            if(!success)
+                continue;
+            m_AudioControllers[i].EnqueSound(config);        
+        }
+    }
+
+    protected void CancelSoundToAll(AudioConfig config)
+    {
+        for(int i = 0; i < m_AudioControllers.length; ++i)
+            m_AudioControllers[i].DequeueSound(config.SoundName);
+    }
+}

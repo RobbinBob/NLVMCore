@@ -2,7 +2,11 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
+    <description>Assigns a sound file and lets you input a name for its Audio ID. This ID is then referenced by Audio Groups and Cue Triggers.</description>
     <preview>thumbs/File.png</preview>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <param baseroty="-90"/>
     <script>
       <classpath></classpath>
       <class>scripts.AudioFile</class>
@@ -13,33 +17,48 @@
       <defaultvalue></defaultvalue>
       <id>audio_file</id>
       <description>The audio file that will be associated</description>
-      <label>Audio Clip</label>
+      <label>Audio File</label>
     </scriptparameter>
     <scriptparameter>
       <type>string</type>
-      <defaultvalue>My Audio Snippet</defaultvalue>
+      <defaultvalue></defaultvalue>
       <id>audio_name</id>
-      <description>Unique name of this audio snippet, used for referencing</description>
-      <label>Name</label>
+      <description>Audio id that links to audio file.</description>
+      <label>Audio Id [Must be unique]</label>
     </scriptparameter>
     <scriptparameter>
       <type>double</type>
       <defaultvalue>1</defaultvalue>
       <id>audio_gain</id>
-      <description>Range of [0 - 1]</description>
-      <label>Gain</label>
+      <description>The default gain of this audio file.</description>
+      <label>Gain [Range 0 - 1]</label>
     </scriptparameter>
     <scriptparameter>
       <type>double</type>
       <defaultvalue>1</defaultvalue>
       <id>audio_pitch</id>
-      <description>Range of [0.1 - 10]</description>
-      <label>Pitch</label>
+      <description>The default pitch of this audio file.</description>
+      <label>Pitch [Range 0.1 - 1]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_flag_mono</id>
+      <description>Reduces the audio file from stereo to mono, can help in some cases but can produce strange audio artefacts.</description>
+      <label>Mono Mixdown</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>true</defaultvalue>
+      <id>audio_flag_shared</id>
+      <description>Syncronises all sound sources to play at the same time.</description>
+      <label>Shared Sound</label>
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>
       <defaultvalue>false</defaultvalue>
       <id>audio_is_music</id>
+      <description>Specified if this audio should be categorised as music or sound. The overall gain is affected by user volume settings</description>
       <label>Audio Is Music</label>
     </scriptparameter>
     <materialpath name="Material">thumbs/File.nl2mat</materialpath>

@@ -10,13 +10,13 @@
         <specular r="1" g="1" b="1"/>
         <shininess exponent="42"/>
       </custommaterial>
-      <rgbgen mode="lighting"/>
+      <rgbgen mode="constlighting"/>
       <texunit>
         <map>Weather.png</map>
+        <wrap mode="clamp"/>
         <tcgen mode="base"/>
       </texunit>
     </renderpass>
-    <option norender="true"/>
     <option nonsolid="true"/>
   </material>
 </root>

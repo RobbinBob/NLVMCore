@@ -8,7 +8,8 @@ public abstract class AudioEmitterVolume extends AudioEmitter implements IRefere
     protected Volume m_EmitterWorldVolume = null;
     private static final float MAX_DIST_CALCULATIONS = 2;
 
-
+    private bool m_FadeOutDebounce = false;
+    private bool m_FadeInDebounce = false;
 
     private Color[] colors = new Color[]
     {
@@ -20,23 +21,46 @@ public abstract class AudioEmitterVolume extends AudioEmitter implements IRefere
         Color.Magenta
     };
 
-    public void Update(float tick)
+    public void LateUpdate(float tick)
     {
         Vector3 viewPos = GetViewerPosition();
         if(Vector3.Distance(m_EmitterWorldVolume.GetMatrix().GetPosition(), viewPos) > m_EmitterWorldVolume.GetScale().Length() * MAX_DIST_CALCULATIONS)
             return;
 
         Vector3 soundPosition = viewPos;
-        if(m_EmitterWorldVolume.IsPointOutsideVolume(viewPos))
-            soundPosition = m_EmitterWorldVolume.GetNearestSurface(viewPos);
-
-        IEnumerator enumerator = m_AudioClips.GetEnumerator();
-        int index = 0;
-        while(enumerator.MoveNext())
+        if(m_EmitterWorldVolume.IsPointWithinVolume(viewPos))
         {
-            SpatialSound sound = (SpatialSound)enumerator.Get();
-            sound.SetPosition(soundPosition);
-            //Debug.DrawSphere(soundPosition, tick, colors[index++]);
+            m_FadeOutDebounce = false;
+            if(!m_FadeInDebounce)
+            {
+                m_FadeInDebounce = true;
+                IEnumerator enumerator = m_AudioClips.GetEnumerator();
+                while(enumerator.MoveNext())
+                {
+                        // Needs to check the gain level of the audio
+                    SpatialSound sound = ((SpatialSound)enumerator.Get());
+                    String audioId = sound.GetName();
+                    //Debug.Print("AUDIO EMITTER AUDIO ID '" + audioId + "'");
+                    ((SpatialSound)enumerator.Get()).SetGainFaded(GetAudioController().GetAudioGain(audioId), 0.05f);
+                }
+            }
+
+            IEnumerator enumerator = m_AudioClips.GetEnumerator();
+            int index = 0;
+            while(enumerator.MoveNext())
+            {
+                SpatialSound sound = (SpatialSound)enumerator.Get();
+                sound.SetPosition(soundPosition);
+            }
+            
+        }
+        else
+        {
+            m_FadeInDebounce = false;
+            m_FadeOutDebounce = true;
+            IEnumerator enumerator = m_AudioClips.GetEnumerator();
+            while(enumerator.MoveNext())
+                ((SpatialSound)enumerator.Get()).SetGainFaded(0, 0.05f);
         }
     }
 }

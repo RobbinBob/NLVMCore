@@ -2,7 +2,11 @@
 <root>
   <sceneobject>
     <model path="models/UnitCube.glb"/>
+    <description>The main controller that defines the Group ID, and sets the main audio loop using an Audio ID.</description>
     <preview>thumbs/Controller.png</preview>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <param baseroty="-90"/>
     <script>
       <classpath></classpath>
       <class>scripts.AudioController</class>
@@ -10,16 +14,24 @@
     </script>
     <scriptparameter>
       <type>string</type>
-      <defaultvalue>My Audio Snippet</defaultvalue>
-      <id>primary_audio_name</id>
-      <description>Name of this audio snippet, used for referencing</description>
-      <label>Primary Audio Name</label>
+      <defaultvalue></defaultvalue>
+      <id>group_name</id>
+      <description>Links all emitters/cues to this group.</description>
+      <label>Group Id</label>
     </scriptparameter>
     <scriptparameter>
       <type>string</type>
-      <defaultvalue>My Group</defaultvalue>
-      <id>group_name</id>
-      <label>Group Name</label>
+      <defaultvalue></defaultvalue>
+      <id>primary_audio_name</id>
+      <description>Audio Id used for playing background music on loop for this group.</description>
+      <label>Primary Audio Id</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0.05</defaultvalue>
+      <id>audio_mute_gain</id>
+      <description>The gain used when triggered audio is overlayed with primary track.</description>
+      <label>Background Gain [Range 0 - 1]</label>
     </scriptparameter>
     <materialpath name="Material">thumbs/Controller.nl2mat</materialpath>
   </sceneobject>

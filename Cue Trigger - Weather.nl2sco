@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/UnitCube.glb"/>
+    <description>Plays an assigned Audio ID to a Group ID based on weather values (Dynamic Skybox only).</description>
+    <preview>thumbs/Weather.png</preview>
+    <param allowrot="false"/>
+    <param allowscale="false"/>
+    <param baseroty="-90"/>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioCueWeather</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_group</id>
+      <description>Links all emitters/cues to a certain group.</description>
+      <label>Group Id</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_name</id>
+      <description>Audio id that links to audio file.</description>
+      <label>Audio Id [Must be unique]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <enums>Rain,Snow,Wind,Thunder</enums>
+      <id>weather_type</id>
+      <description>The type of weather this will listen for.</description>
+      <label>Weather</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>double</type>
+      <defaultvalue>0.5</defaultvalue>
+      <id>weather_threshold</id>
+      <description>The minimum requirement for this trigger to cue upon activation.</description>
+      <label>Threshold [Range 0 - 1]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <description>Sets wether this audio cue will mute lower priority audio cues. Used along-side the audio priority parameter.</description>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <description>Sets the priority of this audio cue which determines what cues will silence others. Used along-side mute lower parameter.</description>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <materialpath name="Material">thumbs/Weather.nl2mat</materialpath>
+  </sceneobject>
+</root>

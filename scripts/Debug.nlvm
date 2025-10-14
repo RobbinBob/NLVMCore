@@ -47,6 +47,9 @@ public final class Debug extends Object
     /// </method>
     public static void DrawMatrix(Matrix4x4 matrix, float timespan, float size)
     {
+        if(!IsDebugMode())
+            return;
+
         Vector3 pos = matrix.GetPosition();
         float scale = Mathf.Abs(size);
 
@@ -90,6 +93,9 @@ public final class Debug extends Object
     /// </method>
     public static void DrawSphere(Vector3 position, float timespan, Color color, float diameter)
     {
+        if(!IsDebugMode())
+            return;
+
         Matrix4x4 matrix = Matrix4x4.AsTranslation(position);
         Matrix4x4 scale = Matrix4x4.AsScale(diameter, diameter, diameter);
         matrix = matrix.RightMultiply(scale);
@@ -129,6 +135,9 @@ public final class Debug extends Object
     /// </method>
     public static void DrawLine(Vector3 from, Vector3 to, float timespan, Color color, float diameter)
     {
+        if(!IsDebugMode())
+            return;
+
         Matrix4x4 matrix = Matrix4x4.LookTo(from, to, new Vector3(0, 1, 0));
         Matrix4x4 scale = Matrix4x4.AsScale(diameter, Vector3.Distance(from, to), diameter);
         Matrix4x4 rotation = Matrix4x4.AsRotation(Mathf.DegToRad * -90.0f, 0, 0);

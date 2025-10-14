@@ -6,6 +6,7 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
 {
     protected List m_AudioClips = new List();
     protected SpatialSound m_ActiveSound = null;
+    private AudioController m_AudioGroup = null;
 
     protected float m_FallOff = 1;
     protected float m_Distance = 1;
@@ -13,28 +14,30 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     public int GetOrder() { return -30; }
     public bool Awake()
     {
+        String groupId = GetStringParameter("group_name");
+        if(groupId.length() == 0)
+        {
+            Debug.Warn("Audio Emitter | No Group Id specified");
+            return false;
+        }
+        SetName(groupId);
+
+        if(!Debug.IsDebugMode())
+            SetIsVisible(false);
         return true;
     }
     public void Start()
     {
-        SetName(GetStringParameter("group_name"));
         m_FallOff = GetFloatParameter("audio_falloff");
         m_Distance = GetFloatParameter("audio_distance");
         Registry.GetInstance().Register(this);
-    }
-
-
-    public void CacheAudioClip(SpatialSound sound)
-    {
-        Debug.Print("Caching sound " + sound.GetName());
-        m_AudioClips.Insert(sound);
     }
 
     public final SpatialSound GetCurrentSound()
     {
         return m_ActiveSound;
     }
-    public final SpatialSound SetCurrentSound(String name)
+    public SpatialSound SetCurrentSound(String name)
     {
         //Debug.Print("Setting sound " + name);
             // Try find the sound in the current emitter cache
@@ -52,10 +55,10 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
             // Not in cache, we need to load it in
         if(m_ActiveSound == null)
         {
-            Debug.Print("Unable to find sound with name " + name + " in cache");
+            Debug.Print("Audio Emitter | Unable to find sound with name " + name + " in cache");
             IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.SpatialSound", name);
             if(reference == null)
-                Exception.Throw("Unable to load SpatialSound file from registry with name '" + name + "'");
+                Exception.Throw("Audio Emitter | Unable to load SpatialSound file from registry with name '" + name + "'");
 
             SpatialSound sound = (SpatialSound)((SpatialSound)reference).Instantiate();
             m_AudioClips.Insert(sound);
@@ -65,6 +68,7 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
         //m_ActiveSound.SetPosition(GetPosition());
         m_ActiveSound.SetConstantDistance(m_Distance);
         m_ActiveSound.SetFalloffFactor(m_FallOff);
+        //m_ActiveSound.SetPosition(GetPosition());
         //m_ActiveSound.SetShouldUseDoppler(false);
 
         return m_ActiveSound;
@@ -74,6 +78,14 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
     {
         return m_AudioClips;
     }
+
+    public AudioController GetAudioController()
+    {
+        if(m_AudioGroup == null)
+            m_AudioGroup = (AudioController)Registry.GetInstance().GetReferenceFromName("scripts.AudioController", GetStringParameter("group_name"));
+        return m_AudioGroup;
+    }
+
 
 
         // IReferenceable

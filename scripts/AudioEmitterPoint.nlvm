@@ -1,0 +1,11 @@
+package scripts;
+
+public class AudioEmitterPoint extends AudioEmitter
+{
+    public SpatialSound SetCurrentSound(String name)
+    {
+        SpatialSound sound = super.SetCurrentSound(name);
+        m_ActiveSound.SetPosition(GetPosition());
+        return sound;
+    }
+}

@@ -22,7 +22,6 @@ Result.A = Tex0.R;</shadercore>
         <tcmod mode="objectscale" a0="0" a1="0" a2="0" b0="0" b1="1" b2="0"/>
       </texunit>
     </renderpass>
-    <option norender="true"/>
     <option nonsolid="true"/>
   </material>
 </root>

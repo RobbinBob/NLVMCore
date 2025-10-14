@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <sceneobject>
+    <model path="models/CubeTrigger.glb"/>
+    <description>Plays an assigned Audio ID to a Group ID when entering or exiting a cubic zone.</description>
+    <preview>thumbs/CubeTrigger.png</preview>
+    <usercolor>
+      <label>Color</label>
+      <index>0</index>
+      <defaultcolor r="1" g="1" b="1"/>
+    </usercolor>
+    <script>
+      <classpath></classpath>
+      <class>scripts.AudioCueVolumeTriggerCube</class>
+      <sharedvm>true</sharedvm>
+    </script>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_group</id>
+      <description>Links all emitters/cues to a certain group.</description>
+      <label>Group Id</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>string</type>
+      <defaultvalue></defaultvalue>
+      <id>audio_name</id>
+      <description>Audio id that links to audio file.</description>
+      <label>Audio Id [Must be unique]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>0</defaultvalue>
+      <enums>On Entry,On Exit</enums>
+      <id>audio_play_state</id>
+      <description>Sets the type of activation that triggers this cue.</description>
+      <label>Activation</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
+      <id>audio_mutelower</id>
+      <description>Sets wether this audio cue will mute lower priority audio cues. Used along-side the audio priority parameter.</description>
+      <label>Mute Lower Priority Audio [Advanced]</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>int</type>
+      <defaultvalue>2</defaultvalue>
+      <id>audio_priority</id>
+      <description>Sets the priority of this audio cue which determines what cues will silence others. Used along-side mute lower parameter.</description>
+      <label>Audio Priority [Advanced]</label>
+    </scriptparameter>
+    <materialpath name="Bolt">materials/Emitters/Bolt.nl2mat</materialpath>
+    <materialpath name="Corner">materials/Emitters/Corner.nl2mat</materialpath>
+    <materialpath name="StretchX">materials/Emitters/StretchX.nl2mat</materialpath>
+    <materialpath name="StretchY">materials/Emitters/StretchY.nl2mat</materialpath>
+    <materialpath name="StretchZ">materials/Emitters/StretchZ.nl2mat</materialpath>
+  </sceneobject>
+</root>

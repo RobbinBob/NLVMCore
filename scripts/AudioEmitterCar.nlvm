@@ -13,12 +13,33 @@ public final class AudioEmitterCar extends AudioEmitter
     private int m_CarIndex = 0;
     private Vector3f m_CarPos = new Vector3f();
 
-    public void Start()
+    public bool Awake()
     {
-        super.Start();
-        m_Coaster = GetCoasterParameter("audio_coaster");
+        m_Coaster = GetCoasterParameter("audio_coaster", false);
+        if(m_Coaster == null)
+        {
+            Debug.Warn("Emitter - Car | No specified coaster found");
+            return false;
+        }
+        if(m_Coaster.getTrainCount() == 0)
+        {
+            Debug.Warn("Emitter - Car | Coaster '" + m_Coaster.getName() + "' has no trains");
+            return false;
+        }
+
         m_Train = m_Coaster.findNearestTrain(m_SceneObject.getTranslation(), 15.0f);
+        if(m_Train == null)
+        {
+            Debug.Warn("Emitter - Car | Could not find train on coaster '" + m_Coaster.getName() + "' within 15m");
+            return false;
+        }
         m_CarIndex = GetIntegerParameter("audio_car");
+        if(m_CarIndex < 0 || m_CarIndex > m_Train.getCarCount())
+        {
+            Debug.Warn("Emitter - Car | The car index '" + m_CarIndex + "' is invalid for coaster '" + m_Coaster.getName() + "', must be <= " + m_Train.getCarCount());
+            return false;
+        }
+        return super.Awake();
     }
 
     public void Update(float tick)

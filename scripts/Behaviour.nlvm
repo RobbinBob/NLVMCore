@@ -14,8 +14,6 @@ public abstract class Behaviour extends Script
     private static Behaviour m_Caller = null;
     private static List m_OrderList = new List(1);
 
-    private static Vector3 m_ViewerPosition = null;
-
     /// <member>
     /// <desc>Reference to the SceneObject this Behaviour is attached to.</desc>
     /// </member>
@@ -27,6 +25,7 @@ public abstract class Behaviour extends Script
 
     private float m_PreviousTick = 0.0f;
     private bool m_HasRecievedNextFrameUpdate = false;
+    private bool m_IsVisible = true;
 
     public final bool onInit()
     {
@@ -84,10 +83,6 @@ public abstract class Behaviour extends Script
 
         if(m_Caller != this)
             return;
-
-        Vector3f pos = new Vector3f();
-        sim.getViewPos(pos);
-        m_ViewerPosition = Vector3.FromNative(pos);
         
             // Loop over the updateables and call their updates
         IEnumerator enumerator = m_Updateables.GetEnumerator();
@@ -223,33 +218,83 @@ public abstract class Behaviour extends Script
         return "Behaviour" + getEntityId();
     }
 
-
+    /// <method>
+    /// <desc>Gets the current world-space position of the player.</desc>
+    /// </method>
     public final Vector3 GetViewerPosition()
     {
-        return m_ViewerPosition;
+        Vector3f pos = new Vector3f();
+        sim.getViewPos(pos);
+        return Vector3.FromNative(pos);
     }
 
 
+    /// <method>
+    /// <desc>Sets the Behaviours model to be visible.</desc>
+    /// <arg name="isVisible">True to show model, otherwise False to hide it.</arg>
+    /// </method>
+    public final void SetIsVisible(bool isVisible)
+    {
+        if(m_IsVisible == isVisible)
+            return;
+        m_IsVisible = isVisible;
+        int elemCount = m_SceneObject.getElementCount();
+        if(elemCount == 0)
+            return;
+        for(int i = elemCount-1; i >= 0; --i)
+            m_SceneObject.getElementAt(i).setVisible(isVisible);
+    }
+    /// <method>
+    /// <desc>Gets the current Behaviours visibility.</desc>
+    /// <return>True if it is visible, otherwise False if its hidden.</return>
+    /// </method>
+    public final bool GetIsVisible()
+    {
+        return m_IsVisible;
+    }
+
+
+    /// <method>
+    /// <desc>Gets this Behaviour's world-space position.</desc>
+    /// </method>
     public final Vector3 GetPosition()
     {
         return Vector3.FromNative(m_SceneObject.getTranslation());
     }
+    /// <method>
+    /// <desc>Sets this Behaviour's world-space position.</desc>
+    /// <arg name="position">The world-space position to set.</arg>
+    /// </method>
     public final void SetPosition(Vector3 position)
     {
         m_SceneObject.setTranslation(position.GetNative());
     }
+    /// <method>
+    /// <desc>Gets this Behaviour's local-space scale.</desc>
+    /// </method>
     public final Vector3 GetScale()
     {
         return Vector3.FromNative(m_SceneObject.getScale());
     }
+    /// <method>
+    /// <desc>Sets this Behaviour's local-space scale.</desc>
+    /// <arg name="scale">The local-space scale to set.</arg>
+    /// </method>
     public final void SetScale(Vector3 scale)
     {
         m_SceneObject.setScale(scale.GetNative());
     }
+    /// <method>
+    /// <desc>Gets this Behaviour's world-space matrix.</desc>
+    /// </method>
     public final Matrix4x4 GetMatrix()
     {
         return Matrix4x4.FromNative(m_SceneObject.getMatrix());
     }
+    /// <method>
+    /// <desc>Sets this Behaviour's world-space matrix.</desc>
+    /// <arg name="matrix">The world-space matrix to set.</arg>
+    /// </method>
     public final void SetMatrix(Matrix4x4 matrix)
     {
         m_SceneObject.setMatrix(matrix.GetNative());
@@ -259,13 +304,35 @@ public abstract class Behaviour extends Script
     /// <method>
     /// <desc>Attempts to retrieve a float parameter, throws an exception if no parameter is found with the given id.</desc>
     /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final float GetFloatParameter(String name, bool throwIfNotFound)
+    {
+        Double val = m_SceneObject.getDoubleParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
+        return val.floatValue();
+    }
+    /// <method>
+    /// <desc>Attempts to retrieve a float parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
     /// </method>
     protected final float GetFloatParameter(String name)
     {
+        return GetFloatParameter(name, true);
+    }
+    
+    /// <method>
+    /// <desc>Attempts to retrieve a double parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final double GetDoubleParameter(String name, bool throwIfNotFound)
+    {
         Double val = m_SceneObject.getDoubleParameter(name);
-        if(val == null)
+        if(val == null && throwIfNotFound)
             NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
-        return val.floatValue();
+        return val.doubleValue();
     }
     /// <method>
     /// <desc>Attempts to retrieve a double parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -273,10 +340,20 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final double GetDoubleParameter(String name)
     {
-        Double val = m_SceneObject.getDoubleParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'Double' with name '" + name + "' on SceneObject");
-        return val.doubleValue();
+        return GetDoubleParameter(name, true);
+    }
+    
+    /// <method>
+    /// <desc>Attempts to retrieve a int parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final int GetIntegerParameter(String name, bool throwIfNotFound)
+    {
+        Integer val = m_SceneObject.getIntegerParameter(name);
+        if (val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'Integer' with name '" + name + "' on SceneObject");
+        return val.intValue();
     }
     /// <method>
     /// <desc>Attempts to retrieve a int parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -284,10 +361,20 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final int GetIntegerParameter(String name)
     {
-        Integer val = m_SceneObject.getIntegerParameter(name);
-        if (val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'Integer' with name '" + name + "' on SceneObject");
-        return val.intValue();
+        return GetIntegerParameter(name, true);
+    }
+
+    /// <method>
+    /// <desc>Attempts to retrieve a String parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final String GetStringParameter(String name, bool throwIfNotFound)
+    {
+        String val = m_SceneObject.getStringParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'String' with name '" + name + "' on SceneObject");
+        return val;
     }
     /// <method>
     /// <desc>Attempts to retrieve a String parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -295,10 +382,20 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final String GetStringParameter(String name)
     {
-        String val = m_SceneObject.getStringParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'String' with name '" + name + "' on SceneObject");
-        return val;
+        return GetStringParameter(name, true);
+    }
+
+    /// <method>
+    /// <desc>Attempts to retrieve a bool parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final bool GetBoolParameter(String name, bool throwIfNotFound)
+    {
+        Boolean val = m_SceneObject.getBooleanParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'Boolean' with name '" + name + "' on SceneObject");
+        return val.boolValue();
     }
     /// <method>
     /// <desc>Attempts to retrieve a bool parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -306,10 +403,20 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final bool GetBoolParameter(String name)
     {
-        Boolean val = m_SceneObject.getBooleanParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'Boolean' with name '" + name + "' on SceneObject");
-        return val.boolValue();
+        return GetBoolParameter(name, true);
+    }
+
+    /// <method>
+    /// <desc>Attempts to retrieve a Coaster parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final Coaster GetCoasterParameter(String name, bool throwIfNotFound)
+    {
+        Coaster val = m_SceneObject.getCoasterParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'Coaster' with name '" + name + "' on SceneObject");
+        return val;
     }
     /// <method>
     /// <desc>Attempts to retrieve a Coaster parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -317,9 +424,19 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final Coaster GetCoasterParameter(String name)
     {
-        Coaster val = m_SceneObject.getCoasterParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'Coaster' with name '" + name + "' on SceneObject");
+        return GetCoasterParameter(name, true);
+    }
+    
+    /// <method>
+    /// <desc>Attempts to retrieve a TrackTrigger parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final TrackTrigger GetTriggerParameter(String name, bool throwIfNotFound)
+    {
+        TrackTrigger val = m_SceneObject.getTrackTriggerParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'TrackTrigger' with name '" + name + "' on SceneObject");
         return val;
     }
     /// <method>
@@ -328,9 +445,19 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final TrackTrigger GetTriggerParameter(String name)
     {
-        TrackTrigger val = m_SceneObject.getTrackTriggerParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'TrackTrigger' with name '" + name + "' on SceneObject");
+        return GetTriggerParameter(name, true);
+    }
+
+    /// <method>
+    /// <desc>Attempts to retrieve a Block parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final Block GetBlockParameter(String name, bool throwIfNotFound)
+    {
+        Block val = m_SceneObject.getBlockParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");
         return val;
     }
     /// <method>
@@ -339,10 +466,22 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final Block GetBlockParameter(String name)
     {
+        return GetBlockParameter(name, true);
+    }
+    
+    /// <method>
+    /// <desc>Attempts to retrieve a Section parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final Section GetSectionParameter(String name, bool throwIfNotFound)
+    {
         Block val = m_SceneObject.getBlockParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");   
         if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");
-        return val;
+            return null;
+        return val.getSection();
     }
     /// <method>
     /// <desc>Attempts to retrieve a Section parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -350,10 +489,20 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final Section GetSectionParameter(String name)
     {
-        Block val = m_SceneObject.getBlockParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("Could not find parameter of type 'BlockSection' with name '" + name + "' on SceneObject");   
-        return val.getSection();
+        return GetSectionParameter(name, true);
+    }
+    
+    /// <method>
+    /// <desc>Attempts to retrieve a SpecialTrack parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final SpecialTrack GetSpecialTrackParameter(String name, bool throwIfNotFound)
+    {
+        SpecialTrack val = m_SceneObject.getSpecialTrackParameter(name);
+        if(val == null && throwIfNotFound)
+            NullReferenceException.Throw("COuld not find parameter of type 'SpecialTrack' with name '" + name + "' on SceneObject");   
+        return val;
     }
     /// <method>
     /// <desc>Attempts to retrieve a SpecialTrack parameter, throws an exception if no parameter is found with the given id.</desc>
@@ -361,9 +510,19 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final SpecialTrack GetSpecialTrackParameter(String name)
     {
-        SpecialTrack val = m_SceneObject.getSpecialTrackParameter(name);
-        if(val == null)
-            NullReferenceException.Throw("COuld not find parameter of type 'SpecialTrack' with name '" + name + "' on SceneObject");   
+        return GetSpecialTrackParameter(name, true);
+    }
+
+    /// <method>
+    /// <desc>Attempts to retrieve a ResourcePath parameter, throws an exception if no parameter is found with the given id.</desc>
+    /// <arg name="name">Parameter id.</arg>
+    /// <arg name="throwIfNotFound">If true, will raise an error if unable to find a SceneObject.</arg>
+    /// </method>
+    protected final ResourcePath GetResourcePathParameter(String name, bool throwIfNotFound)
+    {
+        ResourcePath val = m_SceneObject.getResourcePathParameter(name);
+        if(val == null && throwIfNotFound) 
+            NullReferenceException.Throw("Could not find parameter of type 'TextFile | AudioFile | VideoFile | File' with name '" + name + "' on SceneObject");
         return val;
     }
     /// <method>
@@ -372,10 +531,7 @@ public abstract class Behaviour extends Script
     /// </method>
     protected final ResourcePath GetResourcePathParameter(String name)
     {
-        ResourcePath val = m_SceneObject.getResourcePathParameter(name);
-        if(val == null) 
-            NullReferenceException.Throw("Could not find parameter of type 'TextFile | AudioFile | VideoFile | File' with name '" + name + "' on SceneObject");
-        return val;
+        return GetResourcePathParameter(name, true);
     }
 
     /// <method>
@@ -389,6 +545,14 @@ public abstract class Behaviour extends Script
         if(go == null && throwIfNotFound)
             NullReferenceException.Throw("Behaviour: Could not find SceneObject with name '" + name + "'");
         return go;
+    }
+    /// <method>
+    /// <desc>Attempts to fetch a SceneObject with a given name.</desc>
+    /// <arg name="name">The id of the SceneObject to fetch.</arg>
+    /// </method>
+    public final SceneObject GetSceneObject(String name)
+    {
+        return GetSceneObject(name, true);
     }
 }
 /// </class>

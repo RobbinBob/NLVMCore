@@ -1,0 +1,50 @@
+package scripts;
+
+import scripts.math.*;
+
+public final class AudioQueueTimeOfDay extends AudioQueue
+{
+    private int m_Hour = 0;
+    private int m_Minute = 0;
+    private float m_Time = 0;
+    private bool m_HasPlayed = false;
+
+    public bool Awake()
+    {
+        m_Hour = GetIntegerParameter("audio_time_hour");
+        if(m_Hour < 0 || m_Hour > 23)
+        {
+            Debug.Warn("Cue Trigger - Time of Day | Hour specified is invalid must be >= 0 and < 24");
+            return false;
+        }
+        m_Minute = GetIntegerParameter("audio_time_minute");
+        if(m_Minute < 0 || m_Minute > 59)
+        {
+            Debug.Warn("Cue Trigger - Time of Day | Minute specified is invalid must be >= 0 and < 60");
+            return false;
+        }
+
+        float minutes = Mathf.Remap(m_Minute, 0, 60, 0, 1); 
+        m_Time = (float)m_Hour + minutes;
+
+        return super.Awake();
+    }
+
+    public void Update(float deltaTime)
+    {
+        float currTime = sim.getCurTimeOfDay();
+        int hours = (int)currTime;
+        int minutes = (int)Mathf.Remap(currTime - hours, 0, 1, 0, 60);
+        
+        if(hours == m_Hour && minutes == m_Minute)
+        {
+            if(m_HasPlayed)
+                return;
+
+            BroadcastSoundToAll(m_SoundConfig);
+            m_HasPlayed = true;
+        }
+        else if (m_HasPlayed)
+            m_HasPlayed = false;
+    }
+}
