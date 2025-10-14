@@ -3,41 +3,75 @@ package scripts;
 import scripts.math.*;
 import com.nolimitscoaster.*;
 
-public class SpatialSound extends Sound implements IReferenceable, IInstantiateable
+/// <class>
+/// <desc>Represents a sound that can be positioned within the world.</desc>
+public final class SpatialSound extends Sound implements IReferenceable, IInstantiateable
 {
     private Vector3 m_WorldPosition = Vector3.Zero;
 
+    /// <constructor>
+    /// <desc>Creates a new SpatialSound using the specified resource file and default audio settings.</desc>
+    /// <arg name="soundResource">The resource file to load.</arg>
+    /// </constructor>
     public SpatialSound(ResourcePath soundResource)
     {
         super(soundResource, AUDIO_DEFAULT, ENVIRONMENT_NONE);
         SetPosition(new Vector3(0, -200000, 0));
     }
+    /// <constructor>
+    /// <desc>Creates a new SpatialSound using the specified resource file with audio flags and default environment settings.</desc>
+    /// <arg name="soundResource">The resource file to load.</arg>
+    /// <arg name="audioFlags">The audio flags to apply to this sound.</arg>
+    /// </constructor>
     public SpatialSound(ResourcePath soundResource, int audioFlags)
     {
         super(soundResource, audioFlags, ENVIRONMENT_NONE);
         SetPosition(new Vector3(0, -200000, 0));
     }
+    /// <constructor>
+    /// <desc>Creates a new SpatialSound using the specified resource file with audio flags and environment settings.</desc>
+    /// <arg name="soundResource">The resounce file to load.</arg>
+    /// <arg name="audioFlags">The audio flags to apply to this sound.</arg>
+    /// <arg name="environmentFlags">The environment mode to use.</arg>
+    /// </constructor>
     public SpatialSound(ResourcePath soundResource, int audioFlags, int environmentFlags)
     {
         super(soundResource, audioFlags, environmentFlags);
         SetPosition(new Vector3(0, -200000, 0));
     }
 
+    /// <method>
+    /// <desc>Sets the position of the sound.</desc>
+    /// <arg name="position">The world-space position.</arg>
+    /// </method>
     public void SetPosition(Vector3 position)
     {
         m_WorldPosition = position;
         m_StaticSound.setPosition(position.GetNative());
     }
+    /// <member>
+    /// <desc>Gets the position of the sound.</desc>
+    /// <return>The world-space position.</return>
+    /// </member>
     public Vector3 GetPosition()
     {
         return m_WorldPosition;
     }
 
+    /// <method>
+    /// <desc>Copies data from one sound to another.</desc>
+    /// <arg name="copyFrom">The sound to copy data from.</arg>
+    /// <arg name="copyTo">The sound to apply settings to.</arg>
+    /// </method>
     public static void Copy(SpatialSound copyFrom, SpatialSound copyTo)
     {
         copyTo.SetPosition(copyFrom.m_WorldPosition);
         Sound.Copy(copyFrom, copyTo);
     }
+    /// <method>
+    /// <desc>Instantiates a new instance of this SpatialSound copying data from the instancer.</desc>
+    /// <return>The instantiated SpatialSound instance.</return>
+    /// </method>
     public Object Instantiate()
     {
         SpatialSound sound = new SpatialSound(m_Resource, GetAudioFlags(), GetEnvironmentFlags());
@@ -52,3 +86,4 @@ public class SpatialSound extends Sound implements IReferenceable, IInstantiatea
         return "scripts.SpatialSound";
     }
 }
+/// <class>

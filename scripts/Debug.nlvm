@@ -20,6 +20,10 @@ public final class Debug extends Object
     private static PrintStream m_TextStream = System.out;
     private static PrintStream m_ErrorStream = System.err;
 
+    /// <method>
+    /// <desc>Gets the debug state.</desc>
+    /// <return>True if debugging is enabled, otherwise False.</return>
+    /// </method>
     public static bool IsDebugMode()
     {
         if(m_GizmoHandler == null)
@@ -143,6 +147,8 @@ public final class Debug extends Object
 
         m_GizmoHandler.DrawLine(matrix, timespan, color);
     }
+
+
 
     private static void InternalPrintln(String str)
     {

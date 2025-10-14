@@ -1682,8 +1682,6 @@
             "package": "scripts",
             "libraries": [
                 "com.nolimitscoaster",
-                "scripts.utilities",
-                "nlvm.math3d",
                 "scripts.math"
             ],
             "accessor": "public final",
@@ -1693,6 +1691,14 @@
             "description": "Allows debugging of scripts.",
             "members": [],
             "methods": [
+                {
+                    "args": [],
+                    "name": "IsDebugMode",
+                    "return": "bool",
+                    "accessor": "public static",
+                    "return_desc": "True if debugging is enabled, otherwise False.",
+                    "description": "Gets the debug state."
+                },
                 {
                     "args": [
                         {
@@ -1739,7 +1745,7 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
                             "description": "The world-space position to place the sphere."
                         },
@@ -1758,7 +1764,7 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
                             "description": "The world-space position to place the sphere."
                         },
@@ -1768,7 +1774,7 @@
                             "description": "The time(seconds) this sphere will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the sphere being drawn."
                         }
@@ -1782,7 +1788,7 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "position",
                             "description": "The world-space position to place the sphere."
                         },
@@ -1792,7 +1798,7 @@
                             "description": "The time(seconds) this sphere will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the sphere being drawn."
                         },
@@ -1811,12 +1817,12 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "from",
                             "description": "Point in world-space."
                         },
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "to",
                             "description": "Point in world-space."
                         },
@@ -1835,12 +1841,12 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "from",
                             "description": "Point in world-space."
                         },
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "to",
                             "description": "Point in world-space."
                         },
@@ -1850,7 +1856,7 @@
                             "description": "The time(seconds) this line will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the line being drawn."
                         }
@@ -1864,12 +1870,12 @@
                 {
                     "args": [
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "from",
                             "description": "Point in world-space."
                         },
                         {
-                            "type": "nlvm.math3d.Vector3f",
+                            "type": "Vector3",
                             "name": "to",
                             "description": "Point in world-space."
                         },
@@ -1879,7 +1885,7 @@
                             "description": "The time(seconds) this line will exist for."
                         },
                         {
-                            "type": "nlvm.math3d.Vector4f",
+                            "type": "Color",
                             "name": "color",
                             "description": "The color of the line being drawn."
                         },
@@ -5356,6 +5362,430 @@
                     ],
                     "accessor": "public",
                     "description": "Creates a Vector3 copying from a Vector2, with a defined Z axis."
+                }
+            ]
+        },
+        {
+            "type": "interface",
+            "package": "scripts",
+            "libraries": [],
+            "accessor": "public",
+            "name": "IReferenceable\n",
+            "full_name": "scripts.IReferenceable\n",
+            "description": "Represents a referenceable data type that can be accessed across scripts.",
+            "members": [],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "GetName",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the name of the reference."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "nlvm.lang.String",
+                            "name": "name",
+                            "description": "No Description Supplied."
+                        }
+                    ],
+                    "name": "SetName",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the name of the reference."
+                },
+                {
+                    "args": [],
+                    "name": "GetType",
+                    "return": "nlvm.lang.String",
+                    "accessor": "public",
+                    "return_desc": "String representation of the script identifier.",
+                    "description": "Gets the referenceable type."
+                }
+            ],
+            "constructors": []
+        },
+        {
+            "type": "class",
+            "package": "scripts",
+            "libraries": [
+                "com.nolimitscoaster"
+            ],
+            "accessor": "public",
+            "name": "Sound",
+            "full_name": "scripts.Sound",
+            "extends": "UpdateableObject",
+            "implements": [
+                "IUpdateable",
+                "IReferenceable",
+                "IInstantiateable"
+            ],
+            "description": "A wrapper for the base StaticSound type which implements more user friendly features.",
+            "members": [
+                {
+                    "name": "ENVIRONMENT_WORLD",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "No world audio effects are applied (Read Only)."
+                },
+                {
+                    "name": "ENVIRONMENT_LOCAL",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Copies the audio effects at its current position (Read Only)."
+                },
+                {
+                    "name": "ENVIRONMENT_COPY",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Copies the audio effects the player is experiencing (Read Only)."
+                },
+                {
+                    "name": "ENVIRONMENT_NONE",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "No audio effects are applied (Read Only)."
+                },
+                {
+                    "name": "AUDIO_FLAG_SOUND",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Specifies that the file should be treated as sound (Read Only)."
+                },
+                {
+                    "name": "AUDIO_FLAG_MUSIC",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Specifies that the file should be treated as music (Read Only)."
+                },
+                {
+                    "name": "AUDIO_FLAG_MONO",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Specifies that the file should convert the stereo audio down to mono (Read Only)."
+                },
+                {
+                    "name": "AUDIO_FLAG_SHARED",
+                    "type": "int",
+                    "accessor": "public static final",
+                    "description": "Specifies that the audio should be shared across all instances for syncronisation (Read Only)."
+                }
+            ],
+            "methods": [
+                {
+                    "args": [],
+                    "name": "PlaySoundOnce",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Plays the sound once before stopping."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "time",
+                            "description": "The time(seconds) to wait before stopping."
+                        }
+                    ],
+                    "name": "PlaySoundOnceCutoff",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Plays the sound once and will cut-off after a time-limit."
+                },
+                {
+                    "args": [],
+                    "name": "PlaySoundLooped",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Plays the sound looped until another call is made to stop it."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "loops",
+                            "description": "The amount of times before stopping."
+                        }
+                    ],
+                    "name": "PlaySoundLooped",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Plays the sound looped a set amount of times before stopping."
+                },
+                {
+                    "args": [],
+                    "name": "Pause",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Pauses/Unpauses the sound."
+                },
+                {
+                    "args": [],
+                    "name": "Stop",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Stops the audio from playing."
+                },
+                {
+                    "args": [],
+                    "name": "StopAtEnd",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Stops the audio after it reaches the end."
+                },
+                {
+                    "args": [],
+                    "name": "GetAudioFlags",
+                    "return": "int",
+                    "accessor": "public",
+                    "return_desc": "Returns an integer flag.",
+                    "description": "Gets the current audio flags this sound has."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "int",
+                            "name": "flags",
+                            "description": "The environment mode to use."
+                        }
+                    ],
+                    "name": "SetEnvironmentFlags",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the environment flags the sound will use."
+                },
+                {
+                    "args": [],
+                    "name": "GetEnvironmentFlags",
+                    "return": "int",
+                    "accessor": "public",
+                    "return_desc": "The environment mode as an in integer enum.",
+                    "description": "Gets the current audio environment this sound has."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "pitch",
+                            "description": "The pitch to set, between (0.1 - 1)."
+                        }
+                    ],
+                    "name": "SetPitch",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the pitch of the sound."
+                },
+                {
+                    "args": [],
+                    "name": "GetPitch",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the current pitch of this sound."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "gain",
+                            "description": "The gain to set, between (0 - 10)."
+                        }
+                    ],
+                    "name": "SetGain",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the gain of the sound."
+                },
+                {
+                    "args": [],
+                    "name": "GetGain",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the current gain of this sound."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "gain",
+                            "description": "The gain to set, between (0 - 10)."
+                        },
+                        {
+                            "type": "float",
+                            "name": "time",
+                            "description": "The time(seconds) to fade to the new gain."
+                        }
+                    ],
+                    "name": "SetGainFaded",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the gain of the sound which fades over a duration."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "bool",
+                            "name": "useDoppler",
+                            "description": "True to use doppler effect, otherwise False."
+                        }
+                    ],
+                    "name": "SetShouldUseDoppler",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets if this sound should apply doppler effect."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "constantDistance",
+                            "description": "The distance(meters) before fall-off."
+                        }
+                    ],
+                    "name": "SetConstantDistance",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the constant distance before fall-off occurs."
+                },
+                {
+                    "args": [],
+                    "name": "GetConstantDistance",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "The distance(meters).",
+                    "description": "Gets the current constant distance."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "float",
+                            "name": "falloff",
+                            "description": "The factor of fall-off to apply when outside of padding."
+                        }
+                    ],
+                    "name": "SetFalloffFactor",
+                    "return": "void",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the fall-off factor."
+                },
+                {
+                    "args": [],
+                    "name": "GetFalloffFactor",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets the current fall-off factor."
+                },
+                {
+                    "args": [],
+                    "name": "IsPlaying",
+                    "return": "bool",
+                    "accessor": "public",
+                    "return_desc": "True if playing, otherwise False.",
+                    "description": "Gets the current play-state of this sound."
+                },
+                {
+                    "args": [],
+                    "name": "GetTimestamp",
+                    "return": "float",
+                    "accessor": "public",
+                    "return_desc": "Current time(seconds).",
+                    "description": "Gets the current timestamp of the sound."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Sound",
+                            "name": "copyFrom",
+                            "description": "The sound to copy data from."
+                        },
+                        {
+                            "type": "Sound",
+                            "name": "copyTo",
+                            "description": "The sound to apply settings to."
+                        }
+                    ],
+                    "name": "Copy",
+                    "return": "void",
+                    "accessor": "public static",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Copies data from one sound to another."
+                },
+                {
+                    "args": [],
+                    "name": "Instantiate",
+                    "return": "nlvm.lang.Object",
+                    "accessor": "public",
+                    "return_desc": "The instantiated Sound instance.",
+                    "description": "Instantiates a new instance of sound copying data from instancer."
+                }
+            ],
+            "constructors": [
+                {
+                    "args": [
+                        {
+                            "type": "com.nolimitscoaster.ResourcePath",
+                            "name": "soundResource",
+                            "description": "The resource file to load."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new Sound using the specified resource file and default audio settings."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "com.nolimitscoaster.ResourcePath",
+                            "name": "soundResource",
+                            "description": "The resource file to load."
+                        },
+                        {
+                            "type": "int",
+                            "name": "audioFlags",
+                            "description": "The audio flags to apply to this sound."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new Sound using the specified resource file with audio flags and default environment settings."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "com.nolimitscoaster.ResourcePath",
+                            "name": "soundResource",
+                            "description": "THe resource file to load."
+                        },
+                        {
+                            "type": "int",
+                            "name": "audioFlags",
+                            "description": "The audio flags to apply to this sound."
+                        },
+                        {
+                            "type": "int",
+                            "name": "environmentFlags",
+                            "description": "The environment mode to use."
+                        }
+                    ],
+                    "accessor": "public",
+                    "description": "Creates a new Sound using the specified resource file with audio flags and environment settings."
                 }
             ]
         }

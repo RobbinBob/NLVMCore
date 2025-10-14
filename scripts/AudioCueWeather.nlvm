@@ -1,6 +1,6 @@
 package scripts;
 
-public class AudioCueWeather extends AudioCue
+public final class AudioQueueWeather extends AudioQueue
 {
     private float m_WeatherThreshold = 0;
     private bool m_HasPlayed = false;
