@@ -21,7 +21,6 @@ Result.A = Tex0.A;</shadercore>
         <tcgen mode="base"/>
       </texunit>
     </renderpass>
-    <option norender="true"/>
     <option nonsolid="true"/>
     <option noshadowcast="true"/>
   </material>

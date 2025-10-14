@@ -41,7 +41,7 @@ public class AudioCueTimeOfDay extends AudioCue
             if(m_HasPlayed)
                 return;
 
-            m_AudioController.EnqueSound(m_SoundConfig);
+            BroadcastSoundToAll(m_SoundConfig);
             m_HasPlayed = true;
         }
         else if (m_HasPlayed)

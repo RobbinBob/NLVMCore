@@ -17,7 +17,6 @@
         <tcgen mode="base"/>
       </texunit>
     </renderpass>
-    <option norender="true"/>
     <option nonsolid="true"/>
   </material>
 </root>

@@ -27,7 +27,7 @@ public class AudioCueTimer extends AudioCue
         if(m_IntervalTimer.WaitForComplete())
             return;
 
-        m_AudioController.EnqueSound(m_SoundConfig);
+        BroadcastSoundToAll(m_SoundConfig);
         m_IntervalTimer.Reset();
         m_IntervalTimer.Start();
     }

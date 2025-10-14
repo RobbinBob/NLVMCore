@@ -35,7 +35,7 @@ public class AudioCueStationDispatch extends AudioCue
         float trainSpeed = (float)m_TrainAtStation.getSpeed();
 
         if(m_PreviousTrainSpeed == 0 && trainSpeed > 0)
-            m_AudioController.EnqueSound(m_SoundConfig);
+            BroadcastSoundToAll(m_SoundConfig);
 
         m_PreviousTrainSpeed = trainSpeed;
     }

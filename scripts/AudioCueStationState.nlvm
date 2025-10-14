@@ -42,15 +42,15 @@ public abstract class AudioCueStationState extends AudioCue
         {
             case ACTIVATION_OPENING_OR_RAISING:
                 if(m_PreviousActivation == 0 && m_Activation > 0)
-                    m_AudioController.EnqueSound(m_SoundConfig);
+                    BroadcastSoundToAll(m_SoundConfig);
                 break;
             case ACTIVATION_CLOSING_OR_LOWERING:
                 if(m_PreviousActivation == 1 && m_Activation < 1)
-                    m_AudioController.EnqueSound(m_SoundConfig);
+                    BroadcastSoundToAll(m_SoundConfig);
                 break;
             case ACTIVATION_OPEN_OR_RAISE_AND_CLOSE_OR_LOWER:
                 if((m_PreviousActivation == 0 && m_Activation > 0) || (m_PreviousActivation == 1 && m_Activation < 1))
-                    m_AudioController.EnqueSound(m_SoundConfig);
+                    BroadcastSoundToAll(m_SoundConfig);
                 break;
         }
 

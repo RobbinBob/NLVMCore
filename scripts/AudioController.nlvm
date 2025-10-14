@@ -33,6 +33,8 @@ public class AudioController extends Behaviour implements IReferenceable
         }
         SetName(m_GroupName);
 
+        if(!Debug.IsDebugMode())
+            SetIsVisible(false);
         return true;
     }
     public void Start()
@@ -46,7 +48,10 @@ public class AudioController extends Behaviour implements IReferenceable
             m_PrimaryAudioFile = (AudioFile)registry.GetReferenceFromName("scripts.AudioFile", GetStringParameter("primary_audio_name"));
             m_PrimaryAudioLoop = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", m_PrimaryAudioFile.GetName());
             if(m_PrimaryAudioLoop == null)
-                Exception.Throw("Unable to find scripts.SpatialSound with name '" + GetStringParameter("primary_audio_name") + "'");
+            {
+                Debug.Warn("Audio Group | Unable to find Audio Id '" + GetStringParameter("primary_audio_name") + "'");
+                SetIsVisible(true);
+            }
             m_PrimaryAudioLoop.SetGain(0);
         }
 
@@ -131,6 +136,8 @@ public class AudioController extends Behaviour implements IReferenceable
         else
         {
             m_Debounce = false;
+            if(m_GroupEmitters.length == 0)
+                return;
 
                 // We need to step through the sounds and find any that are completed, remove them from the queue
             List toRemove = new List();

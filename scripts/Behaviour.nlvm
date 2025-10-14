@@ -25,6 +25,7 @@ public abstract class Behaviour extends Script
 
     private float m_PreviousTick = 0.0f;
     private bool m_HasRecievedNextFrameUpdate = false;
+    private bool m_IsVisible = true;
 
     public final bool onInit()
     {
@@ -226,6 +227,32 @@ public abstract class Behaviour extends Script
         sim.getViewPos(pos);
         return Vector3.FromNative(pos);
     }
+
+
+    /// <method>
+    /// <desc>Sets the Behaviours model to be visible.</desc>
+    /// <arg name="isVisible">True to show model, otherwise False to hide it.</arg>
+    /// </method>
+    public final void SetIsVisible(bool isVisible)
+    {
+        if(m_IsVisible == isVisible)
+            return;
+        m_IsVisible = isVisible;
+        int elemCount = m_SceneObject.getElementCount();
+        if(elemCount == 0)
+            return;
+        for(int i = elemCount-1; i >= 0; --i)
+            m_SceneObject.getElementAt(i).setVisible(isVisible);
+    }
+    /// <method>
+    /// <desc>Gets the current Behaviours visibility.</desc>
+    /// <return>True if it is visible, otherwise False if its hidden.</return>
+    /// </method>
+    public final bool GetIsVisible()
+    {
+        return m_IsVisible;
+    }
+
 
     /// <method>
     /// <desc>Gets this Behaviour's world-space position.</desc>

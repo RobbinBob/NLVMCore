@@ -61,12 +61,12 @@ public class AudioCueTrackTrigger extends AudioCue implements TrackTriggerListen
             return;
 
         if(trigger == m_TrackTrigger)
-            m_AudioController.EnqueSound(m_SoundConfig);
+            BroadcastSoundToAll(m_SoundConfig);
         if(m_StopTrigger != null)
         {
             if(trigger != m_StopTrigger)
                 return;
-            m_AudioController.DequeueSound(m_SoundConfig.SoundName);
+            CancelSoundToAll(m_SoundConfig);
         }
     }
     public void onTrainLeaving(TrackTrigger trigger, Train train) { }

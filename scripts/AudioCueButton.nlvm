@@ -37,7 +37,7 @@ public class AudioCueButton extends AudioCue implements InteractionActionListene
             return;
         m_Debounce = true;
         m_Animation.Play();
-        m_AudioController.EnqueSound(m_SoundConfig);
+        BroadcastSoundToAll(m_SoundConfig);
         m_Interaction.setEnabled(false);
         m_SceneObject.getElementAt(1).setTextureAnimationIndex(1);
     }

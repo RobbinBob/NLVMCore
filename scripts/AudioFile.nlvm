@@ -18,7 +18,7 @@ public class AudioFile extends Behaviour implements IReferenceable
             return false;
         }
 
-        int audioFlags = Sound.AUDIO_FLAG_SOUND | Sound.AUDIO_FLAG_MONO;
+        int audioFlags = Sound.AUDIO_FLAG_SOUND | (GetBoolParameter("audio_flag_mono") ? Sound.AUDIO_FLAG_MONO : 0) | (GetBoolParameter("audio_flag_shared") ? Sound.AUDIO_FLAG_SHARED : 0);
         bool isMusic = GetBoolParameter("audio_is_music");
         if(isMusic)
             audioFlags |= Sound.AUDIO_FLAG_MUSIC;
@@ -36,9 +36,13 @@ public class AudioFile extends Behaviour implements IReferenceable
 
         m_Sound.SetGain(0);
         m_Sound.SetPitch(m_DefaultPitch);
+        m_Sound.SetShouldUseDoppler(false);
         m_Sound.SetName(m_Name);
 
         Registry.GetInstance().Register(this);
+
+        if(!Debug.IsDebugMode())
+            SetIsVisible(false);
 
         return false;
     }

@@ -34,7 +34,7 @@ public class AudioCueEStop extends AudioCue
             if(m_IntervalTimer.IsRunning() && m_IntervalTimer.WaitForComplete())
                 return;
 
-            m_AudioController.EnqueSound(m_SoundConfig);
+            BroadcastSoundToAll(m_SoundConfig);
             m_IntervalTimer.StopAndReset();
             m_IntervalTimer.Start();
             m_Debounce = false;

@@ -44,12 +44,12 @@ public abstract class AudioCueVolumeTrigger extends AudioCue
         if(m_IsViewerInside)
         {
             if(m_PlayState == PLAY_ON_ENTRY)
-                m_AudioController.EnqueSound(m_SoundConfig);
+                BroadcastSoundToAll(m_SoundConfig);
         }
         else
         {
             if(m_PlayState == PLAY_ON_EXIT)
-                m_AudioController.EnqueSound(m_SoundConfig);
+                BroadcastSoundToAll(m_SoundConfig);
         }
     }
 }

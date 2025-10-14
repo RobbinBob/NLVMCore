@@ -22,6 +22,8 @@ public abstract class AudioEmitter extends Behaviour implements IReferenceable
         }
         SetName(groupId);
 
+        if(!Debug.IsDebugMode())
+            SetIsVisible(false);
         return true;
     }
     public void Start()

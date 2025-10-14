@@ -43,6 +43,20 @@
     <scriptparameter>
       <type>bool</type>
       <defaultvalue>false</defaultvalue>
+      <id>audio_flag_mono</id>
+      <description>Reduces the audio file from stereo to mono, can help in some cases but can produce strange audio artefacts.</description>
+      <label>Mono Mixdown</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>true</defaultvalue>
+      <id>audio_flag_shared</id>
+      <description>Syncronises all sound sources to play at the same time.</description>
+      <label>Shared Sound</label>
+    </scriptparameter>
+    <scriptparameter>
+      <type>bool</type>
+      <defaultvalue>false</defaultvalue>
       <id>audio_is_music</id>
       <description>Specified if this audio should be categorised as music or sound. The overall gain is affected by user volume settings</description>
       <label>Audio Is Music</label>

@@ -41,7 +41,6 @@ public abstract class AudioEmitterVolume extends AudioEmitter implements IRefere
                     SpatialSound sound = ((SpatialSound)enumerator.Get());
                     String audioId = sound.GetName();
                     //Debug.Print("AUDIO EMITTER AUDIO ID '" + audioId + "'");
-
                     ((SpatialSound)enumerator.Get()).SetGainFaded(GetAudioController().GetAudioGain(audioId), 0.05f);
                 }
             }
@@ -53,6 +52,7 @@ public abstract class AudioEmitterVolume extends AudioEmitter implements IRefere
                 SpatialSound sound = (SpatialSound)enumerator.Get();
                 sound.SetPosition(soundPosition);
             }
+            
         }
         else
         {
