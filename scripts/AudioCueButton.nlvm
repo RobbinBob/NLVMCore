@@ -2,7 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
-public final class AudioQueueButton extends AudioQueue implements InteractionActionListener
+public final class AudioCueButton extends AudioCue implements InteractionActionListener
 {
     private InteractionObject m_Interaction = null;
     private Animation m_Animation = null;

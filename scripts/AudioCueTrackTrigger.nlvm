@@ -3,7 +3,7 @@ package scripts;
 import com.nolimitscoaster.*;
 import scripts.utilities.*;
 
-public final class AudioQueueTrackTrigger extends AudioQueue implements TrackTriggerListener
+public final class AudioCueTrackTrigger extends AudioCue implements TrackTriggerListener
 {
     private TrackTrigger m_TrackTrigger = null;
     private TrackTrigger m_StopTrigger = null;

@@ -2,7 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.*;
 
-public final class AudioQueueStationDispatch extends AudioQueue
+public final class AudioCueStationDispatch extends AudioCue
 {
     private Section m_Station = null;
     private Train m_TrainAtStation = null;
