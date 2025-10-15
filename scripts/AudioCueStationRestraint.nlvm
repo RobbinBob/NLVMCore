@@ -1,0 +1,11 @@
+package scripts;
+
+public final class AudioCueStationRestraint extends AudioCueStationState
+{
+    public void Update(float deltaTime)
+    {
+        if(m_Station.isTrainOnSection())
+            m_Activation = m_Station.getTrainOnSection().getHarnessState();
+        super.Update(deltaTime);
+    }
+}
