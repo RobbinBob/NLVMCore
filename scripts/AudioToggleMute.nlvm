@@ -1,10 +1,12 @@
 package scripts;
 
 import com.nolimitscoaster.*;
+import scripts.containers.*;
+import scripts.utilities.StringUtil;
 
 public final class AudioToggleMute extends Behaviour implements InteractionActionListener
 {
-    private AudioController m_AudioController = null;
+    private AudioController[] m_AudioControllers = null;
     private InteractionObject m_Interaction = null;
     private Animation m_Animation = null;
     private bool m_IsToggled = false;
@@ -24,14 +26,30 @@ public final class AudioToggleMute extends Behaviour implements InteractionActio
 
     public void Start()
     {
-        String groupId = GetStringParameter("audio_group");
-        IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioController", groupId);
-        if(reference == null)
+        String controllerParams = GetStringParameter("audio_group");
+        String[] params = StringUtil.SplitString(controllerParams, ',');
+        if(params.length == 0)
         {
-            Debug.Warn("Button - Music Mute Toggle | Could not find Audio Group with Group Id '" + groupId + "'");
+            Debug.Warn("Cue Trigger | Internal error when parsing Group Id/s, '" + controllerParams + "' is not a valid parameter entry");
             return;
         }
-        m_AudioController = (AudioController)reference;
+        List tempControllers = new List(params.length);
+        for(int i = 0; i < params.length; ++i)
+        {
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioController", params[i]);
+            if(reference == null)
+            {
+                Debug.Warn("Cue Trigger | Unable to find Audio Group with id '" + params[i] + "'");
+                continue;
+            }
+            tempControllers.Insert(reference);
+        }
+        m_AudioControllers = new AudioController[tempControllers.Count()];
+        IEnumerator enumerator = tempControllers.GetEnumerator();
+        int l = 0;
+        while(enumerator.MoveNext())
+            m_AudioControllers[l++] = (AudioController)enumerator.Get();
+
         m_Interaction = InteractionObject.createSimpleButton();
         m_Interaction.setActive(true);
         m_Interaction.setEnabled(true);
@@ -62,7 +80,8 @@ public final class AudioToggleMute extends Behaviour implements InteractionActio
         m_Interaction.setEnabled(false);
 
         m_IsToggled = !m_IsToggled;
-        m_AudioController.SetPrimaryTrackMuted(m_IsToggled);
+        for(int i = 0; i < m_AudioControllers.length; ++i)
+            m_AudioControllers[i].SetPrimaryTrackMuted(m_IsToggled);
 
         if(m_IsToggled)
             m_SceneObject.getElementAt(1).setTextureAnimationIndex(1);
