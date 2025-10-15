@@ -51,6 +51,8 @@ public abstract class AudioEmitterVolume extends AudioEmitter implements IRefere
             {
                 SpatialSound sound = (SpatialSound)enumerator.Get();
                 sound.SetPosition(soundPosition);
+                sound.SetConstantDistance(100);
+                sound.SetFalloffFactor(0);
             }
             
         }
