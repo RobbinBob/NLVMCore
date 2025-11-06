@@ -8,7 +8,7 @@ import scripts.math.*;
 
 /// <class>
 /// <desc>Base class to derrive any SceneObject attached scripts.</desc>
-public abstract class Behaviour extends Script
+public abstract class Behaviour extends Script implements IPropertyContainer
 {
     private static final List m_Updateables = new List();
     private static Behaviour m_Caller = null;
@@ -91,30 +91,31 @@ public abstract class Behaviour extends Script
     }
     public final void onLateUpdate()
     {
-        if(m_HasRecievedNextFrameUpdate == false)
-        {
-            LateUnblockedUpdate();
-
-            if(m_Caller != this)
-                return;
-                
-            IEnumerator enumerator = m_Updateables.GetEnumerator();
-            while(enumerator.MoveNext())
-                ((IUpdateable)enumerator.Get()).LateUnblockedUpdate();
-
-            return;
-        }
-
-        m_HasRecievedNextFrameUpdate = false;
-        LateUpdate(m_PreviousTick);
-
+        LateUnblockedUpdate();
 
         if(m_Caller != this)
             return;
-            // Loop over the updateables and call their late updates
+                
         IEnumerator enumerator = m_Updateables.GetEnumerator();
         while(enumerator.MoveNext())
-            ((IUpdateable)enumerator.Get()).LateUpdate(m_PreviousTick);
+            ((IUpdateable)enumerator.Get()).LateUnblockedUpdate();
+
+        
+
+
+
+        if(m_HasRecievedNextFrameUpdate == true)
+        {
+            m_HasRecievedNextFrameUpdate = false;
+            LateUpdate(m_PreviousTick);
+
+            if(m_Caller != this)
+                return;
+                // Loop over the updateables and call their late updates
+            enumerator = m_Updateables.GetEnumerator();
+            while(enumerator.MoveNext())
+                ((IUpdateable)enumerator.Get()).LateUpdate(m_PreviousTick);
+        }
     }
     public final void onExit()
     {
@@ -270,6 +271,21 @@ public abstract class Behaviour extends Script
         m_SceneObject.setTranslation(position.GetNative());
     }
     /// <method>
+    /// <desc>Gets this Behaviour's world-space rotation.</desc>
+    /// </method>
+    public final Vector3 GetRotation()
+    {
+        return Vector3.FromNative(m_SceneObject.getRotation());
+    }
+    /// <method>
+    /// <desc>Sets this Behaviour's world-space rotation.</desc>
+    /// <arg name="rotation">The world-space rotation to set.</arg>
+    /// </method>
+    public final void SetRotation(Vector3 rotation)
+    {
+        m_SceneObject.setRotation(rotation.GetNative());
+    }
+    /// <method>
     /// <desc>Gets this Behaviour's local-space scale.</desc>
     /// </method>
     public final Vector3 GetScale()
@@ -299,6 +315,49 @@ public abstract class Behaviour extends Script
     {
         m_SceneObject.setMatrix(matrix.GetNative());
     }
+
+
+
+
+
+    public static final int POSITION = 812449097; // Position
+    public static final int ROTATION = 24343454; // Rotation
+    public static final int SCALE = 79698218; // Scale
+    private static final int[] s_ValidProperties = new int[]
+    {
+        POSITION,
+        ROTATION,
+        SCALE
+    };
+
+    private bool IsPropertyValid(int property)
+    {
+        for(int i = 0; i < s_ValidProperties.length; ++i)
+            if(s_ValidProperties[i] == property)
+                return true;
+        return false;
+    }
+    public IPropertyHandle GetPropertyHandle(int id)
+    {
+        if(!IsPropertyValid(id))
+            Exception.Throw("There is no property '" + id + "' on this instance");
+
+        int myVar = 0;
+        switch(myVar)
+        {
+            case POSITION:
+                break;
+        }
+
+        return new BehaviourPropertyHandler(this, id);
+    }
+
+
+
+
+
+
+
 
 
     /// <method>

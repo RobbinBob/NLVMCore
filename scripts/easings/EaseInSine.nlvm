@@ -1,0 +1,9 @@
+package scripts.easings;
+
+public class EaseInSine extends Easing implements IEasable
+{
+    public float Get(float t)
+    {
+        return 1 - (float)Math.cos((t * 3.141592f) / 2.f);
+    }
+}

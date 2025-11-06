@@ -1,0 +1,8 @@
+package scripts.easings;
+
+public abstract class Easing extends Object implements IEasable
+{
+    public static final Easing Instance = null;
+
+    public abstract float Get(float t);
+}

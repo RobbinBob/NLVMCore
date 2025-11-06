@@ -1,0 +1,8 @@
+package scripts;
+
+public interface IPropertyHandle
+{
+    public String GetPropertyType();
+    public void SetProperty(Object object);
+    public Object GetProperty();
+}

@@ -1,14 +1,14 @@
-package scripts.core.delegates;
+package scripts.delegates;
 
-import scripts.core.container.*;
+import scripts.containers.*;
 
 public class Delegate1 extends Delegate
 {
     public void Invoke(Object[] args)
     {
-        ListEnumerator enumerator = m_Subscribers.GetEnumerator();
+        IEnumerator enumerator = m_Subscribers.GetEnumerator();
         while(enumerator.MoveNext())
-            ((IFunc1)enumerator.Get()).OnCalled(this);
+            ((IFunc1)enumerator.Get()).OnCalled(this, args[0]);
     }
 
     public bool Connect(Object listener)

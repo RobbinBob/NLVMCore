@@ -1,0 +1,6 @@
+package scripts;
+
+public interface IPropertyContainer
+{
+    public IPropertyHandle GetPropertyHandle(int id);
+}

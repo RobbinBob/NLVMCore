@@ -9,7 +9,7 @@ public class ElementGForceTracker extends GForceTracker
 {
     private SceneObjectElement m_TrackingElement = null;
 
-    public bool DisplayForces = false;
+    public bool DisplayForces = true;
 
     /// <constructor>
     /// <desc>Creates a new tracker for a SceneObjectElement.</desc>
@@ -40,9 +40,8 @@ public class ElementGForceTracker extends GForceTracker
         Vector3 rayEnd = position.Add(forces);
 
         Color color = new Color(Mathf.Abs(forces.X), Mathf.Abs(forces.Y), Mathf.Abs(forces.Z));
-
         if(DisplayForces)
-            Debug.DrawLine(position, rayEnd, tick, color);
+            Debug.DrawLine(position, rayEnd, tick * 1.2f, color);
     }
 }
 /// </class>

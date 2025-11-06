@@ -1,0 +1,9 @@
+package scripts.easings;
+
+public class EaseLinear extends Easing implements IEasable
+{
+    public float Get(float t)
+    {
+        return t;
+    }
+}
