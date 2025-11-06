@@ -100,8 +100,8 @@ public final class AudioController extends Behaviour implements IReferenceable
                 {
                     sound = m_GroupEmitters[i].SetCurrentSound(m_PrimaryAudioLoop.GetName());
                     sound.SetGain(0);
+                    AddOrSetGain(m_PrimaryAudioLoop.GetName(), 0);
                 }
-                AddOrSetGain(m_PrimaryAudioLoop.GetName(), 0);
 
             }
             IEnumerator enumerator = m_Queue.GetEnumerator();

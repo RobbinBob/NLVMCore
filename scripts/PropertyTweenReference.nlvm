@@ -1,0 +1,27 @@
+package scripts;
+
+import scripts.delegates.*;
+
+public class PropertyTweenReference extends Object
+{
+    private PropertyTween m_TweenReference = null;
+
+    public PropertyTweenReference(PropertyTween tween)
+    {
+        m_TweenReference = tween;
+    }
+
+    public void Play()
+    {
+        m_TweenReference.PlayDelegate.Invoke(null);
+    }
+    public void Cancel()
+    {
+        m_TweenReference.CancelDelegate.Invoke(null);
+    }
+
+    public Delegate OnCompleted()
+    {
+        return m_TweenReference.CompletedDelegate;
+    }
+}

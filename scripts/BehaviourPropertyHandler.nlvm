@@ -1,0 +1,63 @@
+package scripts;
+
+import scripts.math.*;
+
+public class BehaviourPropertyHandler extends Object implements IPropertyHandle
+{
+    private Behaviour m_Behaviour = null;
+    private int m_Property;
+    private String m_PropertyType = "";
+
+    public BehaviourPropertyHandler(Behaviour behaviour, int property)
+    {
+        m_Behaviour = behaviour;
+        m_Property = property;
+
+        switch(m_Property)
+        {
+            case Behaviour.POSITION:
+            case Behaviour.ROTATION:
+            case Behaviour.SCALE:
+                m_PropertyType = "scripts.math.Vector3";
+                break;
+            default:
+                m_PropertyType = "invalid";
+                break;
+        }
+    }
+
+    public String GetPropertyType()
+    {
+        return m_PropertyType;
+    }
+    public void SetProperty(Object value)
+    {
+        switch(m_Property)
+        {
+            case Behaviour.POSITION:
+                m_Behaviour.SetPosition((Vector3)value);
+                break;
+            case Behaviour.ROTATION:
+                m_Behaviour.SetRotation((Vector3)value);
+                break;
+            case Behaviour.SCALE:
+                m_Behaviour.SetScale((Vector3)value);
+                break;
+        }
+    }
+    public Object GetProperty()
+    {
+        switch(m_Property)
+        {
+            case Behaviour.POSITION:
+                return m_Behaviour.GetPosition();
+            case Behaviour.ROTATION:
+                return m_Behaviour.GetRotation();
+            case Behaviour.SCALE:
+                return m_Behaviour.GetScale();
+            default:
+                return null;
+        }
+        return null;
+    }
+}

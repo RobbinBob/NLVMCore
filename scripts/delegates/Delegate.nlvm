@@ -1,13 +1,48 @@
-package scripts.core.delegates;
+package scripts.delegates;
 
-import scripts.core.containers.*;
+import scripts.containers.*;
 
-public abstract class Delegate extends Object
+public class Delegate extends Object
 {
     protected List m_Subscribers = new List();
 
-    public abstract void Invoke(Object[] args);
+    public void Invoke(Object[] args)
+    {
+        IEnumerator enumerator = m_Subscribers.GetEnumerator();
+        while(enumerator.MoveNext())
+            ((IFunc)enumerator.Get()).OnCalled(this);
+    }
 
-    public abstract bool Connect(Object listener);
-    public abstract bool Disconnect(Object listener);
+    public bool Connect(Object listener)
+    {
+        if(listener == null)
+            return false;
+
+        if(listener instanceof IFunc)
+        {   
+            IFunc listenerInterface = (IFunc)listener;
+            if(m_Subscribers.Contains(listenerInterface))
+                return false;
+            m_Subscribers.Insert(listenerInterface);
+                return true;
+        }
+        else
+            return false;
+    }
+    public bool Disconnect(Object listener)
+    {
+        if(listener == null)
+            return false;
+
+        if(listener instanceof IFunc)
+        {
+            IFunc listenerInterface = (IFunc)listener;
+            if(!m_Subscribers.Contains(listenerInterface))
+                return false;
+            m_Subscribers.Remove(listenerInterface);
+            return true;
+        }
+        else
+            return false;
+    }
 } 

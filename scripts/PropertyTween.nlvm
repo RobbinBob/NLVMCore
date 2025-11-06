@@ -1,0 +1,93 @@
+package scripts;
+
+import scripts.delegates.*;
+import scripts.math.*;
+import scripts.easings.*;
+
+public class PropertyTween extends UpdateableObject implements IFunc
+{
+    private IPropertyHandle m_PropertyHandle = null;
+    private Object m_Start = null;
+    private Object m_Goal = null;
+    private float m_TweenTime = 0;
+    private float m_CurrentTweenTime = 0;
+    private IEasable m_Easable = null;
+
+    public Delegate CancelDelegate = null;
+    public Delegate PlayDelegate = null;
+    public Delegate CompletedDelegate = null;
+
+    private PropertyTween()
+    {
+        CancelDelegate = new Delegate();
+        CancelDelegate.Connect(this);
+
+        PlayDelegate = new Delegate();
+        PlayDelegate.Connect(this);
+
+        CompletedDelegate = new Delegate();
+    }
+
+    public static PropertyTweenReference CreateTween(IPropertyHandle handle, Object start, Object goal, float time, IEasable easable)
+    {
+        PropertyTween tween = new PropertyTween();
+        tween.m_PropertyHandle = handle;
+        tween.m_Start = start;
+        tween.m_Goal = goal;
+        tween.m_TweenTime = time;
+        tween.m_Easable = easable == null ? (IEasable)new EaseLinear() : easable;
+
+        if(handle.GetPropertyType().equals("scripts.math.Vector3"))
+        {
+            if(!(start instanceof Vector3))
+                Debug.Warn("Invalid type sepcified for tween 'start', requires type '" + handle.GetPropertyType() + "'");
+            if(!(goal instanceof Vector3))
+                Debug.Warn("Invalid type sepcified for tween 'goal', requires type '" + handle.GetPropertyType() + "'");
+        }
+
+        return new PropertyTweenReference(tween);
+    }
+
+    private Object GetInterpolatedValue(Object s, Object e, float t)
+    {
+        if(m_PropertyHandle.GetPropertyType().equals("scripts.math.Vector3"))
+        {
+            return Vector3.Lerp((Vector3)s, (Vector3)e, t);
+        }
+        return null;
+    }
+
+
+    public void Update(float tick)
+    {
+        m_CurrentTweenTime += tick;
+        if(m_CurrentTweenTime < m_TweenTime)
+        {
+            Object interpolatedValue = GetInterpolatedValue(m_Start, m_Goal, m_Easable.Get(m_CurrentTweenTime / m_TweenTime));
+            m_PropertyHandle.SetProperty(interpolatedValue);
+        }
+        else
+        {
+            m_CurrentTweenTime = 0;
+            SetShouldUpdate(false);
+            CompletedDelegate.Invoke(null);
+        }
+    }
+    public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
+
+
+    public void OnCalled(Delegate delegate)
+    {
+        if(delegate == PlayDelegate)
+        {
+            Debug.Print("Playing tween");
+            SetShouldUpdate(true);
+        }
+        else if(delegate == CancelDelegate)
+        {
+            Debug.Print("Cancelling tween");
+            SetShouldUpdate(false);
+        }
+    }
+}

@@ -4,7 +4,7 @@
     <model path="models/DebugSymbols.glb">
       <clip distance="250"/>
     </model>
-    <description>Enables debugging information to be displayed in simulator.</description>
+    <description>Enables debugging information to be displayed in simulator messages, and also make all Emitters visible in play mode.</description>
     <defaultinstancename>DebugSymbols</defaultinstancename>
     <preview>thumbs/Bug.png</preview>
     <param allowrot="false"/>
