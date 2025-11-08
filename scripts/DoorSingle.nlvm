@@ -1,0 +1,73 @@
+package scripts;
+
+import scripts.delegates.*;
+import com.nolimitscoaster.*;
+import scripts.easings.*;
+import scripts.math.*;
+
+public class DoorSingle extends Door implements InteractionActionListener, IFunc1
+{
+    private SubElement m_DoorElement = null;
+    private SceneObjectElement m_HandleElement = null;
+
+    private PropertyTweenReference m_OpenTween = null;
+    private PropertyTweenReference m_CloseTween = null;
+
+    protected void SetupDoor()
+    {
+        Json configJson = Json.Parse(Tools.loadTextFileFromResource(m_DoorConfigResource));
+
+        String doorElement = configJson.Get("door_element").GetString();
+        String handleElement = configJson.Get("handle_element").GetString();
+
+        m_DoorElement = GetChild(doorElement);
+        m_HandleElement = m_SceneObject.getElementForName(handleElement);
+
+        m_InteractionHandle = new InteractionObject[1];
+        m_InteractionHandle[0] = InteractionObject.createSimpleButton();
+        m_InteractionHandle[0].addActionListener(this);
+        m_InteractionHandle[0].setRadius(1.75f);
+        m_InteractionHandle[0].setActive(true);
+
+
+        Vector3 closeAngle = new Vector3(0, configJson.Get("close_angle").GetFloat() * Mathf.DegToRad, 0);
+        Vector3 openAngle = new Vector3(0, configJson.Get("open_angle").GetFloat() * Mathf.DegToRad, 0);
+
+
+        IPropertyHandle rotationProperty = m_DoorElement.GetPropertyHandle(SubElement.ROTATION);
+        m_OpenTween = PropertyTween.CreateTween(
+            rotationProperty,
+            closeAngle,
+            openAngle,
+            m_Config.OpenTime,
+            new EaseInOutSine()
+        );
+        m_CloseTween = PropertyTween.CreateTween(
+            rotationProperty,
+            openAngle,
+            closeAngle,
+            m_Config.CloseTime,
+            new EaseInOutSine()
+        );
+
+        OnDoorStateChanged().Connect(this);
+    }
+
+    protected void UpdateDoor()
+    {
+        m_InteractionHandle[0].setPosition(m_HandleElement.getAbsoluteMatrix().getTrans());
+    }
+    
+
+    public void OnCalled(Delegate delegate, Object arg)
+    {
+        if(delegate == OnDoorStateChanged())
+        {
+            int state = ((Door)arg).GetDoorState();
+            if(state == DOOR_OPENING)
+                m_OpenTween.Play();
+            else if(state == DOOR_CLOSING)
+                m_CloseTween.Play();
+        }
+    }
+}

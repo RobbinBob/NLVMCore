@@ -1,0 +1,63 @@
+package scripts;
+
+import scripts.math.*;
+
+public class SubElementPropertyHandler extends Object implements IPropertyHandle
+{
+    private SubElement m_SubElement = null;
+    private int m_Property;
+    private String m_PropertyType = "";
+
+    public SubElementPropertyHandler(SubElement subelement, int property)
+    {
+        m_SubElement = subelement;
+        m_Property = property;
+
+        switch(m_Property)
+        {
+            case SubElement.POSITION:
+            case SubElement.ROTATION:
+            case SubElement.SCALE:
+                m_PropertyType = "scripts.math.Vector3";
+                break;
+            default:
+                m_PropertyType = "invalid";
+                break;
+        }
+    }
+
+    public String GetPropertyType()
+    {
+        return m_PropertyType;
+    }
+    public void SetProperty(Object value)
+    {
+        switch(m_Property)
+        {
+            case SubElement.POSITION:
+                m_SubElement.SetPosition((Vector3)value);
+                break;
+            case SubElement.ROTATION:
+                m_SubElement.SetRotation((Vector3)value);
+                break;
+            case SubElement.SCALE:
+                m_SubElement.SetScale((Vector3)value);
+                break;
+        }
+    }
+    public Object GetProperty()
+    {
+        switch(m_Property)
+        {
+            case Behaviour.POSITION:
+                return m_SubElement.GetPosition();
+            case Behaviour.ROTATION:
+            case Behaviour.SCALE:
+                Exception.Throw("Cannot return scripts.SubElement rotation/scale currently from IPropertyHandle");
+                break;
+            default:
+                return null;
+        }
+        return null;
+    }
+}

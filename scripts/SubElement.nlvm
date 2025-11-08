@@ -1,0 +1,78 @@
+package scripts;
+
+import scripts.math.*;
+import com.nolimitscoaster.SceneObjectElement;
+
+public class SubElement extends Object implements IPropertyContainer
+{
+    private Behaviour m_Parent = null;
+    private SceneObjectElement m_InternalElement = null;
+
+
+
+    public SubElement(Behaviour parent, SceneObjectElement internalElement)
+    {
+        m_Parent = parent;
+        m_InternalElement = internalElement;
+    }
+
+
+
+    public Behaviour GetParent()
+    {
+        return m_Parent;
+    }
+    public SceneObjectElement GetInternalElement()
+    {
+        return m_InternalElement;
+    }
+
+
+    public void SetPosition(Vector3 position)
+    {
+        m_InternalElement.setTranslation(position.GetNative());
+    }
+    public void SetRotation(Vector3 rotation)
+    {
+        m_InternalElement.setRotation(rotation.GetNative());
+    }
+    public void SetScale(Vector3 scale)
+    {
+        m_InternalElement.setScale(scale.GetNative());
+    }
+
+    public Vector3 GetPosition()
+    {
+        return Vector3.FromNative(m_InternalElement.getMatrix().getTrans());
+    }
+    public Vector3 GetWorldPosition()
+    {
+        return Vector3.FromNative(m_InternalElement.getAbsoluteMatrix().getTrans());
+    }
+
+
+    public static final int POSITION = 812449097; // Position
+    public static final int ROTATION = 24343454; // Rotation
+    public static final int SCALE = 79698218; // Scale
+    private static final int[] s_ValidProperties = new int[]
+    {
+        POSITION,
+        ROTATION,
+        SCALE
+    };
+
+    private bool IsPropertyValid(int property)
+    {
+        for(int i = 0; i < s_ValidProperties.length; ++i)
+            if(s_ValidProperties[i] == property)
+                return true;
+        return false;
+    }
+    public IPropertyHandle GetPropertyHandle(int id)
+    {
+        if(!IsPropertyValid(id))
+            Exception.Throw("There is no property '" + id + "' on this instance");
+
+        return new SubElementPropertyHandler(this, id);
+    }
+}

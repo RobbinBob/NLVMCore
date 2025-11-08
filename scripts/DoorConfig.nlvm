@@ -1,0 +1,9 @@
+package scripts;
+
+public class DoorConfig extends Object
+{
+    public float OpenTime = 1.0f;
+    public float CloseTime = 1.0f;
+
+    public DoorConfig() { }
+}
