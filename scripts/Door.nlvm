@@ -34,6 +34,10 @@ public abstract class Door extends Behaviour implements InteractionActionListene
         m_Config.OpenTime = configJson.Get("open_time").GetFloat();
         m_Config.CloseTime = configJson.Get("close_time").GetFloat();
 
+        if(configJson.HasKey("interaction_range"))
+            m_Config.InteractionRange = configJson.Get("interaction_range").GetFloat();
+            
+
         m_DoorOpenDelegate = new Delegate1();
         m_DoorCloseDelegate = new Delegate1();
         m_DoorStateChangeDelegate = new Delegate1();
@@ -115,7 +119,7 @@ public abstract class Door extends Behaviour implements InteractionActionListene
 
     public void Open()
     {
-        if(m_DoorState != DOOR_CLOSED)
+        if(m_DoorState == DOOR_OPEN || m_DoorState == DOOR_OPENING)
             return;
 
         SetInteractionHandlesEnabled(false);
@@ -126,7 +130,7 @@ public abstract class Door extends Behaviour implements InteractionActionListene
     }
     public void Close()
     {
-        if(m_DoorState != DOOR_OPEN)
+        if(m_DoorState == DOOR_CLOSED || m_DoorState == DOOR_CLOSING)
             return;
 
         SetInteractionHandlesEnabled(false);
