@@ -1,0 +1,180 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+import scripts.delegates.*;
+
+public abstract class Door extends Behaviour implements InteractionActionListener, IReferenceable
+{
+    private Delegate1 m_DoorOpenDelegate = null;
+    private Delegate1 m_DoorCloseDelegate = null;
+    private Delegate1 m_DoorStateChangeDelegate = null;
+
+    public static final int DOOR_CLOSED = 0;
+    public static final int DOOR_OPENING = 1;
+    public static final int DOOR_OPEN = 2;
+    public static final int DOOR_CLOSING = 3;
+    private int m_DoorState = DOOR_CLOSED;
+
+    protected DoorConfig m_Config;
+    private float m_CurrTime = 0;
+
+    protected InteractionObject[] m_InteractionHandle = new InteractionObject[0];
+
+    private String m_DoorId = "";
+    protected ResourcePath m_DoorConfigResource = null;
+
+    public int GetOrder() { return -5; }
+    public final bool Awake()
+    {
+        m_DoorId = GetStringParameter("door_id");
+        m_DoorConfigResource = GetResourcePathParameter("door_config");
+        Json configJson = Json.Parse(Tools.loadTextFileFromResource(m_DoorConfigResource));
+
+        m_Config = new DoorConfig();
+        m_Config.OpenTime = configJson.Get("open_time").GetFloat();
+        m_Config.CloseTime = configJson.Get("close_time").GetFloat();
+
+        m_DoorOpenDelegate = new Delegate1();
+        m_DoorCloseDelegate = new Delegate1();
+        m_DoorStateChangeDelegate = new Delegate1();
+
+        SetupDoor();
+        Registry.GetInstance().Register(this);
+
+        return true;
+    }
+
+    protected abstract void SetupDoor();
+    protected abstract void UpdateDoor();
+
+    public final void Update(float tick)
+    {
+        switch(m_DoorState)
+        {
+            case DOOR_CLOSED:
+            case DOOR_OPEN:
+                break;
+            case DOOR_OPENING:
+                m_CurrTime += tick;
+                if(m_CurrTime >= m_Config.OpenTime)
+                {
+                    m_DoorState = DOOR_OPEN;
+                    SetInteractionHandlesEnabled(true);
+                    InvokeDoorOpen();
+                    m_CurrTime = 0;
+                }
+                break;
+            case DOOR_CLOSING:
+                m_CurrTime += tick;
+                if(m_CurrTime >= m_Config.CloseTime)
+                {
+                    m_DoorState = DOOR_CLOSED;
+                    SetInteractionHandlesEnabled(true);
+                    InvokeDoorClose();
+                    m_CurrTime = 0;
+                }
+                break;
+        }
+        UpdateDoor();
+    }
+    public final void LateUpdate(float tick) { }
+    public final void LateUnblockedUpdate() { }
+
+    public void onInteractionAction(InteractionObject action)
+    {
+        bool foundMatch = false;
+        for(int i = 0; i < m_InteractionHandle.length; ++i)
+        {
+            if(m_InteractionHandle[i] == action)
+            {
+                foundMatch = true;
+                break;
+            }
+        }
+        if(!foundMatch)
+            return;
+
+        if(m_DoorState == DOOR_OPEN)
+            Close();
+        else if(m_DoorState == DOOR_CLOSED)
+            Open();
+    }
+
+
+    protected void SetInteractionHandlesEnabled(bool enabled)
+    {
+        for(int i = 0; i < m_InteractionHandle.length; ++i)
+            m_InteractionHandle[i].setEnabled(enabled);
+    }
+
+
+    public int GetDoorState()
+    {
+        return m_DoorState;
+    }
+
+    public void Open()
+    {
+        if(m_DoorState != DOOR_CLOSED)
+            return;
+
+        SetInteractionHandlesEnabled(false);
+        m_DoorState = DOOR_OPENING;
+        Object[] args = new Object[1];
+        args[0] = this;
+        m_DoorStateChangeDelegate.Invoke(args);
+    }
+    public void Close()
+    {
+        if(m_DoorState != DOOR_OPEN)
+            return;
+
+        SetInteractionHandlesEnabled(false);
+        m_DoorState = DOOR_CLOSING;
+        Object[] args = new Object[1];
+        args[0] = this;
+        m_DoorStateChangeDelegate.Invoke(args);
+    }
+
+
+    public final Delegate1 OnDoorOpened()
+    {
+        return m_DoorOpenDelegate;
+    }
+    public final Delegate1 OnDoorClosed()
+    {
+        return m_DoorCloseDelegate;
+    }
+    public final Delegate1 OnDoorStateChanged()
+    {
+        return m_DoorStateChangeDelegate;
+    }
+
+
+    protected void InvokeDoorOpen()
+    {
+        Object[] args = new Object[1]; 
+        args[0] = this;
+        m_DoorOpenDelegate.Invoke(args);
+    }
+    protected void InvokeDoorClose()
+    {
+        Object[] args = new Object[1];
+        args[0] = this;
+        m_DoorCloseDelegate.Invoke(args);
+    }
+
+
+    public String GetName()
+    {
+        return m_DoorId;
+    }
+    public void SetName(String name)
+    {
+        m_DoorId = name;
+    }
+    public String GetType()
+    {
+        return "scripts.Door";
+    }
+}

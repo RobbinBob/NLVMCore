@@ -1,0 +1,40 @@
+package scripts;
+
+import scripts.delegates.*;
+
+public class RoomController extends Behaviour implements IFunc1 
+{
+    private Door[] m_RoomDoors = new Door[0];
+
+    public int GetOrder() { return 0; }
+    public bool Awake() { return true; }
+
+    public void Start()
+    {
+        IReferenceable[] references = Registry.GetInstance().GetReferencesFromName("scripts.Door", GetStringParameter("door_id"));
+        m_RoomDoors = new Door[references.length];
+        for(int i = 0; i < references.length; ++i)
+        {
+            Door door = (Door)references[i];
+            door.OnDoorStateChanged().Connect(this);
+            m_RoomDoors[i] = door;
+        }
+    }
+
+
+
+    public void OnCalled(Delegate delegate, Object arg)
+    {
+        if(((Door)arg).GetDoorState() == Door.DOOR_OPENING)
+        {
+            SetMatrix(((Door)arg).GetMatrix());
+            for(int i = 0; i < m_RoomDoors.length; ++i)
+            {
+                if(m_RoomDoors[i] == (Door)arg)
+                    continue;
+
+                m_RoomDoors[i].Close();
+            }
+        }
+    }
+}

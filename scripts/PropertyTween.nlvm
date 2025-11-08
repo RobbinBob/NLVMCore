@@ -81,12 +81,12 @@ public class PropertyTween extends UpdateableObject implements IFunc
     {
         if(delegate == PlayDelegate)
         {
-            Debug.Print("Playing tween");
+            //Debug.Print("Playing tween");
             SetShouldUpdate(true);
         }
         else if(delegate == CancelDelegate)
         {
-            Debug.Print("Cancelling tween");
+            //Debug.Print("Cancelling tween");
             SetShouldUpdate(false);
         }
     }
