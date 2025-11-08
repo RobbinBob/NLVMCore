@@ -258,6 +258,7 @@
             "libraries": [
                 "com.nolimitscoaster",
                 "nlvm.math3d",
+                "nlvm.util",
                 "scripts.containers",
                 "scripts.math"
             ],
@@ -265,6 +266,9 @@
             "name": "Behaviour",
             "full_name": "scripts.Behaviour",
             "extends": "Script",
+            "implements": [
+                "IPropertyContainer"
+            ],
             "description": "Base class to derrive any SceneObject attached scripts.",
             "members": [
                 {
@@ -386,6 +390,28 @@
                     "description": "Gets the current world-space position of the player."
                 },
                 {
+                    "args": [
+                        {
+                            "type": "bool",
+                            "name": "isVisible",
+                            "description": "True to show model, otherwise False to hide it."
+                        }
+                    ],
+                    "name": "SetIsVisible",
+                    "return": "void",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets the Behaviours model to be visible."
+                },
+                {
+                    "args": [],
+                    "name": "GetIsVisible",
+                    "return": "bool",
+                    "accessor": "public final",
+                    "return_desc": "True if it is visible, otherwise False if its hidden.",
+                    "description": "Gets the current Behaviours visibility."
+                },
+                {
                     "args": [],
                     "name": "GetPosition",
                     "return": "Vector3",
@@ -406,6 +432,28 @@
                     "accessor": "public final",
                     "return_desc": "No Description Supplied.",
                     "description": "Sets this Behaviour's world-space position."
+                },
+                {
+                    "args": [],
+                    "name": "GetRotation",
+                    "return": "Vector3",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Gets this Behaviour's world-space rotation."
+                },
+                {
+                    "args": [
+                        {
+                            "type": "Vector3",
+                            "name": "rotation",
+                            "description": "The world-space rotation to set."
+                        }
+                    ],
+                    "name": "SetRotation",
+                    "return": "void",
+                    "accessor": "public final",
+                    "return_desc": "No Description Supplied.",
+                    "description": "Sets this Behaviour's world-space rotation."
                 },
                 {
                     "args": [],
