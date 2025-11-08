@@ -26,7 +26,7 @@ public class DoorSingle extends Door implements InteractionActionListener, IFunc
         m_InteractionHandle = new InteractionObject[1];
         m_InteractionHandle[0] = InteractionObject.createSimpleButton();
         m_InteractionHandle[0].addActionListener(this);
-        m_InteractionHandle[0].setRadius(1.75f);
+        m_InteractionHandle[0].setRadius(m_Config.InteractionRange);
         m_InteractionHandle[0].setActive(true);
 
 
@@ -65,9 +65,15 @@ public class DoorSingle extends Door implements InteractionActionListener, IFunc
         {
             int state = ((Door)arg).GetDoorState();
             if(state == DOOR_OPENING)
+            {
                 m_OpenTween.Play();
+                m_CloseTween.Cancel();
+            }
             else if(state == DOOR_CLOSING)
+            {
                 m_CloseTween.Play();
+                m_OpenTween.Cancel();
+            }
         }
     }
 }
