@@ -5,7 +5,7 @@ import com.nolimitscoaster.*;
 import scripts.easings.*;
 import scripts.math.*;
 
-public class DoorSingle extends Door implements InteractionActionListener, IFunc1
+public class DoorSingle extends Door implements InteractionActionListener, IFunc1, IDoor
 {
     private SubElement m_DoorElement = null;
     private SceneObjectElement m_HandleElement = null;
@@ -61,15 +61,18 @@ public class DoorSingle extends Door implements InteractionActionListener, IFunc
 
     public void OnCalled(Delegate delegate, Object arg)
     {
+        super.OnCalled(delegate, arg);
+
         if(delegate == OnDoorStateChanged())
         {
+            SetIsInteractable(false);
             int state = ((Door)arg).GetDoorState();
-            if(state == DOOR_OPENING)
+            if(state == IDoor.DOOR_OPENING)
             {
                 m_OpenTween.Play();
                 m_CloseTween.Cancel();
             }
-            else if(state == DOOR_CLOSING)
+            else if(state == IDoor.DOOR_CLOSING)
             {
                 m_CloseTween.Play();
                 m_OpenTween.Cancel();

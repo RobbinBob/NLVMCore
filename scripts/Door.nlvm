@@ -3,20 +3,17 @@ package scripts;
 import com.nolimitscoaster.*;
 import scripts.delegates.*;
 
-public abstract class Door extends Behaviour implements InteractionActionListener, IReferenceable
+public abstract class Door extends Behaviour implements IDoor, InteractionActionListener, IFunc1
 {
     private Delegate1 m_DoorOpenDelegate = null;
     private Delegate1 m_DoorCloseDelegate = null;
     private Delegate1 m_DoorStateChangeDelegate = null;
 
-    public static final int DOOR_CLOSED = 0;
-    public static final int DOOR_OPENING = 1;
-    public static final int DOOR_OPEN = 2;
-    public static final int DOOR_CLOSING = 3;
-    private int m_DoorState = DOOR_CLOSED;
+    private int m_DoorState = IDoor.DOOR_CLOSED;
 
     protected DoorConfig m_Config;
     private float m_CurrTime = 0;
+    private bool m_IsInteractable = true;
 
     protected InteractionObject[] m_InteractionHandle = new InteractionObject[0];
 
@@ -55,24 +52,24 @@ public abstract class Door extends Behaviour implements InteractionActionListene
     {
         switch(m_DoorState)
         {
-            case DOOR_CLOSED:
-            case DOOR_OPEN:
+            case IDoor.DOOR_CLOSED:
+            case IDoor.DOOR_OPEN:
                 break;
-            case DOOR_OPENING:
+            case IDoor.DOOR_OPENING:
                 m_CurrTime += tick;
                 if(m_CurrTime >= m_Config.OpenTime)
                 {
-                    m_DoorState = DOOR_OPEN;
+                    m_DoorState = IDoor.DOOR_OPEN;
                     SetInteractionHandlesEnabled(true);
                     InvokeDoorOpen();
                     m_CurrTime = 0;
                 }
                 break;
-            case DOOR_CLOSING:
+            case IDoor.DOOR_CLOSING:
                 m_CurrTime += tick;
                 if(m_CurrTime >= m_Config.CloseTime)
                 {
-                    m_DoorState = DOOR_CLOSED;
+                    m_DoorState = IDoor.DOOR_CLOSED;
                     SetInteractionHandlesEnabled(true);
                     InvokeDoorClose();
                     m_CurrTime = 0;
@@ -98,9 +95,9 @@ public abstract class Door extends Behaviour implements InteractionActionListene
         if(!foundMatch)
             return;
 
-        if(m_DoorState == DOOR_OPEN)
+        if(m_DoorState == IDoor.DOOR_OPEN)
             Close();
-        else if(m_DoorState == DOOR_CLOSED)
+        else if(m_DoorState == IDoor.DOOR_CLOSED)
             Open();
     }
 
@@ -111,7 +108,6 @@ public abstract class Door extends Behaviour implements InteractionActionListene
             m_InteractionHandle[i].setEnabled(enabled);
     }
 
-
     public int GetDoorState()
     {
         return m_DoorState;
@@ -119,22 +115,26 @@ public abstract class Door extends Behaviour implements InteractionActionListene
 
     public void Open()
     {
-        if(m_DoorState == DOOR_OPEN || m_DoorState == DOOR_OPENING)
+        if(GetIsInteractable() == false)
+            return;
+        if(GetDoorState() == IDoor.DOOR_OPEN || GetDoorState() == IDoor.DOOR_OPENING)
             return;
 
         SetInteractionHandlesEnabled(false);
-        m_DoorState = DOOR_OPENING;
+        m_DoorState = IDoor.DOOR_OPENING;
         Object[] args = new Object[1];
         args[0] = this;
         m_DoorStateChangeDelegate.Invoke(args);
     }
     public void Close()
     {
-        if(m_DoorState == DOOR_CLOSED || m_DoorState == DOOR_CLOSING)
+        if(GetIsInteractable() == false)
+            return;
+        if(GetDoorState() == IDoor.DOOR_CLOSED || GetDoorState() == IDoor.DOOR_CLOSING)
             return;
 
         SetInteractionHandlesEnabled(false);
-        m_DoorState = DOOR_CLOSING;
+        m_DoorState = IDoor.DOOR_CLOSING;
         Object[] args = new Object[1];
         args[0] = this;
         m_DoorStateChangeDelegate.Invoke(args);
@@ -154,6 +154,41 @@ public abstract class Door extends Behaviour implements InteractionActionListene
         return m_DoorStateChangeDelegate;
     }
 
+    private bool m_UpdateInteractState = false;
+    private bool m_TempInteractState = false;
+    public void SetIsInteractable(bool isInteractable)
+    {
+        if(GetDoorState() == IDoor.DOOR_OPEN || GetDoorState() == IDoor.DOOR_CLOSED)
+        {
+            Debug.Print("Updating interactable state");
+            m_IsInteractable = isInteractable;
+            SetInteractionHandlesEnabled(isInteractable);
+        }
+        else
+        {
+            m_TempInteractState = isInteractable;
+            m_UpdateInteractState = true;
+            OnDoorClosed().Connect(this);
+            OnDoorOpened().Connect(this);
+        }
+    }
+    public bool GetIsInteractable()
+    {
+        return m_IsInteractable;
+    }
+
+    public void OnCalled(Delegate delegate, Object arg)
+    {
+            // Update interaction state after door has closed/opened
+        if(delegate == OnDoorClosed() || delegate == OnDoorOpened())
+        {
+            if(m_UpdateInteractState)
+            {
+                m_UpdateInteractState = false;
+                SetIsInteractable(m_TempInteractState);
+            }
+        }
+    }
 
     protected void InvokeDoorOpen()
     {

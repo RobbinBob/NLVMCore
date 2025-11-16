@@ -25,7 +25,7 @@ public class RoomController extends Behaviour implements IFunc1
 
     public void OnCalled(Delegate delegate, Object arg)
     {
-        if(((Door)arg).GetDoorState() == Door.DOOR_OPENING)
+        if(((Door)arg).GetDoorState() == IDoor.DOOR_OPENING)
         {
             SetMatrix(((Door)arg).GetMatrix());
             for(int i = 0; i < m_RoomDoors.length; ++i)

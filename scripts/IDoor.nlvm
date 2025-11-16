@@ -1,0 +1,23 @@
+package scripts;
+
+import scripts.delegates.*;
+
+public interface IDoor extends IReferenceable
+{
+    public static final int DOOR_CLOSED = 0;
+    public static final int DOOR_OPENING = 1;
+    public static final int DOOR_OPEN = 2;
+    public static final int DOOR_CLOSING = 3;
+
+    public int GetDoorState();
+
+    public void Open();
+    public void Close();
+
+    public Delegate1 OnDoorOpened();
+    public Delegate1 OnDoorClosed();
+    public Delegate1 OnDoorStateChanged();
+
+    public void SetIsInteractable(bool isInteractable);
+    public bool GetIsInteractable();
+}
