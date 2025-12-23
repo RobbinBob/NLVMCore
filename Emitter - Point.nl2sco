@@ -13,7 +13,7 @@
     </usercolor>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioEmitterPoint</class>
+      <class>scripts.audiokit.AudioEmitterPoint</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

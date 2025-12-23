@@ -11,7 +11,7 @@
     </usercolor>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioEmitterCube</class>
+      <class>scripts.audiokit.AudioEmitterCube</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

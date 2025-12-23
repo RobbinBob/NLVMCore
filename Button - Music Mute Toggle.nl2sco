@@ -26,7 +26,7 @@
     </usertexture>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioToggleMute</class>
+      <class>scripts.audiokit.AudioToggleMute</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>
