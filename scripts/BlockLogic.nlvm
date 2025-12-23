@@ -1,0 +1,63 @@
+package scripts;
+
+import com.nolimitscoaster.*;
+
+public abstract class BlockLogic extends Behaviour implements ITrackProcess
+{
+    public final int GetOrder() { return 25; }
+    public bool Awake() { return true; }
+
+    protected Coaster m_Coaster = null;
+    protected IBlock m_ControlledBlock = null;
+
+    public static final int STATE_EMPTY = 0;
+    public static final int STATE_APPROACH = 1;
+    public static final int STATE_PROCESS = 2;
+    public static final int STATE_LEAVING = 3;
+    
+    public void Start()
+    {
+        Block block = GetBlockParameter("controlled_block", true);
+        m_ControlledBlock = GetIBlockFromInternalType(block);
+
+        
+        BlockLogicManager.GetInstance().Register(this);
+    }
+
+    protected IBlock GetIBlockFromInternalType(Block block)
+    {
+        String blockId = block.getName();
+        if(block.isStation())
+        {
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.StationSection", blockId);
+            if(reference == null)
+                Exception.Throw("Unable to find type 'scripts.StationSection' with name '" + blockId + "'");
+            return (IBlock)reference;
+        }
+        else if(block.isLift())
+        {
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.LiftSection", blockId);
+            if(reference == null)
+                Exception.Throw("Unable to find type 'scripts.LiftSection' with name '" + blockId + "'");
+            return (IBlock)reference;
+        }
+        else
+        {
+            IReferenceable reference = Register.GetInstance().GetReferenceFromName("scripts.BlockSection", blockId);
+            if(reference == null)
+                Exception.Throw("Unable to find type 'scripts.BlockSection' with name '" + blockId + "'");
+            return (IBlock)reference;
+        }
+    }
+
+    public final Coaster GetCoaster()
+    {
+        return m_ControlledBlock.GetBlock().getCoaster();
+    }
+    public final Section GetSection()
+    {
+        return m_ControlledBlock.GetBlock().getSection();
+    }
+
+    public abstract void Process();
+}

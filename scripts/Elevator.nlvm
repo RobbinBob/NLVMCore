@@ -1,0 +1,21 @@
+package scripts;
+
+import scripts.containers.*;
+
+public class Elevator extends Behaviour
+{
+    private Dictionary m_ElevatorInternalDoors = new Dictionary();
+
+    public int GetOrder() { return 20; }
+
+    public bool Awake() { return true; }
+    public void Start()
+    {
+        Json data = Json.Parse(Tools.loadTextFileFromResource(GetResourcePathParameter("elevator_data", true)));
+    }
+
+    public void Update(float delta)
+    {
+
+    }
+}
