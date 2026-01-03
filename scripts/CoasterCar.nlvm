@@ -76,6 +76,7 @@ public class CoasterCar extends Behaviour implements ISetableCar
             }
         }
 
+
             // Create g-froce trackers for the cameras
         m_GForceTrackers = new ElementGForceTracker[cameras.Count()];
         for(int i = 0; i < m_GForceTrackers.length; ++i)
@@ -91,12 +92,13 @@ public class CoasterCar extends Behaviour implements ISetableCar
             m_HandlerManager.RegisterHandler(m_Handler);
             m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
             m_Handler.SetCarSeats(m_Descriptor.Cameras);
-
-            RideCameraHandler.GetInstance().RegisterTrainHandler(m_Handler);
         }
         if(m_Handler.GetCarModifier() == null) m_Handler.SetCarModifier(m_HandlerManager.GetDefaultCarModifier());
-
+        m_Handler.SetCarSeats(m_Descriptor.Cameras);
         m_Handler.RegisterCar(this);
+        
+        if(cameras.Count() > 0)
+            RideCameraHandler.GetInstance().RegisterTrainHandler(m_Handler);
     }
 
 

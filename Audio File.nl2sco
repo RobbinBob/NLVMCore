@@ -49,7 +49,7 @@
     </scriptparameter>
     <scriptparameter>
       <type>bool</type>
-      <defaultvalue>true</defaultvalue>
+      <defaultvalue>false</defaultvalue>
       <id>audio_flag_shared</id>
       <description>Syncronises all sound sources to play at the same time.</description>
       <label>Shared Sound</label>

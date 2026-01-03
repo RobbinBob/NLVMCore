@@ -1,13 +1,54 @@
-package scripts.core.delegates;
+package scripts.delegates;
 
-import scripts.core.containers.*;
+//import scripts.containers.*;
+import nlvm.util.Vector;
 
-public abstract class Delegate extends Object
+public class Delegate extends Object
 {
-    protected List m_Subscribers = new List();
+    //protected List m_Subscribers = new List();
+    protected Vector m_Subscribers = new Vector();
 
-    public abstract void Invoke(Object[] args);
+    public void Invoke(Object[] args)
+    {
 
-    public abstract bool Connect(Object listener);
-    public abstract bool Disconnect(Object listener);
+        for(int i = 0; i < m_Subscribers.size(); ++i)
+            ((IFunc)m_Subscribers.elementAt(i)).OnCalled(this);
+
+        //IEnumerator enumerator = m_Subscribers.GetEnumerator();
+        //while(enumerator.MoveNext())
+            //((IFunc)enumerator.Get()).OnCalled(this);
+    }
+
+    public bool Connect(Object listener)
+    {
+        if(listener == null)
+            return false;
+
+        if(listener instanceof IFunc)
+        {   
+            IFunc listenerInterface = (IFunc)listener;
+            if(m_Subscribers.contains(listenerInterface))
+                return false;
+            m_Subscribers.addElement(listenerInterface);
+                return true;
+        }
+        else
+            return false;
+    }
+    public bool Disconnect(Object listener)
+    {
+        if(listener == null)
+            return false;
+
+        if(listener instanceof IFunc)
+        {
+            IFunc listenerInterface = (IFunc)listener;
+            if(!m_Subscribers.contains(listenerInterface))
+                return false;
+            m_Subscribers.removeElement(listenerInterface);
+            return true;
+        }
+        else
+            return false;
+    }
 } 

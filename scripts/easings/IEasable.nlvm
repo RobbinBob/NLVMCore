@@ -1,0 +1,6 @@
+package scripts.easings;
+
+public interface IEasable 
+{
+    public float Get(float t);
+}

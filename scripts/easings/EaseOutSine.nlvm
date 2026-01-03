@@ -1,0 +1,9 @@
+package scripts.easings;
+
+public class EaseOutSine extends Easing implements IEasable
+{
+    public float Get(float t)
+    {
+        return (float)math.sin((t * 3.141592f) / 2.f);
+    }
+}
