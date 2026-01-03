@@ -9,7 +9,7 @@
     <param baseroty="-90"/>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioCueStationGate</class>
+      <class>scripts.audiokit.AudioCueStationGate</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

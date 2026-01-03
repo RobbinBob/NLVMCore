@@ -26,7 +26,7 @@
     </usertexture>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioCueButton</class>
+      <class>scripts.audiokit.AudioCueButton</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

@@ -11,7 +11,7 @@
     </usercolor>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioCueVolumeTriggerCube</class>
+      <class>scripts.audiokit.AudioCueVolumeTriggerCube</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

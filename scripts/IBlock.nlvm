@@ -1,0 +1,18 @@
+package scripts;
+
+/// <interface>
+/// <desc>.</desc>
+public interface IBlock extends IState
+{
+    /// <method>
+    /// <desc>Gets the underlying block.</desc>
+    /// </method>
+    public Block GetBlock();
+
+    public TrackSection GetTrackSection();
+
+    public int GetNumberOfTrainsOnBlock();
+
+
+}
+/// </interface>

@@ -1,0 +1,14 @@
+package scripts;
+
+import com.nolimitscoaster.Section;
+
+/// <interface ignore_api="true">
+/// <desc>.</desc>
+public interface ITrackProcess 
+{
+    public Coaster GetCoaster();
+    public Section GetSection();
+
+    public void Process();
+}
+/// </interface>

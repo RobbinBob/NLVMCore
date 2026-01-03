@@ -14,7 +14,7 @@
     </usercolor>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioEmitterCar</class>
+      <class>scripts.audiokit.AudioEmitterCar</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

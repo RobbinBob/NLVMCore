@@ -1,0 +1,67 @@
+package scripts;
+
+public class StandardBlockLogic extends BlockLogic
+{
+    public void Start()
+    {
+        super.Start();
+
+    }
+
+    public void Process()
+    {
+        int blockState = m_ControlledBlock.GetState();
+        switch(blockState)
+        {
+            case BlockLogic.STATE_EMPTY:
+                if(m_ControlledBlock instanceof LiftSection)
+                {
+                    LiftSection lift = (LiftSection)m_ControlledBlock;
+                    lift.SetLiftState(LiftSection.E_LIFT_IDLE);
+                }
+                else if(m_ControlledBlock instanceof BlockSection || m_ControlledBlock instanceof StationSection)
+                {
+                    BlockSection block = (BlockSection)m_ControlledBlock;
+                    block.SetBrakeState(BlockSection.E_BRAKE_ON);
+                    block.SetTransportState(TransportSection.E_TRANSPORT_OFF);
+                }
+                break;
+            case BlockLogic.STATE_APPROACH:
+                if(m_ControlledBlock instanceof LiftSection)
+                {
+                    LiftSection lift = (LiftSection)m_ControlledBlock;
+                    lift.SetLiftState(LiftSection.E_LIFT_FWD);
+                }
+                else if(m_ControlledBlock instanceof BlockSection || m_ControlledBlock instanceof StationSection)
+                {
+                    BlockSection block = (BlockSection)m_ControlledBlock;
+                    block.SetBrakeState(BlockSection.E_BRAKE_OFF);
+                }
+                break;
+            case BlockLogic.STATE_PROCESS:
+                
+                break;
+            case BlockLogic.STATE_LEAVING:
+                TrackSection trackSection = m_ControlledBlock.GetTrackSection();
+                bool isTrainOnSection = trackSection.IsTrainOnTrackSection();
+                int numTrainOnSection = m_ControlledBlock.GetNumberOfTrainsOnBlock();
+                bool isBlockCleared = !isTrainOnSection && numTrainOnSection < 1;
+
+                if(m_ControlledBlock instanceof LiftSection)
+                {
+                    LiftSection lift = (LiftSection)m_ControlledBlock;
+                    lift.SetLiftState(LiftSection.E_LIFT_FWD);
+                }
+                else if(m_ControlledBlock instanceof BlockSection || m_ControlledBlock instanceof StationSection)
+                {
+                    BlockSection block = (BlockSection)m_ControlledBlock;
+                    block.SetTransportState(TransportSection.E_TRANSPORT_FWD);
+                    block.SetBrakeState(BlockSection.E_BRAKE_OFF);
+                }
+
+                if(isBlockCleared)
+                    m_ControlledBlock.SetState(BlockLogic.STATE_EMPTY);
+                break;
+        }
+    }
+}

@@ -12,7 +12,7 @@
     </usercolor>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioCueVolumeTriggerSphere</class>
+      <class>scripts.audiokit.AudioCueVolumeTriggerSphere</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

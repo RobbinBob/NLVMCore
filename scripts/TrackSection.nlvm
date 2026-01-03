@@ -1,0 +1,76 @@
+package scripts;
+
+import com.nolimitscoaster.Section;
+import scripts.containers.*;
+
+/// <class ignore_api="true">
+/// <desc>.</desc>
+public abstract class TrackSection extends Object implements ITrainPositionQuery, IReferenceable
+{
+    protected Section m_Section = null;
+
+    public TrackSection(Section section)
+    {
+        m_Section = section;
+        Registry.GetInstance().Register(this);
+    }
+
+
+    public bool IsTrainBeforeCenterOfSection()
+    {
+        return m_Section.isTrainBeforeCenterOfSection();
+    }
+    public bool IsTrainBehindCenterOfSection()
+    {
+        return m_Section.isTrainBehindCenterOfSection();
+    }
+
+    public abstract bool IsTrainBeforeTrigger();
+    public abstract bool IsTrainBehindTrigger();
+
+    public bool IsTrainBeforeStartOfSection(float offset)
+    {
+        return m_Section.isTrainBeforeStartOfSection(offset);
+    }
+    public bool IsTrainBehindEndOfSection(float offset)
+    {
+        return m_Section.isTrainBehindEndOfSection(offset);
+    }
+
+
+
+    public bool IsTrainOnTrackSection()
+    {
+        return m_Section.isTrainOnSection();
+    }
+    public Train GetTrainOnSection()
+    {
+        return m_Section.getTrainOnSection();
+    }
+
+
+    public final Coaster GetCoaster()
+    {
+        m_Section.getCoaster();
+    }
+    public final Section GetSection()
+    {
+        return m_Section;
+    }
+
+
+    public final String GetName()
+    {
+        return m_Section.getName();
+    }
+    public final void SetName(String name)
+    {
+        Exception.Throw("Cannot modify name of type 'scripts.TrackSection'");
+    }
+
+    public String GetType()
+    {
+        return "scripts.TrackSection";
+    }
+}
+/// </class>
