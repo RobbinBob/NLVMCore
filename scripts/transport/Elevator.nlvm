@@ -1,0 +1,91 @@
+package scripts.transport;
+
+import scripts.containers.*;
+import scripts.*;
+import com.nolimitscoaster.Tools;
+
+/*
+
+Elevator has floors, each floor has an internal cab door and an external shaft door
+
+These can be grouped together which each floor index specifying a certain internal door id, and then fetch the external door via some look up such as 'elevator-name_floor-number'
+
+*/
+
+
+public class Elevator extends Behaviour
+{
+    private Dictionary m_ShaftDoors = new Dictionary();
+    private Dictionary m_Floors = new Dictionary();
+    private Door[] m_CabDoors = new Door[0];
+
+
+    public int GetOrder() { return 20; }
+
+    public bool Awake() { return true; }
+    public void Start()
+    {
+        Json data = Json.Parse(Tools.loadTextFileFromResource(GetResourcePathParameter("elevator_data", true)));
+        Debug.Print("Begin parsing elevator config");
+
+            // Setup the groups
+        Json groupsData = data.Get("groups");
+        if(groupsData == null)
+            Exception.Throw("No groups specified for elevator");
+        if(groupsData.Count() == 0)
+            Exception.Throw("'group' index found but had no entries");
+        Debug.Print("Found '" + groupsData.Count() + "' Groups");
+        m_CabDoors = new Door[groupsData.Count()];
+        int index = 0;
+        IEnumerator enumerator = groupsData.GetEnumerator();
+
+        Dictionary groups = new Dictionary();
+        while(enumerator.MoveNext())
+        {
+            Json groupData = (Json)enumerator.Get();
+
+            ElevatorGroup group = new ElevatorGroup();
+            group.Id = groupData.Get("id").GetString();
+            if(group.Id == null || group.Id.length() == 0)
+                Exception.Throw("Group id was missing");
+
+            String doorId = groupData.Get("door").GetString();
+            if(doorId == null || doorId.length() == 0)
+                Exception.Throw("Group door id was missing");
+
+                // Get door reference
+            m_CabDoors[index] = (Door)Registry.GetInstance().GetReferenceFromName("scripts.Door", doorId);
+            m_CabDoors[index].SetInteractionHandlesActive(false);
+            Debug.Print("Creating group '" + group.Id + "' with door '" + m_CabDoors[index].GetName() + "'");
+            groups.Insert(group.Id, group);
+            index++;
+        }
+
+            // Setup the floors
+        Json floorsData = data.Get("floors");
+        if(floorsData == null)
+            Exception.Throw("No floors specified for elevator");
+        if(floorsData.Count() == 0)
+            Exception.Throw("'floors' index found but had no entries");
+        Debug.Print("Found '" + floorsData.Count() + "' Floors");
+
+        enumerator = floorsData.GetEnumerator();
+        while(enumerator.MoveNext())
+        {
+            Json floorData = (Json)enumerator.Get();
+
+            ElevatorFloor floor = new ElevatorFloor();
+            floor.Level = floorData.Get("level").GetInt();
+            floor.Group = groups.GetValue(floorData.Get("group").GetString());
+            floor.Height = floorData.Get("height").GetFloat() + GetPosition().Y;
+
+                // Use some sort of naming convention to fetch floor door
+            
+        }
+    }
+
+    public void Update(float delta)
+    {
+
+    }
+}

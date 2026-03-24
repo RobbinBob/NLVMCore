@@ -46,11 +46,18 @@ public final class AudioController extends Behaviour implements IReferenceable
         if(audioName.length() != 0)
         {
             m_PrimaryAudioFile = (AudioFile)registry.GetReferenceFromName("scripts.AudioFile", GetStringParameter("primary_audio_name"));
+            if(m_PrimaryAudioFile == null)
+            {
+                Debug.Warn("Audio Group | Unable to find Audio File with Audio Id '" + GetStringParameter("primary_audio_name") + "' for Primary Loop");
+                SetIsVisible(true);
+                return;
+            }
             m_PrimaryAudioLoop = (SpatialSound)registry.GetReferenceFromName("scripts.SpatialSound", m_PrimaryAudioFile.GetName());
             if(m_PrimaryAudioLoop == null)
             {
-                Debug.Warn("Audio Group | Unable to find Audio Id '" + GetStringParameter("primary_audio_name") + "'");
+                Debug.Warn("Audio Group | Unable to find Audio Id '" + GetStringParameter("primary_audio_name") + "' for Primary Loop");
                 SetIsVisible(true);
+                return;
             }
             m_PrimaryAudioLoop.SetGain(0);
         }

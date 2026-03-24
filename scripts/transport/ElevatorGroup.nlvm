@@ -1,0 +1,11 @@
+package scripts.transport;
+
+import scripts.*;
+
+public class ElevatorGroup extends Object
+{
+    public String Id;
+    public Door Door;
+
+    public ElevatorGroup() { }
+}

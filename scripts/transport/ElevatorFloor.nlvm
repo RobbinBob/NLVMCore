@@ -1,0 +1,13 @@
+package scripts.transport;
+
+import scripts;
+
+public class ElevatorFloor extends Object
+{
+    public IDoor Door;
+    public int Level;
+    public ElevatorGroup Group;
+    public float Height;
+
+    public ElevatorFloor() { }
+}
