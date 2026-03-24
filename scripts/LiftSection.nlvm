@@ -1,0 +1,98 @@
+package scripts;
+
+import com.nolimitscoaster.Block;
+import com.nolimitscoaster.Section;
+
+/// <class ignore_api="true">
+/// <desc>.</desc>
+public class LiftSection extends TrackSection implements IState, IBlock, ITrainPositionQuery, IReferenceable
+{
+    protected Block m_Block = null;
+
+    public static final int E_LIFT_OFF = 0;
+    public static final int E_LIFT_FWD = 1;
+    public static final int E_LIFT_IDLE = 2;
+    public static final int E_LIFT_BWD = -1;
+    private int m_LiftState = E_LIFT_OFF;
+
+    public LiftSection(Block block)
+    {
+        super(block.getSection());
+        m_Block = block;
+    }
+    public LiftSection(Section section)
+    {
+        super(section);
+        m_Block = section.getBlock();
+    }
+
+
+    public void SetLiftState(int liftState)
+    {
+        if (liftState < -1 || liftState > 2)
+            return;
+
+        switch (liftState)
+        {
+            case E_LIFT_OFF:
+                m_Section.setLiftOff();
+                break;
+            case E_LIFT_FWD:
+                m_Section.setLiftFwdOn();
+                break;
+            case E_LIFT_BWD:
+                m_Section.setLiftBwdOn();
+                break;
+            case E_LIFT_IDLE:
+                m_Section.setLiftFwdIdleOn();
+                break;
+        }
+
+        m_LiftState = liftState;
+    }
+    public int GetLiftState()
+    {
+        return m_LiftState;
+    }
+
+    public bool IsTrainBehindTrigger()
+    {
+        return m_Section.isTrainBehindLiftTrigger();
+    }
+    public bool IsTrainBeforeTrigger()
+    {
+        return m_Section.isTrainBeforeLiftTrigger();
+    }
+
+    public int GetState()
+    {
+        if(block.getState() == Block.STATE_ERROR_OPERATION_MODE)
+            return block.getNormalModeState(Block.PROTOCOL_V1);
+        return block.getState();
+    }
+    public void SetState(int state)
+    {
+        m_Block.setState(state);
+    } 
+
+
+    public TrackSection GetTrackSection()
+    {
+        return this;
+    }
+    public int GetNumberOfTrainsOnBlock()
+    {
+        return m_Block.getNumberOfTrainsOnBlock();
+    }
+
+    public float GetDeviceSpeed()
+    {
+        return m_Section.getLiftCurrentSpeed();
+    }
+
+        public String GetType()
+    {
+        return "scripts.LiftSection";
+    }
+}
+/// </class>

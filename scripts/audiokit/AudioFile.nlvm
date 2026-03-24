@@ -1,0 +1,72 @@
+package scripts.audiokit;
+
+import com.nolimitscoaster.*;
+
+public final class AudioFile extends Behaviour implements IReferenceable
+{
+    private Sound m_Sound = null;
+    private String m_Name = "";
+    private float m_DefaultGain = 0;
+    private float m_DefaultPitch = 0;
+
+    public bool Awake()
+    {
+        ResourcePath resource = GetResourcePathParameter("audio_file", false);
+        if(resource == null)
+        {
+            Debug.Warn("Audio File | No sound file specified");
+            return false;
+        }
+
+        int audioFlags = Sound.AUDIO_FLAG_SOUND | (GetBoolParameter("audio_flag_mono") ? Sound.AUDIO_FLAG_MONO : 0) | (GetBoolParameter("audio_flag_shared") ? Sound.AUDIO_FLAG_SHARED : 0);
+        bool isMusic = GetBoolParameter("audio_is_music");
+        if(isMusic)
+            audioFlags |= Sound.AUDIO_FLAG_MUSIC;
+        m_Sound = new SpatialSound(resource, audioFlags, Sound.ENVIRONMENT_WORLD);
+
+        m_Name = GetStringParameter("audio_name", false);
+        if(m_Name == null || m_Name.length() == 0)
+        {
+            Debug.Warn("Audio File | No Audio Id specified");
+            return false;
+        }
+
+        m_DefaultGain = GetFloatParameter("audio_gain");
+        m_DefaultPitch = GetFloatParameter("audio_pitch");
+
+        m_Sound.SetGain(0);
+        m_Sound.SetPitch(m_DefaultPitch);
+        m_Sound.SetShouldUseDoppler(false);
+        m_Sound.SetName(m_Name);
+
+        Registry.GetInstance().Register(this);
+
+        if(!Debug.IsDebugMode())
+            SetIsVisible(false);
+
+        return false;
+    }
+
+    public float GetDefaultGain()
+    {
+        return m_DefaultGain;
+    }
+    public float GetDefaultPitch()
+    {
+        return m_DefaultPitch;
+    }
+
+    public String GetName()
+    {
+        return m_Name;
+    }
+    public void SetName(String name)
+    {
+        m_Name = name;
+        m_Sound.SetName(name);
+    }
+    public String GetType()
+    {
+        return "scripts.AudioFile";
+    }
+}

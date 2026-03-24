@@ -1,0 +1,40 @@
+package scripts;
+
+import com.nolimitscoaster.Block;
+import com.nolimitscoaster.Section;
+
+/// <class ignore_api="true">
+/// <desc>.</desc>
+public class StationSection extends BlockSection implements IState, IBlock, ITrainPositionQuery, IReferenceable
+{
+    public static final int STATION_IDLE = 0;
+    public static final int STATION_OPEN_RESTRAINT = 1;
+    public static final int STATION_CLOSE_RESTRAINT = 2;
+    public static final int STATION_OPEN_GATE = 3;
+    public static final int STATION_CLOSE_GATE = 4;
+    public static final int STATION_CHECK_CLEAR = 5;
+
+    public StationSection(Block block)
+    {
+        super(block);
+    }
+    public StationSection(Section section)
+    {
+        super(section);
+    }
+
+    public void SetStationEnter()
+    {
+        m_Block.setStationEntering();
+    }
+    public void SetStationLeave()
+    {
+        m_Block.setStationLeaving();
+    }
+
+    public String GetType()
+    {
+        return "scripts.StationSection";
+    }
+}
+/// </class>

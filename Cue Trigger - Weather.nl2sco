@@ -9,7 +9,7 @@
     <param baseroty="-90"/>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioCueWeather</class>
+      <class>scripts.audiokit.AudioCueWeather</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

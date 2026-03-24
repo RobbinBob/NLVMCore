@@ -2,6 +2,7 @@ package scripts;
 
 import com.nolimitscoaster.*;
 import nlvm.math3d.*;
+import nlvm.util.*;
 
 import scripts.containers.*;
 import scripts.math.*;
@@ -342,20 +343,27 @@ public abstract class Behaviour extends Script implements IPropertyContainer
         if(!IsPropertyValid(id))
             Exception.Throw("There is no property '" + id + "' on this instance");
 
-        int myVar = 0;
-        switch(myVar)
-        {
-            case POSITION:
-                break;
-        }
-
         return new BehaviourPropertyHandler(this, id);
     }
 
 
 
+    private HashMap m_SubElementHash = new HashMap();
+    public SubElement GetChild(String name)
+    {
+        if(m_SubElementHash.containsKey(name))
+            return (SubElement)m_SubElementHash.get(name);
 
-
+        SubElement child = new SubElement(this, m_SceneObject.getElementForName(name));
+        m_SubElementHash.put(name, child);
+        return child;
+    }
+    public SubElement GetChild(int index)
+    {
+        SceneObjectElement internChild = m_SceneObject.getElementAt(index);
+        String name = internChild.getName();
+        return GetChild(name);
+    }
 
 
 

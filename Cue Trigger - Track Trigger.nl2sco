@@ -9,7 +9,7 @@
     <param baseroty="-90"/>
     <script>
       <classpath></classpath>
-      <class>scripts.AudioCueTrackTrigger</class>
+      <class>scripts.audiokit.AudioCueTrackTrigger</class>
       <sharedvm>true</sharedvm>
     </script>
     <scriptparameter>

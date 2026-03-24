@@ -1,0 +1,10 @@
+package scripts;
+import scripts.delegates.*;
+
+public interface IInputable extends IReferenceable
+{
+    public void SetIsInputEnabled(bool isEnableInput);
+    public bool GetIsInputEnabled();
+
+    public Delegate1 OnInputTriggered();
+}

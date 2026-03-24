@@ -1,14 +1,18 @@
 package scripts.delegates;
 
-import scripts.containers.*;
+//import scripts.containers.*;
+//import nlvm.util.Vector;
 
 public class Delegate1 extends Delegate
 {
     public void Invoke(Object[] args)
     {
-        IEnumerator enumerator = m_Subscribers.GetEnumerator();
-        while(enumerator.MoveNext())
-            ((IFunc1)enumerator.Get()).OnCalled(this, args[0]);
+        for(int i = 0; i < m_Subscribers.size(); ++i)
+            ((IFunc1)m_Subscribers.elementAt(i)).OnCalled(this, args[0]);
+
+        //IEnumerator enumerator = m_Subscribers.GetEnumerator();
+        //while(enumerator.MoveNext())
+        //    ((IFunc1)enumerator.Get()).OnCalled(this, args[0]);
     }
 
     public bool Connect(Object listener)
@@ -19,9 +23,9 @@ public class Delegate1 extends Delegate
         if(listener instanceof IFunc1)
         {   
             IFunc1 listenerInterface = (IFunc1)listener;
-            if(m_Subscribers.Contains(listenerInterface))
+            if(m_Subscribers.contains(listenerInterface))
                 return false;
-            m_Subscribers.Insert(listenerInterface);
+            m_Subscribers.addElement(listenerInterface);
                 return true;
         }
         else
@@ -35,9 +39,9 @@ public class Delegate1 extends Delegate
         if(listener instanceof IFunc1)
         {
             IFunc1 listenerInterface = (IFunc1)listener;
-            if(!m_Subscribers.Contains(listenerInterface))
+            if(!m_Subscribers.contains(listenerInterface))
                 return false;
-            m_Subscribers.Remove(listenerInterface);
+            m_Subscribers.removeElement(listenerInterface);
             return true;
         }
         else

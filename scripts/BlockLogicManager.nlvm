@@ -1,0 +1,46 @@
+package scripts;
+
+import scripts.containers.*;
+
+public final class BlockLogicManager extends UpdateableObject
+{
+    private static BlockLogicManager m_Instance = null;
+    private List m_RegisteredTrackProcesses = new List();
+
+    private BlockLogicManager()
+    {
+        SetShouldUpdate(true);
+    }
+
+    public static BlockLogicManager GetInstance()
+    {
+        if(m_Instance == null)
+            m_Instance = new BlockLogicManager();
+
+        return m_Instance;
+    }
+
+
+    public void RegisterProcess(ITrackProcess process)
+    {
+        if(m_RegisteredTrackProcesses.Contains(process))
+            return;
+
+        m_RegisteredTrackProcesses.Insert(process);
+    }
+    public void UnregisterProcess(ITrackProcess process)
+    {
+        if(m_RegisteredTrackProcesses.Contains(process))
+            m_RegisteredTrackProcesses.Remove(process);
+    }
+
+    public void Update(float tick)
+    {
+        IEnumerator enumerator = m_RegisteredTrackProcesses.GetEnumerator();
+        while(enumerator.MoveNext())
+            ((ITrackProcess)enumerator.Get()).Process();
+    }
+
+    public void LateUpdate(float tick) { }
+    public void LateUnblockedUpdate() { }
+}
