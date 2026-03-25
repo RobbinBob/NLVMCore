@@ -1,7 +1,9 @@
 package scripts.audiokit;
 
-import com.nolimitscoaster.*;
+import scripts.*;
 import scripts.utilities.*;
+
+import com.nolimitscoaster.*;
 
 public final class AudioCueTrackTrigger extends AudioCue implements TrackTriggerListener
 {

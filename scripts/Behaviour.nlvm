@@ -94,12 +94,12 @@ public abstract class Behaviour extends Script implements IPropertyContainer
     {
         LateUnblockedUpdate();
 
-        if(m_Caller != this)
-            return;
-                
-        IEnumerator enumerator = m_Updateables.GetEnumerator();
-        while(enumerator.MoveNext())
-            ((IUpdateable)enumerator.Get()).LateUnblockedUpdate();
+        if(m_Caller == this)
+        {
+            IEnumerator enumerator = m_Updateables.GetEnumerator();
+            while(enumerator.MoveNext())
+                ((IUpdateable)enumerator.Get()).LateUnblockedUpdate();
+        }
 
         
 
@@ -113,7 +113,7 @@ public abstract class Behaviour extends Script implements IPropertyContainer
             if(m_Caller != this)
                 return;
                 // Loop over the updateables and call their late updates
-            enumerator = m_Updateables.GetEnumerator();
+            IEnumerator enumerator = m_Updateables.GetEnumerator();
             while(enumerator.MoveNext())
                 ((IUpdateable)enumerator.Get()).LateUpdate(m_PreviousTick);
         }

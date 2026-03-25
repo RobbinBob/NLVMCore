@@ -1,8 +1,10 @@
 package scripts.audiokit;
 
-import com.nolimitscoaster.*;
+import scripts.*;
 import scripts.containers.*;
 import scripts.utilities.StringUtil;
+
+import com.nolimitscoaster.*;
 
 public final class AudioToggleShutOff extends Behaviour implements InteractionActionListener
 {
@@ -36,7 +38,7 @@ public final class AudioToggleShutOff extends Behaviour implements InteractionAc
         List tempControllers = new List(params.length);
         for(int i = 0; i < params.length; ++i)
         {
-            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioController", params[i]);
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.audiokit.AudioController", params[i]);
             if(reference == null)
             {
                 Debug.Warn("Cue Trigger | Unable to find Audio Group with id '" + params[i] + "'");

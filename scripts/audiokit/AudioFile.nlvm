@@ -1,6 +1,7 @@
 package scripts.audiokit;
 
 import com.nolimitscoaster.*;
+import scripts.*;
 
 public final class AudioFile extends Behaviour implements IReferenceable
 {
@@ -67,6 +68,6 @@ public final class AudioFile extends Behaviour implements IReferenceable
     }
     public String GetType()
     {
-        return "scripts.AudioFile";
+        return "scripts.audiokit.AudioFile";
     }
 }

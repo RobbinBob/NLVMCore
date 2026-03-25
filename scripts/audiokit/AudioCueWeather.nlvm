@@ -1,5 +1,7 @@
 package scripts.audiokit;
 
+import scripts.*;
+
 public final class AudioCueWeather extends AudioCue
 {
     private float m_WeatherThreshold = 0;

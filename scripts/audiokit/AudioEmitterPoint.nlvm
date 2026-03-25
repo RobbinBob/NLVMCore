@@ -1,5 +1,7 @@
 package scripts.audiokit;
 
+import scripts.*;
+
 public class AudioEmitterPoint extends AudioEmitter
 {
     public SpatialSound SetCurrentSound(String name)

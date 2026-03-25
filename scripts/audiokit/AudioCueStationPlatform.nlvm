@@ -1,5 +1,7 @@
 package scripts.audiokit;
 
+import scripts.*;
+
 public final class AudioCueStationPlatform extends AudioCueStationState
 {
     public void Update(float deltaTime)

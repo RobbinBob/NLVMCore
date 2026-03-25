@@ -1,0 +1,30 @@
+package scripts.audiokit;
+
+import scripts.*;
+
+import com.nolimitscoaster.*;
+
+public class AudioCueSpecialTrack extends AudioCue
+{
+    private SpecialTrack m_SpecialTrack = null;
+    private bool m_IsSwitching = false;
+
+    public void Start()
+    {
+        super.Start();
+        m_SpecialTrack = GetSpecialTrackParameter("special_track");
+    }
+
+    public void Update(float deltaTime)
+    {
+        if(m_SpecialTrack.getSwitchDirection() == -1)
+        {
+            if(m_IsSwitching)
+                return;
+            m_IsSwitching = true;
+            BroadcastSoundToAll(m_SoundConfig);
+        }
+        else
+            m_IsSwitching = false;
+    }
+}

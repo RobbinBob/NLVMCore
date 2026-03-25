@@ -1,7 +1,8 @@
 package scripts.audiokit;
 
-import scripts.utilities.StringUtil;
+import scripts.*;
 import scripts.containers.*;
+import scripts.utilities.StringUtil;
 
 public abstract class AudioCue extends Behaviour
 {
@@ -43,7 +44,7 @@ public abstract class AudioCue extends Behaviour
         List tempControllers = new List(params.length);
         for(int i = 0; i < params.length; ++i)
         {
-            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioController", params[i]);
+            IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.audiokit.AudioController", params[i]);
             if(reference == null)
             {
                 Debug.Warn("Cue Trigger | Unable to find Audio Group with id '" + params[i] + "'");
@@ -61,7 +62,7 @@ public abstract class AudioCue extends Behaviour
         m_Priority = GetIntegerParameter("audio_priority");
         m_MuteLowerPriority = GetBoolParameter("audio_mutelower");
 
-        IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.AudioFile", m_AudioName);
+        IReferenceable reference = Registry.GetInstance().GetReferenceFromName("scripts.audiokit.AudioFile", m_AudioName);
         if(reference == null)
         {
             Debug.Warn("Cue Trigger | Unable to find Audio File with name '" + m_AudioName + "'");

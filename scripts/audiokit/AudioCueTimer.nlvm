@@ -1,5 +1,7 @@
 package scripts.audiokit;
 
+import scripts.*;
+
 public final class AudioCueTimer extends AudioCue
 {
     private Timer m_IntervalTimer = null;

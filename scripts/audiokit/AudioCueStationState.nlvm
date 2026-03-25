@@ -1,5 +1,7 @@
 package scripts.audiokit;
 
+import scripts.*;
+
 import com.nolimitscoaster.*;
 
 public abstract class AudioCueStationState extends AudioCue

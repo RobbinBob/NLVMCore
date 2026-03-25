@@ -1,7 +1,8 @@
 package scripts.audiokit;
 
-import scripts.containers.*;
+import scripts.*;
 import scripts.math.*;
+import scripts.containers.*;
 
 public abstract class AudioEmitterVolume extends AudioEmitter implements IReferenceable
 {

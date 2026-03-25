@@ -1,5 +1,6 @@
 package scripts.audiokit;
 
+import scripts.*;
 import scripts.math.*;
 
 public final class AudioCueTimeOfDay extends AudioCue

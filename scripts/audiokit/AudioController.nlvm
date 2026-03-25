@@ -1,8 +1,7 @@
 package scripts.audiokit;
 
-//import scripts.math.*;
-//import scripts.utilities.*;
 import scripts.containers.*;
+import scripts.*;
 
 public final class AudioController extends Behaviour implements IReferenceable
 {
@@ -45,7 +44,7 @@ public final class AudioController extends Behaviour implements IReferenceable
         String audioName = GetStringParameter("primary_audio_name", false);
         if(audioName.length() != 0)
         {
-            m_PrimaryAudioFile = (AudioFile)registry.GetReferenceFromName("scripts.AudioFile", GetStringParameter("primary_audio_name"));
+            m_PrimaryAudioFile = (AudioFile)registry.GetReferenceFromName("scripts.audiokit.AudioFile", GetStringParameter("primary_audio_name"));
             if(m_PrimaryAudioFile == null)
             {
                 Debug.Warn("Audio Group | Unable to find Audio File with Audio Id '" + GetStringParameter("primary_audio_name") + "' for Primary Loop");
@@ -65,7 +64,8 @@ public final class AudioController extends Behaviour implements IReferenceable
         m_MuteGain = GetFloatParameter("audio_mute_gain");
 
             // Fetch all AudioEmitters with the same group name
-        IReferenceable[] references = registry.GetReferencesFromName("scripts.AudioEmitter", m_GroupName);
+        IReferenceable[] references = registry.GetReferencesFromName("scripts.audiokit.AudioEmitter", m_GroupName);
+
         Debug.Print("Audio Group | Found '" + references.length + "' AudioEmitters associated with group '" + m_GroupName + "'");
         m_GroupEmitters = new AudioEmitter[references.length];
         for(int i = 0; i < references.length; ++i)
@@ -381,7 +381,7 @@ public final class AudioController extends Behaviour implements IReferenceable
         // IReferenceable
     public String GetType()
     {
-        return "scripts.AudioController";
+        return "scripts.audiokit.AudioController";
     }
     public String GetName()
     {

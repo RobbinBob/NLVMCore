@@ -57,7 +57,7 @@ public final class Registry extends Object
     public IReferenceable[] GetReferencesFromName(String type, String name)
     {
         if(!m_RegisteredEntities.ContainsKey(type))
-            return null;
+            return new IReferenceable[0];
 
         List foundEntities = new List();
         List entityList = (List)m_RegisteredEntities.GetValue(type);
